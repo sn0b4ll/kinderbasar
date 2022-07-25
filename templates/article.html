@@ -1,0 +1,17 @@
+<html>
+Name: {{ article.name }}<br>
+Seller: {{ article.seller }}<br>
+Price: {{ article.price }}<br>
+Sold: {{ article.sold }}
+<br>
+<br>
+
+{% if not article.sold %}
+<form method="POST" action="/article/{{ article.uuid }}/sold">
+	<label for="name">New price:
+	<input type="text" id="price" name="price">
+	<br>
+	<input type="submit" value="Abschicken">
+</form>
+{% endif %}
+</html>
