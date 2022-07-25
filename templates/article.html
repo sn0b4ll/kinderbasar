@@ -6,7 +6,7 @@ Sold: {{ article.sold }}
 <br>
 <br>
 
-{% if not article.sold %}
+{% if not article.sold and org %}
 <form method="POST" action="/article/{{ article.uuid }}/sold">
 	<label for="name">New price:
 	<input type="text" id="price" name="price">

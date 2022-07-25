@@ -1,0 +1,18 @@
+<html>
+	<table>
+		<tr>
+		  <th>Article Name</th>
+		  <th>Article Seller</th>
+		  <th>Article Price</th>
+		  <th>Article Sold</th>
+		</tr>
+		{% for article in articles -%}
+		<tr>
+		  <td>{{ article.name }}</td>
+		  <td>{{ article.seller }}</td>
+		  <td>{{ article.price }}</td>
+		  <td>{{ article.sold }}</td>
+		</tr>
+		{% endfor %}
+	  </table> 
+</html>
