@@ -146,6 +146,12 @@ def article():
             org=org
         )
 
+@app.route("/article/<string:uuid>/qr", methods=["get"])
+def print_qr(uuid):
+    # TODO(Refactor URL format to not use get params)
+    return uuid
+
+
 @app.route("/article/<string:uuid>/sold", methods=["POST"])
 def article_sold(uuid):
     if ('organizer' in session) and (session['organizer'] == True):
@@ -162,11 +168,28 @@ def article_sold(uuid):
 @app.route("/overview", methods=["GET"])
 def overview():
     if 'seller_uuid' in session:
-        articles = Article.query.filter_by(seller=session['seller_uuid'])
+        if ('organizer' in session) and (session['organizer'] == True):
+            articles = Article.query.all()
+        else:
+            articles = Article.query.filter_by(seller=session['seller_uuid'])
 
         return render_template(
                 'overview.html',
                 articles=articles
+            )
+    else:
+        return redirect(url_for('login'))
+
+@app.route("/overview/qr", methods=["GET"])
+def overview_qr():
+    # pass all articles for currently logged in user to template
+    if 'seller_uuid' in session:
+        articles = Article.query.filter_by(seller=session['seller_uuid'])
+
+        return render_template(
+                'overview_qr.html',
+                articles=articles,
+                url_template="http://192.168.1.36/article/" # TODO(Config file)
             )
     else:
         return redirect(url_for('login'))
