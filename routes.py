@@ -74,7 +74,6 @@ def login():
         uuid = request.form['username']
         secret = request.form['password']
 
-        
         user = User.query.get(uuid)
         if (user is not None) and (user.secret == secret):
             session['seller_uuid'] = user.uuid

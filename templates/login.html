@@ -1,8 +1,26 @@
-<html>
-	<form action = "" method = "post">
-		<p><input type=text id=username name=username /></p>
-		<p><input type=password id=password name=password /></p>
-		<p></p><input type=submit value=Login /></p>
-		
-	 </form>	
-</html>
+{% include 'header.html' %}
+<section class="vh-100">
+	<div class="container-fluid h-custom">
+    	<div class="row d-flex justify-content-center align-items-center">
+      		<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
+				<form action="" method = "post">
+					<!-- Email input -->
+					<div class="form-outline mb-4">
+					<input type="text" id="username" name="username" class="form-control" />
+					<label class="form-label" for="username">User-ID</label>
+					</div>
+				
+					<!-- Password input -->
+					<div class="form-outline mb-4">
+					<input type="password" id="password" name="password" class="form-control" />
+					<label class="form-label" for="password">Password</label>
+					</div>
+				
+					<!-- Submit button -->
+					<button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</section>
+{% include 'footer.html' %}
