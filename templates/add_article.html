@@ -1,11 +1,22 @@
-<html>
-    <form method="POST" action="/article">
-        <label for="name">Artikelname:
-        <input type="text" id="name" name="name">
-        <br>
-        <label for="name">Preis:
-        <input type="text" id="price" name="price">
-        <br>
-        <input type="submit" value="Abschicken">
-    </form>
-</html>
+{% include 'header.html' %}
+<div class="container">
+	<div class="row justify-content-center align-items-center">
+		<div class="col-md-5 shadow mt-5">
+            <h1>Add article</h1>
+            <form method="POST" action="/article">
+                <div class="form-outline mb-4">
+                    <input type="text" id="name" name="name" class="form-control">
+                    <label class="form-label" for="name">Article-Name</label>
+                </div>
+                
+                <div class="form-outline mb-4">
+                    <input type="text" id="price" name="price" class="form-control">
+                    <label class="form-label" for="price">Article-Name</label>
+                </div>
+                <input type="submit" class="btn btn-primary btn-block mb-4" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% include 'footer.html' %}
