@@ -64,7 +64,7 @@ db.session.commit()
 @app.route("/")
 def home():
     if 'seller_uuid' in session:
-        return redirect(url_for('article'))
+        return redirect(url_for('overview'))
     else:
         return redirect(url_for('login'))
 
@@ -94,52 +94,49 @@ def logout():
         session.pop('organizer')
     return redirect(url_for('login'))
 
-@app.route("/add_article")
+@app.route("/article/add", methods=["GET", "POST"])
 def add_article():
     if 'seller_uuid' in session:
-        return render_template(
-            'add_article.html',
-            title="Add an article"
-        )
+        if request.method == 'GET':
+            return render_template(
+                'add_article.html',
+                title="Add an article"
+            )
+        else:
+            name = request.form['name']
+            price = request.form['price']
+
+            article = Article()
+            article.uuid = str(uuid.uuid4())
+            article.name = name
+            article.seller = session['seller_uuid']
+            article.price = price
+            article.sold = False
+        
+            db.session.add(article)
+            db.session.commit()
+
+            url = "http://192.168.1.36:5000/article/" + article.uuid
+            
+            return render_template(
+                'qr_code.html',
+                url=url, 
+                article=article
+            )
     else:
        return redirect(url_for('login'))
 
-@app.route("/article", methods=["GET", "POST"])
-def article():
-    if request.method == 'POST':
-        name = request.form['name']
-        price = request.form['price']
-
-        print(name, price)
-
-        article = Article()
-        article.uuid = str(uuid.uuid4())
-        article.name = name
-        article.seller = session['seller_uuid']
-        article.price = price
-        article.sold = False
-    
-        db.session.add(article)
-        db.session.commit()
-
-        url = "http://192.168.1.36:5000/article?uuid=" + article.uuid
-        
-        return render_template(
-            'qr_code.html',
-            url=url, 
-            article=article
-        )
-    else:
-        args = request.args
-        try:
-            article = Article.query.filter_by(uuid=args['uuid']).first()
-        except BadRequestKeyError:
+@app.route("/article/<string:uuid>", methods=["GET"])
+def article_view(uuid):
+        if uuid is None:
             return abort(Response('Article UUID missing.'))
         if ('organizer' in session) and (session['organizer'] == True):
             org = True
         else:
             org = False
         
+        article = Article.query.filter_by(uuid=uuid).first()
+
         return render_template(
             'article.html',
             article=article,
@@ -148,8 +145,16 @@ def article():
 
 @app.route("/article/<string:uuid>/qr", methods=["get"])
 def print_qr(uuid):
-    # TODO(Refactor URL format to not use get params)
-    return uuid
+    url = "http://192.168.1.36:5000/article/" + uuid
+
+    article = Article.query.filter_by(uuid=uuid).first()
+    if article is None:
+            abort(Response('UUID for article is not existing.'))
+    return render_template(
+        'qr_code.html',
+        url=url, 
+        article=article
+    )
 
 
 @app.route("/article/<string:uuid>/sold", methods=["POST"])
@@ -161,7 +166,11 @@ def article_sold(uuid):
 
         db.session.commit()
 
-        return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+        return render_template(
+            'article.html',
+            article=article,
+            org=org
+        )
     else:
         abort(403) 
 
@@ -193,5 +202,3 @@ def overview_qr():
             )
     else:
         return redirect(url_for('login'))
-
-db.session.close()
