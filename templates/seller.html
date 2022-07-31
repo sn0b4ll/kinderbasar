@@ -1,18 +1,29 @@
-<html>
-	<table>
-		<tr>
-		  <th>Article Name</th>
-		  <th>Article Seller</th>
-		  <th>Article Price</th>
-		  <th>Article Sold</th>
-		</tr>
-		{% for article in articles -%}
-		<tr>
-		  <td>{{ article.name }}</td>
-		  <td>{{ article.seller }}</td>
-		  <td>{{ article.price }}</td>
-		  <td>{{ article.sold }}</td>
-		</tr>
-		{% endfor %}
-	  </table> 
-</html>
+{% include 'header.html' %}
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h1>Article Overview</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">Article Name</th>
+					<th scope="col">Article Seller</th>
+					<th scope="col">Article Price</th>
+					<th scope="col">Article Sold</th>
+				</tr>
+				{% for article in articles -%}
+				<tr>
+					<td>{{ article.name }}</td>
+					<td>{{ article.seller }}</td>
+					<td>{{ article.price }}</td>
+					<td>{{ article.sold }}</td>
+				</tr>
+				{% endfor %}
+			</table> 
+		</div>
+	</div>
+</div>
+{% include 'footer.html' %}
