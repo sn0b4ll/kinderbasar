@@ -78,7 +78,7 @@ def login():
         if (user is not None) and (user.secret == secret):
             session['seller_uuid'] = user.uuid
             session['organizer'] = user.organizer
-            return redirect(url_for('seller'))
+            return redirect(url_for('overview'))
         return "Nope"
 
     else:
@@ -159,13 +159,13 @@ def article_sold(uuid):
     else:
         abort(403) 
 
-@app.route("/seller", methods=["GET"])
-def seller():
+@app.route("/overview", methods=["GET"])
+def overview():
     if 'seller_uuid' in session:
         articles = Article.query.filter_by(seller=session['seller_uuid'])
 
         return render_template(
-                'seller.html',
+                'overview.html',
                 articles=articles
             )
     else:
