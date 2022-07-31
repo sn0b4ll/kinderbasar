@@ -119,9 +119,7 @@ def add_article():
             url = "http://192.168.1.36:5000/article/" + article.uuid
             
             return render_template(
-                'qr_code.html',
-                url=url, 
-                article=article
+                'overview.html'
             )
     else:
        return redirect(url_for('login'))
@@ -160,6 +158,7 @@ def print_qr(uuid):
 @app.route("/article/<string:uuid>/sold", methods=["POST"])
 def article_sold(uuid):
     if ('organizer' in session) and (session['organizer'] == True):
+        org = True
         article = Article.query.filter_by(uuid=uuid).first()
         article.sold = True
         article.price = request.form['price']
@@ -198,7 +197,7 @@ def overview_qr():
         return render_template(
                 'overview_qr.html',
                 articles=articles,
-                url_template="http://192.168.1.36/article/" # TODO(Config file)
+                url_template="http://192.168.1.36:5000/article/" # TODO(Config file)
             )
     else:
         return redirect(url_for('login'))

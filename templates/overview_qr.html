@@ -5,7 +5,9 @@
     <div class="row">
     {% for article in articles %}
         <div class="col-4">
-            {{ article.name }} <br> {{ article.seller }} <br>
+            {{ article.name }} <br> 
+            <!-- {{ article.seller }} <br> -->
+            {{ article.price }} €<br>
             <img src="{{ qrcode(url_template + article.uuid, error_correction='H', box_size=5) }}">
         </div>
     {% if loop.index is divisibleby 3 %}

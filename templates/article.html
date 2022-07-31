@@ -34,29 +34,35 @@
 					<td scope="col">{{ article.name }}</th>
 				</tr>
 				<tr>
-					<td scope="col">Seller</th>
+					<td scope="col">Verkäufer</th>
 					<td scope="col">{{ article.seller }}</th>
 				</tr>
 				<tr>
-					<td scope="col">Price</th>
-					<td scope="col">{{ article.price }}</th>
+					<td scope="col">Preis</th>
+					<td scope="col">{{ article.price }} €</th>
 				</tr>
 				<tr>
-					<td scope="col">Sold</th>
+					<td scope="col">Verkauft</th>
 					<td scope="col">{{ article.sold }}</th>
 				</tr>
 			</table>
 		</div>
 	</div>
+	{% if not article.sold and org %}
+	<div class="row d-flex justify-content-center align-items-center mt-1">
+		<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
+			<h1>Verkaufen</h1>
+			<form method="POST" action="/article/{{ article.uuid }}/sold">
+				<input type="text" id="price" name="price" class="form-control" value="{{ article.price }}">
+				<label class="form-label" for="name">Verkaufspreis</label>
+				<br>
+				<input type="submit" class="btn btn-primary btn-block mb-4" value="Submit">
+			</form>
+		</div>
+	</div>
+	{% endif %}
 </div>
 
-{% if not article.sold and org %}
-<form method="POST" action="/article/{{ article.uuid }}/sold">
-	<label for="name">New price:
-	<input type="text" id="price" name="price">
-	<br>
-	<input type="submit" value="Abschicken">
-</form>
-{% endif %}
+
 
 {% include 'footer.html' %}
