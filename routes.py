@@ -2,9 +2,10 @@ import uuid
 import json
 
 from flask import Flask
+from flask import abort
 from flask import render_template
 from flask import request
-from flask import redirect, url_for
+from flask import redirect, url_for, Response
 from flask import session
 from flask_sqlalchemy import SQLAlchemy
 
@@ -62,11 +63,10 @@ db.session.commit()
 '''
 @app.route("/")
 def home():
-    return render_template(
-        'home.html',
-        title="Jinja Demo Site",
-        description="Description"
-    )
+    if 'seller_uuid' in session:
+        return redirect(url_for('article'))
+    else:
+        return redirect(url_for('login'))
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -90,8 +90,9 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.pop('seller_uuid')
-    session.pop('organizer')
+    if 'seller_uuid' in session:
+        session.pop('seller_uuid')
+        session.pop('organizer')
     return redirect(url_for('login'))
 
 @app.route("/add_article")
@@ -123,7 +124,7 @@ def article():
         db.session.commit()
 
         url = "http://192.168.1.36:5000/article?uuid=" + article.uuid
-        #return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+        
         return render_template(
             'qr_code.html',
             url=url, 
@@ -131,12 +132,15 @@ def article():
         )
     else:
         args = request.args
-        article = Article.query.filter_by(uuid=args['uuid']).first()
+        try:
+            article = Article.query.filter_by(uuid=args['uuid']).first()
+        except BadRequestKeyError:
+            return abort(Response('Article UUID missing.'))
         if ('organizer' in session) and (session['organizer'] == True):
             org = True
         else:
             org = False
-        print("Org:" + str(org))
+        
         return render_template(
             'article.html',
             article=article,
@@ -145,21 +149,27 @@ def article():
 
 @app.route("/article/<string:uuid>/sold", methods=["POST"])
 def article_sold(uuid):
-    article = Article.query.filter_by(uuid=uuid).first()
-    article.sold = True
-    article.price = request.form['price']
+    if ('organizer' in session) and (session['organizer'] == True):
+        article = Article.query.filter_by(uuid=uuid).first()
+        article.sold = True
+        article.price = request.form['price']
 
-    db.session.commit()
+        db.session.commit()
 
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    else:
+        abort(403) 
 
 @app.route("/seller", methods=["GET"])
 def seller():
-    articles = Article.query.filter_by(seller=session['seller_uuid'])
+    if 'seller_uuid' in session:
+        articles = Article.query.filter_by(seller=session['seller_uuid'])
 
-    return render_template(
-            'seller.html',
-            articles=articles
-        )
+        return render_template(
+                'seller.html',
+                articles=articles
+            )
+    else:
+        return redirect(url_for('login'))
 
 db.session.close()
