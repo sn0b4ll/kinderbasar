@@ -13,8 +13,11 @@ class Article(db.Model):
         return f"<Article(uuid='{self.uuid}', name='{self.name}', seller='{self.seller}', price='{self.price}, sold='{self.sold}'"
 
 class User(db.Model):
-    uuid = db.Column(db.String, primary_key=True)
-    secret = db.Column(db.String)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    password = db.Column(db.String)
+    email = db.Column(db.String)
+    activation_code = db.Column(db.String)
+    activated = db.Column(db.Boolean)
     organizer = db.Column(db.Boolean)
 
 ''' 

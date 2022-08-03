@@ -1,6 +1,10 @@
 import uuid
 import json
 
+from argon2 import PasswordHasher
+
+from configparser import ConfigParser
+
 from flask import Flask
 from flask import abort
 from flask import render_template
@@ -22,14 +26,22 @@ db.init_app(app)
 
 from models import  Article, User
 
+# Init config parser
+config = ConfigParser()
+config.read('env.conf')
+
+
+# Init password hasher
+# https://pypi.org/project/argon2-cffi/
+ph = PasswordHasher()
+
+# Load QR Module
 QRcode(app)
 
-'''
----- Routes ----
-'''
+# Routes
 @app.route("/")
 def home():
-    if 'seller_uuid' in session:
+    if 'user_id' in session:
         return redirect(url_for('overview'))
     else:
         return redirect(url_for('login'))
@@ -37,12 +49,13 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
-        uuid = request.form['username']
-        secret = request.form['password']
+        id = request.form['username']
+        password = request.form['password']
 
-        user = User.query.get(uuid)
-        if (user is not None) and (user.secret == secret):
-            session['seller_uuid'] = user.uuid
+        user = User.query.get(id)
+        hash = user.password
+        if (user is not None) and (ph.verify(hash, password)):
+            session['user_id'] = user.id
             session['organizer'] = user.organizer
             return redirect(url_for('overview'))
         return "Nope"
@@ -53,16 +66,64 @@ def login():
             title="Login"
         )
 
+@app.route("/register", methods=["POST"])
+def register():
+    email = request.form['email']
+    hash = ph.hash(request.form['password'])
+    activation_code = str(uuid.uuid4())
+
+    # TODO(Check ob adresse schon vorhanden)
+    # TODO(Salting)
+    user= User()
+    user.password = hash
+    user.email = email
+    user.activation_code = activation_code
+    user.activated = False
+    user.organizer = False
+
+    db.session.add(user)
+    db.session.commit()
+
+    # Import smtplib for the actual sending function
+    import smtplib
+
+    from email.message import EmailMessage
+
+    msg = EmailMessage()
+    msg.set_content(f'Test: {activation_code}')
+
+
+
+    msg['From'] = "info@kinderbasar-elsendorf.de"
+    msg['To'] = email
+    msg['Subject'] = f'Registrierung'
+
+    print(config['EMAIL']['server'])
+
+    s = smtplib.SMTP_SSL(config['EMAIL']['server'], 465) # TODO(Port)
+    s.login(config['EMAIL']['username'], config['EMAIL']['password'])
+    s.send_message(msg)
+    s.quit()
+
+    message = "Erfolg!"
+
+    return render_template(
+        'notes.html',
+        title="Danke!",
+        message=message
+    )
+        
+
 @app.route("/logout")
 def logout():
-    if 'seller_uuid' in session:
-        session.pop('seller_uuid')
+    if 'user_id' in session:
+        session.pop('user_id')
         session.pop('organizer')
     return redirect(url_for('login'))
 
 @app.route("/article/add", methods=["GET", "POST"])
 def add_article():
-    if 'seller_uuid' in session:
+    if 'user_id' in session:
         if request.method == 'GET':
             return render_template(
                 'add_article.html',
@@ -75,7 +136,7 @@ def add_article():
             article = Article()
             article.uuid = str(uuid.uuid4())
             article.name = name
-            article.seller = session['seller_uuid']
+            article.seller = session['user_id']
             article.price = price
             article.sold = False
         
@@ -139,11 +200,11 @@ def article_sold(uuid):
 
 @app.route("/overview", methods=["GET"])
 def overview():
-    if 'seller_uuid' in session:
+    if 'user_id' in session:
         if ('organizer' in session) and (session['organizer'] == True):
             articles = Article.query.all()
         else:
-            articles = Article.query.filter_by(seller=session['seller_uuid'])
+            articles = Article.query.filter_by(seller=session['user_id'])
 
         return render_template(
                 'overview.html',
@@ -155,8 +216,8 @@ def overview():
 @app.route("/overview/qr", methods=["GET"])
 def overview_qr():
     # pass all articles for currently logged in user to template
-    if 'seller_uuid' in session:
-        articles = Article.query.filter_by(seller=session['seller_uuid'])
+    if 'user_id' in session:
+        articles = Article.query.filter_by(seller=session['user_id'])
 
         return render_template(
                 'overview_qr.html',
@@ -168,4 +229,7 @@ def overview_qr():
 
 
 if __name__ == '__main__':
+    app.app_context().push()
+    db.create_all()
+
     app.run(debug=True, host='0.0.0.0')
