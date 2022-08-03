@@ -96,7 +96,13 @@ def register():
     from email.message import EmailMessage
 
     msg = EmailMessage()
-    msg.set_content(f'Test: {activation_code}')
+    msg.set_content(f'''Vielen Dank für Ihre Registrierung.
+    
+Bitte aktivieren Sie Ihren Account hier: {config['APP']['URL']}/activate/{user.id}/{activation_code}
+
+Vielen Dank & viel Erfolg wünscht Ihnen
+Ihr Kinderbasar Elsendorf Team
+    ''')
 
 
 
@@ -118,7 +124,18 @@ def register():
         title="Danke!",
         message=message
     )
-        
+
+@app.route("/activate/<int:id>/<string:uuid>")
+def activate(id, uuid):
+    sleep(random()) # Let's slow bots down..
+    user = User.query.get(id)
+    if user is not None:
+        if user.activation_code == uuid:
+            user.activated = True
+            db.session.commit()
+            return "Die Aktivierung war erfolgreich - Sie können sich jetzt mit ihrer User-ID & ihrem Passwort anmelden"
+    
+    return "User-ID oder Aktivierungs-Code falsch"
 
 @app.route("/logout")
 def logout():
