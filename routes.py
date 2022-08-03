@@ -13,6 +13,9 @@ from flask import redirect, url_for, Response
 from flask import session
 from flask_sqlalchemy import SQLAlchemy
 
+from random import random
+from time import sleep
+
 from werkzeug.exceptions import BadRequestKeyError
 
 from flask_qrcode import QRcode
@@ -49,16 +52,19 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
+        sleep(random()) # Let's slow bots down..
         id = request.form['username']
         password = request.form['password']
 
         user = User.query.get(id)
         hash = user.password
-        if (user is not None) and (ph.verify(hash, password)):
+        if (user is not None) and \
+            (ph.verify(hash, password)) and \
+                (user.activated):
             session['user_id'] = user.id
             session['organizer'] = user.organizer
             return redirect(url_for('overview'))
-        return "Nope"
+        return "User-ID oder Passwort falsch oder E-Mail wurde nicht bestätigt."
 
     else:
         return render_template(
