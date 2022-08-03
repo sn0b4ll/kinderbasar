@@ -84,9 +84,7 @@ def add_article():
 
             url = "http://192.168.1.36:5000/article/" + article.uuid
             
-            return render_template(
-                'overview.html'
-            )
+            return redirect(url_for('overview'))
     else:
        return redirect(url_for('login'))
 
