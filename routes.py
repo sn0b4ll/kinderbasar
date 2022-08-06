@@ -207,6 +207,23 @@ def article_view(uuid):
             org=org
         )
 
+@app.route("/article/<string:uuid>/remove", methods=["GET", "POST"])
+def remove_article(uuid):
+    if 'user_id' in session:
+        if uuid is None:
+            return abort(Response('Article UUID missing.'))
+        
+        user = User.query.get(session['user_id'])
+        article = Article.query.get(uuid)
+
+        if article.seller != user.id:
+            return "Not allowed to delete article.", 403
+
+        db.session.delete(article)
+        db.session.commit()
+
+        return redirect(url_for('overview'))
+
 @app.route("/article/<string:uuid>/qr", methods=["get"])
 def print_qr(uuid):
     url = "http://192.168.1.36:5000/article/" + uuid

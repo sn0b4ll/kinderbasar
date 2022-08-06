@@ -50,6 +50,7 @@
 					{% endif %}
 					<th scope="col">Verkauft</th>
 					<th scope="col">Link</th>
+					<th scope="col">Entfernen</th>
 				</tr>
 				{% for article in articles -%}
 				<tr>
@@ -61,7 +62,11 @@
 					<td>{{ article.card_uuid }}</td>
 					{% endif %}
 					<td>{{ article.sold }}</td>
-					<td><a href="/article/{{ article.uuid }}" class="btn btn-info" role="button">Link Button</a>
+					<td><a href="/article/{{ article.uuid }}" class="btn btn-info" role="button">Details</a></td>
+					<td>
+						<form action="/article/{{ article.uuid }}/remove" method="post">
+							<button type="submit" class="btn btn-info">Entfernen</button>
+						</form>
 					</td>
 				</tr>
 				{% endfor %}
