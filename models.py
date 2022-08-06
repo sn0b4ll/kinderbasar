@@ -16,6 +16,7 @@ class Article(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     password = db.Column(db.String)
+    salt = db.Column(db.String)
     email = db.Column(db.String)
     activation_code = db.Column(db.String)
     activated = db.Column(db.Boolean)

@@ -58,8 +58,9 @@ def login():
 
         user = User.query.get(id)
         hash = user.password
+        salt = user.salt
         if (user is not None) and \
-            (ph.verify(hash, password)) and \
+            (ph.verify(hash, password+salt)) and \
                 (user.activated):
             session['user_id'] = user.id
             session['organizer'] = user.organizer
@@ -75,13 +76,15 @@ def login():
 @app.route("/register", methods=["POST"])
 def register():
     email = request.form['email']
-    hash = ph.hash(request.form['password'])
+    salt = str(uuid.uuid4())
+    hash = ph.hash(request.form['password'] + salt)
     activation_code = str(uuid.uuid4())
 
     # TODO(Check ob adresse schon vorhanden)
     # TODO(Salting)
     user= User()
     user.password = hash
+    user.salt = salt
     user.email = email
     user.activation_code = activation_code
     user.activated = False
@@ -376,7 +379,8 @@ if __name__ == '__main__':
     # Test-Data
     print("Creating test data")
     user = User()
-    user.password = ph.hash("abcd")
+    user.salt = str(uuid.uuid4())
+    user.password = ph.hash("abcd"+user.salt)
     user.email = "testuser1@user.de"
     user.name = "testuser1"
     user.organizer = False
@@ -384,7 +388,8 @@ if __name__ == '__main__':
     db.session.add(user)
 
     user2 = User()
-    user2.password = ph.hash("abcd")
+    user2.salt = str(uuid.uuid4())
+    user2.password = ph.hash("abcd"+user.salt)
     user2.email = "testuser2@user.de"
     user2.name = "testuser2"
     user2.organizer = True
