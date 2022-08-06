@@ -81,7 +81,6 @@ def register():
     activation_code = str(uuid.uuid4())
 
     # TODO(Check ob adresse schon vorhanden)
-    # TODO(Salting)
     user= User()
     user.password = hash
     user.salt = salt
