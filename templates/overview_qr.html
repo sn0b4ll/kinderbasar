@@ -6,7 +6,7 @@
     {% for article in articles %}
         <div class="col-4">
             {{ article.name }} <br> 
-            <!-- {{ article.seller }} <br> -->
+            <font style="color:red">{{ article.seller }}</font> <br>
             {{ article.price }} €<br>
             <img src="{{ qrcode(url_template + article.uuid, error_correction='H', box_size=5) }}">
         </div>
