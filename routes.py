@@ -76,6 +76,7 @@ def login():
 
 @app.route("/register", methods=["POST"])
 def register():
+    sleep(random())
     email = request.form['email']
     existing_user = False
     for user in User.query.all():
