@@ -1,5 +1,6 @@
 import uuid
 import json
+import math
 
 from argon2 import PasswordHasher
 
@@ -171,6 +172,14 @@ def add_article():
         else:
             name = request.form['name']
             price = request.form['price']
+            try:
+                price = price.replace(',', '')
+                price = price.replace('€', '')
+                price = price.replace('.', '')
+                price = int(price)
+            except:
+                return "Bitte beachten Sie die Vorgaben zur Preiseingabe. Sie erreichen die vorherige Seite über den Zurück-Button Ihres Browsers."
+
             clothing_size = request.form['clothing_size']
 
             article = Article()
@@ -404,6 +413,18 @@ def get_registration_sheet():
             registration_fee=registration_fee
         )
 
+def as_euro(price):
+    if (type(price) == int):
+        price = str(price)
+    elif (type(price) == float):
+        price = str(math.ceil(price/10)*10)
+    
+    euro = price[:-2]
+    if euro == "": euro = "0"
+    cent = price[-2:]
+    price = f'{euro},{cent}€'
+    return price
+    
 
 if __name__ == '__main__':
     app.app_context().push()
@@ -471,5 +492,5 @@ if __name__ == '__main__':
     db.session.commit()
     
     
-
+    app.jinja_env.filters['as_euro'] = as_euro
     app.run(debug=True, host='0.0.0.0')

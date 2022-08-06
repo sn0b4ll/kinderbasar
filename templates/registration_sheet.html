@@ -47,7 +47,7 @@
 				<tr>
 					<td>{{ article.name }}</td>
 					<td>{{ article.clothing_size }}</td>
-					<td>{{ article.price }}€</td>
+					<td>{{ article.price|as_euro }}</td>
 				</tr>
 				{% endfor %}
 			</table> 
@@ -64,11 +64,11 @@
 			<table class="table table-striped">
 				<tr>
 					<th scope="col">Summe Artikel:</th>
-					<td>{{ article_sum }}€</td>
+					<td>{{ article_sum|as_euro }}</td>
 				</tr>
 				<tr>
                     <th scope="col">Vor-Ort-Gebühr bei Abgabe:</th>
-                    <td>{{ registration_fee }}€</td>
+                    <td>{{ registration_fee|as_euro }}</td>
                 </tr>
 			</table> 
 		</div>

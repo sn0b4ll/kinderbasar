@@ -47,7 +47,7 @@
 				{% for article in card.articles -%}
 				<tr>
 					<td>{{ article.name }}</td>
-					<td>{{ article.price }}</td>
+					<td>{{ article.price|as_euro }}</td>
 					</td>
 				</tr>
 				{% endfor %}
@@ -59,7 +59,7 @@
 			<table class="table table-striped">
                 <tr>
                     <td>Gesamt:</td>
-                    <td>{{ price_overall }}</td>
+                    <td>{{ price_overall|as_euro }}</td>
                 </tr>
                 <tr>
                     <td>Aktiv?:</td>

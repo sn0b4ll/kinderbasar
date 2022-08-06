@@ -57,7 +57,7 @@
 					<td>{{ article.name }}</td>
 					<td>{{ article.seller }}</td>
 					<td>{{ article.clothing_size }}</td>
-					<td>{{ article.price }}</td>
+					<td>{{ article.price|as_euro }}</td>
 					{% if org %}
 					<td>{{ article.card_uuid }}</td>
 					{% endif %}

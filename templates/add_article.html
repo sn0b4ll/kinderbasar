@@ -1,22 +1,49 @@
 {% include 'header.html' %}
+
+<script>
+function validateForm() {
+    let price = document.forms["add_article"]["price"].value;
+    let name = document.forms["add_article"]["name"].value;
+    if (price == "") {
+        alert("Bitte einen Preis vergeben.");
+        return false;
+    }
+
+    if (name == "") {
+        alert("Bitte einen Namen vergeben.");
+        return false;
+    }
+
+    if (price.at(-1) != "0") {
+        alert("Bitte Hinweise zur Preisgestaltung beachten!");
+        return false;
+    }
+
+    if (price.at(-3) != ',') {
+        alert("Bitte Hinweise zur Preisgestaltung beachten!");
+        return false;
+    }
+}
+</script>
+
 <div class="container">
 	<div class="row justify-content-center align-items-center">
 		<div class="col-md-5 shadow mt-5">
             <h1>Add article</h1>
-            <form method="POST" action="/article/add">
+            <form name="add_article" onsubmit="return validateForm()" method="POST" action="/article/add">
                 <div class="form-outline mb-4">
                     <input type="text" id="name" name="name" class="form-control">
-                    <label class="form-label" for="name">Name</label>
+                    <label class="form-label" for="name">Name des Artikels (Erscheint später auf dem Ettiket)</label>
                 </div>
                 
                 <div class="form-outline mb-4">
                     <input type="text" id="price" name="price" class="form-control">
-                    <label class="form-label" for="price">Preis</label>
+                    <label class="form-label" for="price">Preis (im Format XX,X0 ohne €-Zeichen). Bitte beachten Sie, dass die kleinste Cent-Stelle immer auf 0 abgerundet wird.</label>
                 </div>
 
                 <div class="form-outline mb-4">
                     <input type="text" id="clothing_size" name="clothing_size" class="form-control">
-                    <label class="form-label" for="clothing_size">Kleider-Größe</label>
+                    <label class="form-label" for="clothing_size">Kleider-Größe (falls nicht zutreffend, einfach frei lassen)</label>
                 </div>
                 <input type="submit" class="btn btn-primary btn-block mb-4" value="Submit">
             </form>

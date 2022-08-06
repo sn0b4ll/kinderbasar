@@ -7,8 +7,8 @@
         <div class="col-4">
             {{ article.name }} <br> 
             <font style="color:red">{{ article.seller }}</font> <br>
-            {{ article.clothing_size }} <br> 
-            {{ article.price }} €<br>
+            {{ article.clothing_size }}<br> 
+            {{ article.price|as_euro }}<br>
             <img src="{{ qrcode(url_template + article.uuid, error_correction='H', box_size=5) }}">
         </div>
     {% if loop.index is divisibleby 3 %}
