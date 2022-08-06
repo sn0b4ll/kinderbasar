@@ -76,12 +76,26 @@ def login():
 @app.route("/register", methods=["POST"])
 def register():
     email = request.form['email']
+    existing_user = False
+    for user in User.query.all():
+        if user.email == email:
+            existing_user = True
+            tmp_user = user
+            break
+
+    if existing_user:
+        # If the user exists but the E-Mail is not actived yet, it should be allowed to overwrite the params
+        # of the existing User
+        if tmp_user.activated:
+            return "User already registered" # TODO (Prevent enum)
+        else:
+            user = tmp_user
+    else:
+        user= User()
+
     salt = str(uuid.uuid4())
     hash = ph.hash(request.form['password'] + salt)
     activation_code = str(uuid.uuid4())
-
-    # TODO(Check ob adresse schon vorhanden)
-    user= User()
     user.password = hash
     user.salt = salt
     user.email = email
