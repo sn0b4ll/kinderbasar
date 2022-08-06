@@ -391,6 +391,8 @@ if __name__ == '__main__':
     user2.activated = True
     db.session.add(user2)
 
+    db.session.commit()
+
     article = Article()
     article.uuid = str(uuid.uuid4())
     article.name = "Testname"
