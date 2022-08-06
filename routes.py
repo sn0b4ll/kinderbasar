@@ -27,7 +27,7 @@ app.secret_key = 'set_me_to_something_random_please'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db.init_app(app)
 
-from models import  Article, User
+from models import  Article, User, Card
 
 # Init config parser
 config = ConfigParser()
@@ -254,5 +254,51 @@ def overview_qr():
 if __name__ == '__main__':
     app.app_context().push()
     db.create_all()
+
+    '''
+    # Test-Data
+    print("Creating test data")
+    user = User()
+    user.password = ph.hash("abcd")
+    user.email = "testuser1@user.de"
+    user.name = "testuser1"
+    user.organizer = False
+    user.activated = True
+    db.session.add(user)
+
+    user2 = User()
+    user2.password = ph.hash("abcd")
+    user2.email = "testuser2@user.de"
+    user2.name = "testuser2"
+    user2.organizer = True
+    user2.activated = True
+    db.session.add(user2)
+
+    article = Article()
+    article.uuid = str(uuid.uuid4())
+    article.name = "Testname"
+    article.seller = user.id
+    article.price = "13.37"
+    article.sold = False
+    db.session.add(article)
+
+    article2 = Article()
+    article2.uuid = str(uuid.uuid4())
+    article2.name = "Testname2"
+    article2.seller = user.id
+    article2.price = "13.37"
+    article2.sold = False
+    db.session.add(article2)
+
+    card = Card()
+    card.uuid = str(uuid.uuid4())
+    card.articles = [article, article2]
+    db.session.add(card)
+
+    user2.cards = [card]
+    
+
+    db.session.commit()
+    '''
 
     app.run(debug=True, host='0.0.0.0')

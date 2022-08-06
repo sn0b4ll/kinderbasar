@@ -8,6 +8,7 @@ class Article(db.Model):
     seller = db.Column(db.Integer)
     price = db.Column(db.String)
     sold = db.Column(db.Boolean)
+    card_uuid = db.Column(db.String, db.ForeignKey('card.uuid'))
 
     def __repr__(self):
         return f"<Article(uuid='{self.uuid}', name='{self.name}', seller='{self.seller}', price='{self.price}, sold='{self.sold}'"
@@ -19,24 +20,9 @@ class User(db.Model):
     activation_code = db.Column(db.String)
     activated = db.Column(db.Boolean)
     organizer = db.Column(db.Boolean)
+    cards = db.relationship('Card', backref='owner', lazy=True)
 
-''' 
-db.create_all()
-
-user = User()
-user.uuid = str(uuid.uuid4())
-user.secret = "abcd"
-user.organizer = False
-db.session.add(user)
-
-# Test-Data
-article = Article()
-article.uuid = str(uuid.uuid4())
-article.name = "Testname"
-article.seller = user.uuid
-article.price = "13.37"
-article.sold = False
-db.session.add(article)
-
-db.session.commit()
-'''
+class Card(db.Model):
+    uuid = db.Column(db.String, primary_key=True)
+    articles = db.relationship('Article', backref='card', lazy=True)
+    user_id = db.Column(db.String, db.ForeignKey('user.id'))
