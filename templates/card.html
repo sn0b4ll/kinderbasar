@@ -10,10 +10,10 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav">
 			  <li class="nav-item">
-				<a class="nav-link active" aria-current="page" href="/overview">Artikel übersicht</a>
+				<a class="nav-link" aria-current="page" href="/overview">Article Overview</a>
 			  </li>
 			  <li class="nav-item">
-				<a class="nav-link" href="/article/add">Artikel hinzufügen</a>
+				<a class="nav-link" href="/article/add">Add article</a>
 			  </li>
 			  <li class="nav-item">
 				<a class="nav-link" href="/overview/qr">QR-Codes</a>
@@ -41,26 +41,42 @@
 		<div class="col">
 			<table class="table table-striped">
 				<tr>
-					<th scope="col">Name</th>
-					<th scope="col">Verkäufer</th>
+					<th scope="col">Artikel</th>
 					<th scope="col">Preis</th>
-					<th scope="col">Einkaufswagen</th>
-					<th scope="col">Verkauft</th>
-					<th scope="col">Link</th>
 				</tr>
-				{% for article in articles -%}
+				{% for article in card.articles -%}
 				<tr>
 					<td>{{ article.name }}</td>
-					<td>{{ article.seller }}</td>
 					<td>{{ article.price }}</td>
-					<td>{{ article.card_uuid }}</td>
-					<td>{{ article.sold }}</td>
-					<td><a href="/article/{{ article.uuid }}" class="btn btn-info" role="button">Link Button</a>
 					</td>
 				</tr>
 				{% endfor %}
 			</table> 
 		</div>
 	</div>
+    <div class="row">
+		<div class="col">
+			<table class="table table-striped">
+                <tr>
+                    <td>Gesamt:</td>
+                    <td>{{ price_overall }}</td>
+                </tr>
+                <tr>
+                    <td>Aktiv?:</td>
+                    <td>{{ card.active }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center align-items-center mt-1">
+		<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
+            {% if card.active %}
+            <form method="POST" action="/card/{{ card.uuid }}/close/">
+				<input type="submit" class="btn btn-primary btn-block mb-4" value="Abschließen">
+			</form>
+            {% endif %}
+		</div>
+	</div>
 </div>
+
 {% include 'footer.html' %}

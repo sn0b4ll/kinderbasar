@@ -202,7 +202,7 @@ def print_qr(uuid):
         article=article
     )
 
-
+'''
 @app.route("/article/<string:uuid>/sold", methods=["POST"])
 def article_sold(uuid):
     if ('organizer' in session) and (session['organizer'] == True):
@@ -220,18 +220,22 @@ def article_sold(uuid):
         )
     else:
         abort(403) 
+'''
 
 @app.route("/overview", methods=["GET"])
 def overview():
     if 'user_id' in session:
         if ('organizer' in session) and (session['organizer'] == True):
             articles = Article.query.all()
+            org = True
         else:
             articles = Article.query.filter_by(seller=session['user_id'])
+            org = False
 
         return render_template(
                 'overview.html',
-                articles=articles
+                articles=articles,
+                org=org
             )
     else:
         return redirect(url_for('login'))
@@ -250,12 +254,125 @@ def overview_qr():
     else:
         return redirect(url_for('login'))
 
+def _get_card_uuid_for_user():
+        user = User.query.get(session['user_id'])
+        for card in user.cards:
+            if card.active:
+                return card.uuid
+        
+        # No active card, create one
+        card = Card()
+        card.uuid = str(uuid.uuid4())
+        card.articles = []
+        card.active = True
+        card.user_id = user.id
+        db.session.add(card)
+
+        db.session.commit()
+
+        return card.uuid
+
+@app.route("/card/<string:uuid>/", methods=["GET"])
+def card(uuid):
+    if ('organizer' in session) and (session['organizer'] == True) :
+        if uuid == "active":
+            uuid = _get_card_uuid_for_user()
+
+        card = Card.query.get(uuid)
+        
+        if card is None:
+            return "Card not found."
+
+        print(type(card.user_id))
+        print(session['user_id'])
+        if card.user_id != session['user_id']:
+            return "Wrong Session!"
+
+        price_overall = 0
+        for article in card.articles:
+            price_overall += int(article.price)
+        
+        return render_template(
+                'card.html',
+                card=card,
+                price_overall=price_overall
+            )
+    else:
+        return redirect(url_for('login'))
+
+@app.route("/card/<string:card_uuid>/add/<string:article_uuid>/", methods=["POST"])
+def add_article_to_card(card_uuid, article_uuid):
+    if ('organizer' in session) and (session['organizer'] == True) :
+        if card_uuid == "active":
+            uuid = _get_card_uuid_for_user()
+        
+        card = Card.query.get(uuid)
+        
+        if card is None:
+            return "Card not found."
+
+        if card.user_id != session['user_id']:
+            return "Wrong Session!"
+
+        article = Article.query.get(article_uuid)
+
+        if article is None:
+            return "Article UUID wrong!"
+
+        card.articles.append(article)
+        db.session.commit() 
+
+        price_overall = 0
+        for article in card.articles:
+            price_overall += int(article.price)
+        
+        return render_template(
+                'card.html',
+                card=card,
+                price_overall=price_overall
+            )
+    else:
+        return redirect(url_for('login'))
+
+@app.route("/card/<string:uuid>/close/", methods=["POST"])
+def close_card(uuid):
+    if ('organizer' in session) and (session['organizer'] == True) :
+        if uuid == "active":
+            uuid = _get_card_uuid_for_user()
+        
+        card = Card.query.get(uuid)
+        
+        if card is None:
+            return "Card not found."
+
+        if card.user_id != session['user_id']:
+            return "Wrong Session!"
+
+        card.active = False
+
+        for article in card.articles:
+            article.sold = True
+
+        db.session.commit()
+
+        price_overall = 0
+        for article in card.articles:
+            price_overall += int(article.price)
+        
+        return render_template(
+                'card.html',
+                card=card,
+                price_overall=price_overall,
+                org=True
+            )
+    else:
+        return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.app_context().push()
     db.create_all()
 
-    '''
+    
     # Test-Data
     print("Creating test data")
     user = User()
@@ -278,7 +395,7 @@ if __name__ == '__main__':
     article.uuid = str(uuid.uuid4())
     article.name = "Testname"
     article.seller = user.id
-    article.price = "13.37"
+    article.price = 1337
     article.sold = False
     db.session.add(article)
 
@@ -286,19 +403,29 @@ if __name__ == '__main__':
     article2.uuid = str(uuid.uuid4())
     article2.name = "Testname2"
     article2.seller = user.id
-    article2.price = "13.37"
+    article2.price = 2456
     article2.sold = False
     db.session.add(article2)
+
+    article3 = Article()
+    article3.uuid = str(uuid.uuid4())
+    article3.name = "Testname3"
+    article3.seller = user.id
+    article3.price = 2456
+    article3.sold = False
+    db.session.add(article3)
 
     card = Card()
     card.uuid = str(uuid.uuid4())
     card.articles = [article, article2]
+    card.active = True
     db.session.add(card)
 
     user2.cards = [card]
     
 
     db.session.commit()
-    '''
+    
+    
 
     app.run(debug=True, host='0.0.0.0')

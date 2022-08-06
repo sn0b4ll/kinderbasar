@@ -6,7 +6,7 @@ class Article(db.Model):
     uuid = db.Column(db.String, primary_key=True)
     name = db.Column(db.String)
     seller = db.Column(db.Integer)
-    price = db.Column(db.String)
+    price = db.Column(db.Integer)
     sold = db.Column(db.Boolean)
     card_uuid = db.Column(db.String, db.ForeignKey('card.uuid'))
 
@@ -25,4 +25,5 @@ class User(db.Model):
 class Card(db.Model):
     uuid = db.Column(db.String, primary_key=True)
     articles = db.relationship('Article', backref='card', lazy=True)
-    user_id = db.Column(db.String, db.ForeignKey('user.id'))
+    active = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
