@@ -171,11 +171,13 @@ def add_article():
         else:
             name = request.form['name']
             price = request.form['price']
+            clothing_size = request.form['clothing_size']
 
             article = Article()
             article.uuid = str(uuid.uuid4())
             article.name = name
             article.seller = session['user_id']
+            article.clothing_size = clothing_size
             article.price = price
             article.sold = False
         
@@ -395,6 +397,7 @@ if __name__ == '__main__':
     article.uuid = str(uuid.uuid4())
     article.name = "Testname"
     article.seller = user.id
+    article.clothing_size = ""
     article.price = 1337
     article.sold = False
     db.session.add(article)
@@ -403,6 +406,7 @@ if __name__ == '__main__':
     article2.uuid = str(uuid.uuid4())
     article2.name = "Testname2"
     article2.seller = user.id
+    article2.clothing_size = "42"
     article2.price = 2456
     article2.sold = False
     db.session.add(article2)
@@ -411,6 +415,7 @@ if __name__ == '__main__':
     article3.uuid = str(uuid.uuid4())
     article3.name = "Testname3"
     article3.seller = user.id
+    article3.clothing_size = "42"
     article3.price = 2456
     article3.sold = False
     db.session.add(article3)

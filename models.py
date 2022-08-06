@@ -8,6 +8,7 @@ class Article(db.Model):
     seller = db.Column(db.Integer)
     price = db.Column(db.Integer)
     sold = db.Column(db.Boolean)
+    clothing_size = db.Column(db.String)
     card_uuid = db.Column(db.String, db.ForeignKey('card.uuid'))
 
     def __repr__(self):

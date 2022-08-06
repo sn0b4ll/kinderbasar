@@ -43,8 +43,11 @@
 				<tr>
 					<th scope="col">Name</th>
 					<th scope="col">Verkäufer</th>
+					<th scope="col">Kleider-Größe</th>
 					<th scope="col">Preis</th>
+					{% if org %}
 					<th scope="col">Einkaufswagen</th>
+					{% endif %}
 					<th scope="col">Verkauft</th>
 					<th scope="col">Link</th>
 				</tr>
@@ -52,8 +55,11 @@
 				<tr>
 					<td>{{ article.name }}</td>
 					<td>{{ article.seller }}</td>
+					<td>{{ article.clothing_size }}</td>
 					<td>{{ article.price }}</td>
+					{% if org %}
 					<td>{{ article.card_uuid }}</td>
+					{% endif %}
 					<td>{{ article.sold }}</td>
 					<td><a href="/article/{{ article.uuid }}" class="btn btn-info" role="button">Link Button</a>
 					</td>
