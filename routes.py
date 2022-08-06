@@ -392,6 +392,26 @@ def close_card(uuid):
     else:
         return redirect(url_for('login'))
 
+@app.route("/add_shopping_basket/", methods=["GET"])
+def add_shopping_basket():
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        shopping_basket = Article()
+        shopping_basket.name = "Einkaufskorb"
+        shopping_basket.uuid = str(uuid.uuid4())
+        shopping_basket.price = 0
+        shopping_basket.sold = True
+        shopping_basket.seller = user.id
+
+        db.session.add(shopping_basket)
+        db.session.commit()
+
+        return redirect(url_for('overview'))
+    else:
+        return redirect(url_for('login'))
+
+
+
 @app.route("/registration_sheet/", methods=["GET"])
 def get_registration_sheet():
     if 'user_id' in session:

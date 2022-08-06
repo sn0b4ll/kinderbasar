@@ -76,6 +76,9 @@
 	{% if not org %}
 	<div class="row d-flex justify-content-center align-items-center mt-1">
 		<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
+			<form method="GET" action="/add_shopping_basket/">
+				<input type="submit" class="btn btn-primary btn-block mb-4" value="Einkaufskorb hinzufügen">
+			</form>
 			<form method="GET" action="/registration_sheet/">
 				<input type="submit" class="btn btn-primary btn-block mb-4" value="Abschließen & Registrierungsformular anzeigen">
 			</form>
