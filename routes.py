@@ -218,26 +218,6 @@ def print_qr(uuid):
         article=article
     )
 
-'''
-@app.route("/article/<string:uuid>/sold", methods=["POST"])
-def article_sold(uuid):
-    if ('organizer' in session) and (session['organizer'] == True):
-        org = True
-        article = Article.query.filter_by(uuid=uuid).first()
-        article.sold = True
-        article.price = request.form['price']
-
-        db.session.commit()
-
-        return render_template(
-            'article.html',
-            article=article,
-            org=org
-        )
-    else:
-        abort(403) 
-'''
-
 @app.route("/overview", methods=["GET"])
 def overview():
     if 'user_id' in session:
