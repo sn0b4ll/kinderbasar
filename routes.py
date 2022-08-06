@@ -383,6 +383,28 @@ def close_card(uuid):
     else:
         return redirect(url_for('login'))
 
+@app.route("/registration_sheet/", methods=["GET"])
+def get_registration_sheet():
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+
+        articles = Article.query.filter_by(seller=session['user_id'])
+
+        article_sum = 0
+        for article in articles:
+            article_sum += article.price
+
+        registration_fee = article_sum * 0.05
+
+        return render_template(
+            'registration_sheet.html',
+            user=user,
+            articles=articles,
+            article_sum=article_sum,
+            registration_fee=registration_fee
+        )
+
+
 if __name__ == '__main__':
     app.app_context().push()
     db.create_all()
