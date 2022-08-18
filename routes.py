@@ -194,7 +194,7 @@ def add_article():
             db.session.add(article)
             db.session.commit()
 
-            url = "http://192.168.1.36:5000/article/" + article.uuid
+            url = f"{config['APP']['URL']}/article/{article.uuid}"
             
             return redirect(url_for('overview'))
     else:
@@ -236,7 +236,7 @@ def remove_article(uuid):
 
 @app.route("/article/<string:uuid>/qr", methods=["get"])
 def print_qr(uuid):
-    url = "http://192.168.1.36:5000/article/" + uuid
+    url = f"{config['APP']['URL']}/article/{article.uuid}"
 
     article = Article.query.filter_by(uuid=uuid).first()
     if article is None:
@@ -274,7 +274,7 @@ def overview_qr():
         return render_template(
                 'overview_qr.html',
                 articles=articles,
-                url_template="http://192.168.1.36:5000/article/" # TODO(Config file)
+                url_template=f"{config['APP']['URL']}/article/"
             )
     else:
         return redirect(url_for('login'))
