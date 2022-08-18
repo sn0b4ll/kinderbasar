@@ -126,6 +126,8 @@ def register():
     
 Bitte aktivieren Sie Ihren Account hier: {config['APP']['URL']}/activate/{user.id}/{activation_code}
 
+Anschließend können Sie sich unter {config['APP']['URL']}/login anmelden.
+
 Vielen Dank & viel Erfolg wünscht Ihnen
 Ihr Kinderbasar Elsendorf Team
     ''')
@@ -146,7 +148,7 @@ Ihr Kinderbasar Elsendorf Team
     message = "Erfolg!"
 
     return render_template(
-        'notes.html',
+        'registration_success.html',
         title="Danke!",
         message=message
     )
@@ -160,6 +162,10 @@ def activate(id, uuid):
             user.activated = True
             db.session.commit()
             logging.info(f"User {user.id}/{user.email} was activated.")
+            return render_template(
+                'activation_success.html',
+                title="Danke!",
+            )
             return "Die Aktivierung war erfolgreich - Sie können sich jetzt mit ihrer User-ID & ihrem Passwort anmelden"
     
     return "User-ID oder Aktivierungs-Code falsch"
