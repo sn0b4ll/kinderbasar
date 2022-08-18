@@ -1,6 +1,7 @@
 import uuid
 import json
 import math
+import logging
 
 from argon2 import PasswordHasher
 
@@ -34,6 +35,8 @@ from models import  Article, User, Card
 config = ConfigParser()
 config.read('env.conf')
 
+# Init logging
+logging.basicConfig(filename='kinderbasar.log', format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
 
 # Init password hasher
 # https://pypi.org/project/argon2-cffi/
@@ -65,7 +68,10 @@ def login():
                 (user.activated):
             session['user_id'] = user.id
             session['organizer'] = user.organizer
+            logging.info(f"User {user.id}/{user.email} logged in successfully.")
             return redirect(url_for('overview'))
+        
+        logging.warning(f"Failed login attemp for user {user.email}.")
         return "User-ID oder Passwort falsch oder E-Mail wurde nicht bestätigt."
 
     else:
@@ -104,6 +110,8 @@ def register():
     user.activation_code = activation_code
     user.activated = False
     user.organizer = False
+
+    logging.info(f"User {user.id}/{user.email} was created.")
 
     db.session.add(user)
     db.session.commit()
@@ -151,6 +159,7 @@ def activate(id, uuid):
         if user.activation_code == uuid:
             user.activated = True
             db.session.commit()
+            logging.info(f"User {user.id}/{user.email} was activated.")
             return "Die Aktivierung war erfolgreich - Sie können sich jetzt mit ihrer User-ID & ihrem Passwort anmelden"
     
     return "User-ID oder Aktivierungs-Code falsch"
@@ -158,6 +167,7 @@ def activate(id, uuid):
 @app.route("/logout")
 def logout():
     if 'user_id' in session:
+        logging.info(f"User {session['user_id']} logged out.")
         session.pop('user_id')
         session.pop('organizer')
     return redirect(url_for('login'))
@@ -194,6 +204,8 @@ def add_article():
             db.session.add(article)
             db.session.commit()
 
+            logging.info(f"Article {article.uuid}/{article.name} was created.")
+
             url = f"{config['APP']['URL']}/article/{article.uuid}"
             
             return redirect(url_for('overview'))
@@ -203,6 +215,7 @@ def add_article():
 @app.route("/article/<string:uuid>", methods=["GET"])
 def article_view(uuid):
         if uuid is None:
+            logging.debug(f"There was a try to access an not existing article {uuid}.")
             return abort(Response('Article UUID missing.'))
         if ('organizer' in session) and (session['organizer'] == True):
             org = True
@@ -231,6 +244,8 @@ def remove_article(uuid):
 
         db.session.delete(article)
         db.session.commit()
+
+        logging.info(f"Article with UUID {uuid} was removed.")
 
         return redirect(url_for('overview'))
 
@@ -383,6 +398,8 @@ def close_card(uuid):
         price_overall = 0
         for article in card.articles:
             price_overall += int(article.price)
+
+        logging.info(f"The card {uuid} was closed.")
         
         return render_template(
                 'card.html',
@@ -406,6 +423,8 @@ def add_shopping_basket():
 
         db.session.add(shopping_basket)
         db.session.commit()
+
+        logging.info(f"The shopping basket {shopping_basket.uuid} was created.")
 
         return redirect(url_for('overview'))
     else:
