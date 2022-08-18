@@ -57,10 +57,10 @@ def home():
 def login():
     if request.method == 'POST':
         sleep(random()) # Let's slow bots down..
-        id = request.form['username']
+        email = request.form['username']
         password = request.form['password']
 
-        user = User.query.get(id)
+        user = User.query.filter_by(email=email).first()
         hash = user.password
         salt = user.salt
         if (user is not None) and \
