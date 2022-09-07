@@ -459,6 +459,52 @@ def get_registration_sheet():
             registration_fee=registration_fee
         )
 
+@app.route("/sellers/", methods=["GET"])
+def get_sellers():
+    if ('organizer' in session) and (session['organizer'] == True):
+        all_users = User.query.all()
+        seller_list = []
+        for user in all_users:
+            articles = Article.query.filter_by(seller=user.id).all() # TODO(Better data model..)
+            articles_overall = len(articles)
+            articles_sold = 0
+            for article in articles:
+                if article.sold == True:
+                    articles_sold =+ 1
+
+            seller_list.append(
+                (
+                    user,
+                    articles_overall,
+                    articles_sold
+                )
+            )
+        
+        return render_template(
+            'sellers.html',
+            seller_list=seller_list,
+            org=True
+        )
+
+@app.route("/clearing/<int:id>", methods=["GET"])
+def get_clearing(id):
+    if ('organizer' in session) and (session['organizer'] == True):
+        user = User.query.get(id)
+        articles = Article.query.filter_by(seller=user.id).all()
+
+        sold_sum = 0
+        for article in articles:
+            if article.sold == True:
+                sold_sum += article.price
+
+
+        return render_template(
+            'clearing.html',
+            user=user,
+            articles=articles,
+            sold_sum=sold_sum
+        )
+
 def as_euro(price):
     if (type(price) == int):
         price = str(price)
