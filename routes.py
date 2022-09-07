@@ -1,12 +1,12 @@
+"""This is the main module holding all the routes and app logic."""
+
 import uuid
-import json
 import math
 import logging
 
-from argon2 import PasswordHasher
-from argon2.exceptions import VerifyMismatchError
-
 from configparser import ConfigParser
+from random import random
+from time import sleep
 
 from flask import Flask
 from flask import abort
@@ -14,12 +14,9 @@ from flask import render_template
 from flask import request
 from flask import redirect, url_for, Response
 from flask import session
-from flask_sqlalchemy import SQLAlchemy
 
-from random import random
-from time import sleep
-
-from werkzeug.exceptions import BadRequestKeyError
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 
 from flask_qrcode import QRcode
 
@@ -38,7 +35,11 @@ config = ConfigParser()
 config.read('env.conf')
 
 # Init logging
-logging.basicConfig(filename='kinderbasar.log', format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
+logging.basicConfig(
+    filename='kinderbasar.log', 
+    format='%(asctime)s:%(levelname)s:%(message)s', 
+    level=logging.DEBUG
+)
 
 # Init password hasher
 # https://pypi.org/project/argon2-cffi/
@@ -50,6 +51,7 @@ QRcode(app)
 # Routes
 @app.route("/")
 def home():
+    """ Returns the default page - either overview or login, based on the status of the session."""
     if 'user_id' in session:
         return redirect(url_for('overview'))
     else:
@@ -71,11 +73,11 @@ def login():
                 title="Login"
             )
 
-        hash = user.password
+        pass_hash = user.password
         salt = user.salt
-        
+
         try:
-            ph.verify(hash, password+salt)
+            ph.verify(pass_hash, password+salt)
         except VerifyMismatchError:
             # Verify failed
             logging.warning(f"Failed login attemp for user {user.email}.")
@@ -90,7 +92,7 @@ def login():
                 title="Login"
             )
 
-        if (user.activated == False): # Eventuell Warnung anzeigen
+        if not user.activated: # Eventuell Warnung anzeigen
             return render_template(
                 'login.html',
                 title="Login"
@@ -129,9 +131,9 @@ def register():
         user= User()
 
     salt = str(uuid.uuid4())
-    hash = ph.hash(request.form['password'] + salt)
+    pass_hash = ph.hash(request.form['password'] + salt)
     activation_code = str(uuid.uuid4())
-    user.password = hash
+    user.password = pass_hash
     user.salt = salt
     user.email = email
     user.activation_code = activation_code
@@ -145,7 +147,6 @@ def register():
 
     # Import smtplib for the actual sending function
     import smtplib
-
     from email.message import EmailMessage
 
     msg = EmailMessage()
@@ -163,14 +164,16 @@ Ihr Kinderbasar Elsendorf Team
 
     msg['From'] = "info@kinderbasar-elsendorf.de"
     msg['To'] = email
-    msg['Subject'] = f'Registrierung'
+    msg['Subject'] = 'Registrierung'
 
-    print(config['EMAIL']['server'])
-
-    s = smtplib.SMTP_SSL(config['EMAIL']['server'], 465) # TODO(Port)
-    s.login(config['EMAIL']['username'], config['EMAIL']['password'])
-    s.send_message(msg)
-    s.quit()
+    try:
+        s = smtplib.SMTP_SSL(config['EMAIL']['server'], 465) # TODO(Port)
+        s.login(config['EMAIL']['username'], config['EMAIL']['password'])
+        s.send_message(msg)
+        s.quit()
+    except Exception as e:
+        logging.error(e)
+        return "Something went wrong, please wait some minutes and retry."
 
     message = "Erfolg!"
 
@@ -193,7 +196,6 @@ def activate(id, uuid):
                 'activation_success.html',
                 title="Danke!",
             )
-            return "Die Aktivierung war erfolgreich - Sie können sich jetzt mit ihrer User-ID & ihrem Passwort anmelden"
     
     return "User-ID oder Aktivierungs-Code falsch"
 
@@ -247,28 +249,29 @@ def add_article():
 
 @app.route("/article/<string:uuid>", methods=["GET"])
 def article_view(uuid):
-        if uuid is None:
-            logging.debug(f"There was a try to access an not existing article {uuid}.")
-            return abort(Response('Article UUID missing.'))
-        if ('organizer' in session) and (session['organizer'] == True):
-            org = True
-        else:
-            org = False
-        
-        article = Article.query.filter_by(uuid=uuid).first()
+    '''Return the view for a single article.'''
+    if uuid is None:
+        logging.debug(f"There was a try to access an not existing article {uuid}.")
+        return abort(Response('Article UUID missing.'))
+    if ('organizer' in session) and (session['organizer'] == True):
+        org = True
+    else:
+        org = False
 
-        return render_template(
-            'article.html',
-            article=article,
-            org=org
-        )
+    article = Article.query.filter_by(uuid=uuid).first()
+
+    return render_template(
+        'article.html',
+        article=article,
+        org=org
+    )
 
 @app.route("/article/<string:uuid>/remove", methods=["GET", "POST"])
 def remove_article(uuid):
     if 'user_id' in session:
         if uuid is None:
             return abort(Response('Article UUID missing.'))
-        
+
         user = User.query.get(session['user_id'])
         article = Article.query.get(uuid)
 
@@ -282,9 +285,12 @@ def remove_article(uuid):
 
         return redirect(url_for('overview'))
 
+'''
+Disabled, since it is no longer needed.
+
 @app.route("/article/<string:uuid>/qr", methods=["get"])
 def print_qr(uuid):
-    url = f"{config['APP']['URL']}/article/{article.uuid}"
+    url = f"{config['APP']['URL']}/article/{uuid}"
 
     article = Article.query.filter_by(uuid=uuid).first()
     if article is None:
@@ -294,6 +300,7 @@ def print_qr(uuid):
         url=url, 
         article=article
     )
+'''
 
 @app.route("/overview", methods=["GET"])
 def overview():
@@ -378,9 +385,9 @@ def add_article_to_card(card_uuid, article_uuid):
     if ('organizer' in session) and (session['organizer'] == True) :
         if card_uuid == "active":
             uuid = _get_card_uuid_for_user()
-        
+
         card = Card.query.get(uuid)
-        
+
         if card is None:
             return "Card not found."
 
@@ -463,8 +470,6 @@ def add_shopping_basket():
     else:
         return redirect(url_for('login'))
 
-
-
 @app.route("/registration_sheet/", methods=["GET"])
 def get_registration_sheet():
     if 'user_id' in session:
@@ -490,6 +495,7 @@ def get_registration_sheet():
 
 @app.route("/sellers/", methods=["GET"])
 def get_sellers():
+    '''List all sellers with their sold / unsold product count. '''
     if ('organizer' in session) and (session['organizer'] == True):
         all_users = User.query.all()
         seller_list = []
