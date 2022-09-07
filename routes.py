@@ -470,7 +470,7 @@ def get_sellers():
             articles_sold = 0
             for article in articles:
                 if article.sold == True:
-                    articles_sold =+ 1
+                    articles_sold += 1
 
             seller_list.append(
                 (

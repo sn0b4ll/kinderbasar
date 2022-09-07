@@ -1,5 +1,6 @@
 {% include 'header.html' %}
 
+{% if org %}
 <!-- Navbar -->
 <nav class="navbar navbar-light bg-light navbar-expand-lg">
 	<div class="container-fluid">
@@ -20,6 +21,9 @@
 			  </li>
 			  {% if org %}
 			  <li class="nav-item">
+				<a class="nav-link active" href="/sellers/">Verkäufer-Übersicht</a>
+			  </li>
+			  <li class="nav-item">
 				<a class="nav-link" href="/card/active/">Einkaufswagen</a>
 			  </li>
 			  {% endif %}
@@ -30,6 +34,7 @@
 		  </div>
 	</div>
 </nav>
+{% endif %}
 
 <div class="container">
 	<div class="row mt-5">
