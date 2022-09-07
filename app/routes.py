@@ -24,7 +24,7 @@ from models import db
 
 app = Flask(__name__)
 app.secret_key = 'set_me_to_something_random_please'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../db/test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
@@ -32,11 +32,11 @@ from models import  Article, User, Card
 
 # Init config parser
 config = ConfigParser()
-config.read('env.conf')
+config.read('./conf/env.conf')
 
 # Init logging
 logging.basicConfig(
-    filename='kinderbasar.log', 
+    filename='./logs/kinderbasar.log', 
     format='%(asctime)s:%(levelname)s:%(message)s', 
     level=logging.DEBUG
 )

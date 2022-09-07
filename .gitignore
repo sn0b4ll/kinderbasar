@@ -130,6 +130,6 @@ dmypy.json
 
 # Custom
 .vscode/settings.json
-env.conf
-test.db
-test.db_bak
+conf/env.conf
+db/test.db
+logs/kinderbasar.log
