@@ -4,12 +4,12 @@
 <div class="container mt-2">
     <div class="row">
     {% for article in articles %}
-        <div class="col-4">
+        <div class="col-4 mt-4">
             {{ article.name }} <br> 
             <font style="color:red">{{ article.seller }}</font> <br>
             {{ article.clothing_size }}<br> 
             {{ article.price|as_euro }}<br>
-            <img src="{{ qrcode(url_template + article.uuid, error_correction='H', box_size=5) }}">
+            <img src="{{ qrcode(url_template + article.uuid, error_correction='H', box_size=4) }}">
         </div>
     {% if loop.index is divisibleby 3 %}
     </div>
