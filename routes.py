@@ -4,6 +4,7 @@ import math
 import logging
 
 from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 
 from configparser import ConfigParser
 
@@ -27,6 +28,7 @@ from models import db
 app = Flask(__name__)
 app.secret_key = 'set_me_to_something_random_please'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
 from models import  Article, User, Card
@@ -60,20 +62,45 @@ def login():
         email = request.form['username']
         password = request.form['password']
 
+        # Check if user exists
         user = User.query.filter_by(email=email).first()
+        if user is None:
+            # and if not, return to the login page
+            return render_template(
+                'login.html',
+                title="Login"
+            )
+
         hash = user.password
         salt = user.salt
-        if (user is not None) and \
-            (ph.verify(hash, password+salt)) and \
-                (user.activated):
-            session['user_id'] = user.id
-            session['organizer'] = user.organizer
-            logging.info(f"User {user.id}/{user.email} logged in successfully.")
-            return redirect(url_for('overview'))
         
-        logging.warning(f"Failed login attemp for user {user.email}.")
-        return "User-ID oder Passwort falsch oder E-Mail wurde nicht bestätigt."
+        try:
+            ph.verify(hash, password+salt)
+        except VerifyMismatchError:
+            # Verify failed
+            logging.warning(f"Failed login attemp for user {user.email}.")
+            return render_template(
+                'login.html',
+                title="Login"
+            )
+        except:
+            # Something else went wrong, but better be sure not to skip this check
+            return render_template(
+                'login.html',
+                title="Login"
+            )
 
+        if (user.activated == False): # Eventuell Warnung anzeigen
+            return render_template(
+                'login.html',
+                title="Login"
+            )
+
+        # All checks passed :)
+        session['user_id'] = user.id
+        session['organizer'] = user.organizer
+        logging.info(f"User {user.id}/{user.email} logged in successfully.")
+        return redirect(url_for('overview'))
     else:
         return render_template(
             'login.html',
@@ -458,6 +485,8 @@ def get_registration_sheet():
             article_sum=article_sum,
             registration_fee=registration_fee
         )
+    else:
+        return redirect(url_for('overview'))
 
 @app.route("/sellers/", methods=["GET"])
 def get_sellers():
@@ -485,6 +514,8 @@ def get_sellers():
             seller_list=seller_list,
             org=True
         )
+    else:
+        return redirect(url_for('overview'))
 
 @app.route("/clearing/<int:id>", methods=["GET"])
 def get_clearing(id):
@@ -504,6 +535,8 @@ def get_clearing(id):
             articles=articles,
             sold_sum=sold_sum
         )
+    else:
+        return redirect(url_for('overview'))
 
 def as_euro(price):
     if (type(price) == int):
@@ -517,12 +550,7 @@ def as_euro(price):
     price = f'{euro},{cent}€'
     return price
     
-
-if __name__ == '__main__':
-    app.app_context().push()
-    db.create_all()
-
-    
+def create_test_data():
     # Test-Data
     print("Creating test data")
     user = User()
@@ -582,7 +610,10 @@ if __name__ == '__main__':
     
 
     db.session.commit()
-    
+
+if __name__ == '__main__':
+    app.app_context().push()
+    db.create_all()
     
     app.jinja_env.filters['as_euro'] = as_euro
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=config.getboolean('APP', 'DEBUG'), host='0.0.0.0')
