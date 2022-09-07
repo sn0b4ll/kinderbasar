@@ -2,3 +2,9 @@ version: '3.9'
 services:
   kinderbasar:
     build: .
+    volumes:
+      - ./db:/data/db
+      - ./conf:/data/conf
+      - ./logs:/data/logs
+    ports:
+      - "8090:5000"
