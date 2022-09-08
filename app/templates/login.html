@@ -16,6 +16,26 @@
 	</div>
 </nav>
 
+<script>
+function enableRegistration() {
+  alert("Klicked");
+  // Get the checkbox
+  var checkBox = document.getElementById("registerCheck");
+  // Get the output text
+  var button = document.getElementById("registerButton");
+
+  // If the checkbox is checked, display the output text
+  alert(checkBox.checked);
+  if (checkBox.checked == true){
+    button.disabled = false;
+	alert("Went true");
+  } else {
+    button.disabled = true;
+	alert("Went false");
+  }
+} 
+</script>
+
 <section class="vh-90">
 	<div class="container">
     	<div class="row d-flex justify-content-center align-items-center">
@@ -69,14 +89,14 @@
 						  <!-- Checkbox -->
 						  <div class="form-check d-flex justify-content-center mb-4">
 							<input class="form-check-input me-2" type="checkbox" value="" id="registerCheck"
-							  aria-describedby="registerCheckHelpText" />
+							  aria-describedby="registerCheckHelpText" onchange="enableRegistration()"/>
 							<label class="form-check-label" for="registerCheck">
 							  Ich hab die <a href="https://kinderbasar-elsendorf.de/?page_id=59">Datenschutzerklärung</a> gelesen und akzeptiere diese.
 							</label>
 						  </div>
 					
 						  <!-- Submit button -->
-						  <button type="submit" class="btn btn-primary btn-block mb-3">Registrieren</button>
+						  <button type="submit" class="btn btn-primary btn-block mb-3" disabled id="registerButton">Registrieren</button>
 						</form>
 					</div>
 				</div>
