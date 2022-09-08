@@ -354,12 +354,13 @@ def _get_card_uuid_for_user():
 
 @app.route("/card/<string:uuid>/", methods=["GET"])
 def card(uuid):
+    '''Display a card. '''
     if ('organizer' in session) and (session['organizer'] == True) :
         if uuid == "active":
             uuid = _get_card_uuid_for_user()
 
         card = Card.query.get(uuid)
-        
+
         if card is None:
             return "Card not found."
 
@@ -369,11 +370,16 @@ def card(uuid):
         price_overall = 0
         for article in card.articles:
             price_overall += int(article.price)
-        
+
+        seller_margin = int(price_overall * 0.05)
+        total_price = price_overall + seller_margin
+
         return render_template(
                 'card.html',
                 card=card,
-                price_overall=price_overall
+                price_overall=price_overall,
+                seller_margin=seller_margin,
+                total_price=total_price
             )
     else:
         return redirect(url_for('login'))

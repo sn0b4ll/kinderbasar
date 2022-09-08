@@ -61,11 +61,19 @@
 		<div class="col">
 			<table class="table table-striped">
                 <tr>
-                    <td>Gesamt:</td>
+                    <td>Summe:</td>
                     <td>{{ price_overall|as_euro }}</td>
                 </tr>
+				<tr>
+                    <td>Verkaufs-Provision:</td>
+                    <td>{{ seller_margin|as_euro }}</td>
+                </tr>
+				<tr>
+                    <td>Gesamt-Summe:</td>
+                    <td>{{ total_price|as_euro }}</td>
+                </tr>
                 <tr>
-                    <td>Aktiv?:</td>
+                    <td>Aktiv:</td>
                     <td>{{ card.active }}</td>
                 </tr>
             </table>
