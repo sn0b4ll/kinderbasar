@@ -30,6 +30,37 @@ function enableRegistration() {
     button.disabled = true;
   }
 } 
+
+function showPassword(){
+  // Get the checkbox
+  var checkBox = document.getElementById("showPasswordBox");
+  // Get the output text
+  var textbox = document.getElementById("password");
+  var textboxReg = document.getElementById("passwordReg");
+
+  // If the checkbox is checked, display the output text
+  if (checkBox.checked == true){
+    textbox.type = "text";
+	textboxReg.type = "text";
+  } else {
+    textbox.type = "password";
+	textboxReg.type = "password";
+  }
+}
+
+function showPasswordReg(){
+  // Get the checkbox
+  var checkBox = document.getElementById("showPasswordBoxReg");
+  // Get the output text
+  var textbox = document.getElementById("passwordReg");
+
+  // If the checkbox is checked, display the output text
+  if (checkBox.checked == true){
+    textbox.type = "text";
+  } else {
+    textbox.type = "password";
+  }
+}
 </script>
 
 <section class="vh-90">
@@ -58,9 +89,18 @@ function enableRegistration() {
 							</div>
 						
 							<!-- Password input -->
-							<div class="form-outline mb-4">
+							<div class="form-outline">
 							<input type="password" id="password" name="password" class="form-control" />
 							<label class="form-label" for="password">Password</label>
+							</div>
+
+							<!-- Show Password -->
+							<div class="form-check mb-4">
+								<input class="form-check-input me-2" type="checkbox" value="" id="showPasswordBox"
+								  aria-describedby="registerCheckHelpText" onchange="showPassword()"/>
+								<label class="form-check-label" for="registerCheck">
+								  Passwort anzeigen
+								</label>
 							</div>
 						
 							<!-- Submit button -->
@@ -77,9 +117,18 @@ function enableRegistration() {
 						  </div>
 					
 						  <!-- Password input -->
-						  <div class="form-outline mb-4">
-							<input type="password" id="password" name="password" class="form-control" />
-							<label class="form-label" for="password">Password</label>
+						  <div class="form-outline">
+							<input type="password" id="passwordReg" name="password" class="form-control" />
+							<label class="form-label" for="passwordReg">Password</label>
+						  </div>
+
+						  <!-- Show Password -->
+						  <div class="form-check mb-4">
+						  	<input class="form-check-input me-2" type="checkbox" value="" id="showPasswordBoxReg"
+							  aria-describedby="registerCheckHelpText" onchange="showPasswordReg()"/>
+							<label class="form-check-label" for="registerCheck">
+							  Passwort anzeigen
+							</label>
 						  </div>
 					
 						  <!-- Checkbox -->
