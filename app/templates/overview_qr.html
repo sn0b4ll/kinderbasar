@@ -4,7 +4,7 @@
 <div class="container mt-2">
     <div class="row">
     {% for article in articles %}
-        <div class="col-4 mt-4">
+        <div class="col-4 mt-2 border border-dark border-2 pb-2">
             {{ article.name }} <br> 
             <font style="color:red">{{ article.seller }}</font> <br>
             {% if article.clothing_size != "" %}
