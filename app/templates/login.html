@@ -18,20 +18,16 @@
 
 <script>
 function enableRegistration() {
-  alert("Klicked");
   // Get the checkbox
   var checkBox = document.getElementById("registerCheck");
   // Get the output text
   var button = document.getElementById("registerButton");
 
   // If the checkbox is checked, display the output text
-  alert(checkBox.checked);
   if (checkBox.checked == true){
     button.disabled = false;
-	alert("Went true");
   } else {
     button.disabled = true;
-	alert("Went false");
   }
 } 
 </script>
