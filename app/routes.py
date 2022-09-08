@@ -409,11 +409,16 @@ def add_article_to_card(card_uuid, article_uuid):
         price_overall = 0
         for article in card.articles:
             price_overall += int(article.price)
-        
+
+        seller_margin = int(price_overall * 0.05)
+        total_price = price_overall + seller_margin
+
         return render_template(
                 'card.html',
                 card=card,
-                price_overall=price_overall
+                price_overall=price_overall,
+                seller_margin=seller_margin,
+                total_price=total_price
             )
     else:
         return redirect(url_for('login'))
@@ -439,17 +444,21 @@ def close_card(uuid):
 
         db.session.commit()
 
+        logging.info(f"The card {uuid} was closed.")
+
         price_overall = 0
         for article in card.articles:
             price_overall += int(article.price)
 
-        logging.info(f"The card {uuid} was closed.")
-        
+        seller_margin = int(price_overall * 0.05)
+        total_price = price_overall + seller_margin
+
         return render_template(
                 'card.html',
                 card=card,
                 price_overall=price_overall,
-                org=True
+                seller_margin=seller_margin,
+                total_price=total_price
             )
     else:
         return redirect(url_for('login'))
