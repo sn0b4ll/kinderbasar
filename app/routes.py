@@ -363,8 +363,6 @@ def card(uuid):
         if card is None:
             return "Card not found."
 
-        print(type(card.user_id))
-        print(session['user_id'])
         if card.user_id != session['user_id']:
             return "Wrong Session!"
 
@@ -523,7 +521,7 @@ def get_sellers():
     else:
         return redirect(url_for('overview'))
 
-@app.route("/clearing/<int:id>", methods=["GET"])
+@app.route("/clearing/<int:id>/", methods=["GET"])
 def get_clearing(id):
     if ('organizer' in session) and (session['organizer'] == True):
         user = User.query.get(id)
