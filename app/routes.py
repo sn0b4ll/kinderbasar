@@ -147,6 +147,8 @@ def register():
 
     # Import smtplib for the actual sending function
     import smtplib
+    import email.utils as utils
+
     from email.message import EmailMessage
 
     msg = EmailMessage()
@@ -165,6 +167,7 @@ Ihr Kinderbasar Elsendorf Team
     msg['From'] = "info@kinderbasar-elsendorf.de"
     msg['To'] = email
     msg['Subject'] = 'Registrierung'
+    msg['message-id'] = utils.make_msgid(domain='kinderbasar-elsendorf.de')
 
     try:
         s = smtplib.SMTP_SSL(config['EMAIL']['server'], 465) # TODO(Port)
