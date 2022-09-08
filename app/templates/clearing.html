@@ -40,7 +40,7 @@
 				<tr>
 					<td>{{ article.uuid }}</td>
 					<td>{{ article.name }}</td>
-					<td>{{ article.sold }}</td>
+					<td>{{ article.sold|to_german }}</td>
 					<td>{{ article.price|as_euro }}</td>
 				</tr>
 				{% endfor %}

@@ -568,6 +568,18 @@ def as_euro(price):
     cent = price[-2:]
     price = f'{euro},{cent}€'
     return price
+
+def to_german(orig):
+    '''Translate default terms to german.'''
+    if orig == "True" or orig is True:
+        return "Wahr"
+    elif orig == "False" or orig is False:
+        return "Falsch"
+    elif orig is None:
+        return ""
+    else:
+        return orig
+
     
 def create_test_data():
     # Test-Data
@@ -635,4 +647,5 @@ if __name__ == '__main__':
     db.create_all()
     
     app.jinja_env.filters['as_euro'] = as_euro
+    app.jinja_env.filters['to_german'] = to_german
     app.run(debug=config.getboolean('APP', 'DEBUG'), host='0.0.0.0')

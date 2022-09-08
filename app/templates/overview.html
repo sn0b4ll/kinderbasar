@@ -59,12 +59,12 @@
 				<tr>
 					<td>{{ article.name }}</td>
 					<td>{{ article.seller }}</td>
-					<td>{{ article.clothing_size }}</td>
+					<td>{{ article.clothing_size|to_german }}</td>
 					<td>{{ article.price|as_euro }}</td>
 					{% if org %}
-					<td>{{ article.card_uuid }}</td>
+					<td>{{ article.card_uuid|to_german }}</td>
 					{% endif %}
-					<td>{{ article.sold }}</td>
+					<td>{{ article.sold|to_german }}</td>
 					<td><a href="/article/{{ article.uuid }}" class="btn btn-info" role="button">Details</a></td>
 					<td>
 						<form action="/article/{{ article.uuid }}/remove" method="post">
