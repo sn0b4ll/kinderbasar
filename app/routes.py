@@ -575,9 +575,9 @@ def as_euro(price):
 def to_german(orig):
     '''Translate default terms to german.'''
     if orig == "True" or orig is True:
-        return "Wahr"
+        return "Ja"
     elif orig == "False" or orig is False:
-        return "Falsch"
+        return "Nein"
     elif orig is None:
         return ""
     else:
