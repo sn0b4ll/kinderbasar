@@ -79,8 +79,8 @@
 	<div class="row d-flex justify-content-center align-items-center mt-1">
 		<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
 			{% if not user.registration_done %}
-			<input type="button" class="btn btn-primary btn-block mb-4 mt-4" value="Artikel hinzufügen" onclick="location.pathname='/article/add'">
-			<input type="button" class="btn btn-primary btn-block mb-4" value="Einkaufskorb hinzufügen" onclick="location.pathname='/shopping_basket/add'">
+			<input type="button" class="btn btn-primary btn-block mb-4 mt-4" value="Artikel hinzufügen" onclick="location.pathname='/article/add'"><br/>
+			<input type="button" class="btn btn-primary btn-block mb-4" value="Einkaufskorb hinzufügen" onclick="location.pathname='/shopping_basket/add'"><br/>
 			<input type="submit" class="btn btn-primary btn-block mb-4" value="Abschließen & Registrierungsformular anzeigen" onclick="location.pathname='/registration_sheet/'">
 			{% else %}
 			<input type="submit" class="btn btn-primary btn-block mb-4 mt-4" value="Registrierungsformular anzeigen" onclick="location.pathname='/registration_sheet/'">
