@@ -23,17 +23,17 @@ from flask_qrcode import QRcode
 
 from models import db
 
+# Init config parser
+config = ConfigParser()
+config.read('./conf/env.conf')
+
 app = Flask(__name__)
-app.secret_key = 'set_me_to_something_random_please'
+app.secret_key = config.get('APP', 'secret_key')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../db/test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
 from models import  Article, User, Card
-
-# Init config parser
-config = ConfigParser()
-config.read('./conf/env.conf')
 
 # Init logging
 logging.basicConfig(
@@ -54,7 +54,10 @@ QRcode(app)
 def home():
     """ Returns the default page - either overview or login, based on the status of the session."""
     if 'user_id' in session:
-        return redirect(url_for('overview'))
+        if User.query.get(session['user_id']) is not None:
+            return redirect(url_for('overview'))
+        else:
+            return redirect(url_for('login'))    
     else:
         return redirect(url_for('login'))
 
