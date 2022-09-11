@@ -1,5 +1,21 @@
 {% include 'header.html' %}
 
+<script>
+function printAndRegister(){
+	var answer = window.confirm("Bearbeitung final abschließen und Formular drucken?");
+	if (answer) {
+		const req = new XMLHttpRequest();
+		req.open("POST", "/user/registration_done");
+		req.send();
+		window.print();
+		window.location.pathname = '/registration_sheet/'
+	} else {
+		window.location.pathname = '/overview/'
+	}
+}
+
+</script>
+
 <div class="container">
     <div class="row">
         <div class="col">
@@ -101,7 +117,12 @@
 	</div>
 	<div class="row">
 		<div class="col">
-			<button class="btn btn-primary btn-block mt-3 mb-3" onclick="window.print();return false;">Drucken</button>
+			{% if not user.registration_done %}
+			<button class="btn btn-primary btn-block mt-3 mb-3" onclick="printAndRegister();">Abschließen und drucken</button>
+			{% else %}
+			<button class="btn btn-primary btn-block mt-3 mb-3" onclick="window.print();return -1;">Erneut drucken</button>
+			{% endif %}
+			<button class="btn btn-primary btn-block mt-3 mb-3" onclick="location.pathname='/overview'">Zurück zur Übersicht</button>
 		</div>
 	</div>
 </div>

@@ -1,5 +1,6 @@
 """This is the main module holding all the routes and app logic."""
 
+from http.client import OK
 import uuid
 import math
 import logging
@@ -214,6 +215,11 @@ def logout():
 @app.route("/article/add", methods=["GET", "POST"])
 def add_article():
     if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        if user.registration_done:
+            return "Registration already finished.", 403
+
+
         if request.method == 'GET':
             return render_template(
                 'add_article.html',
@@ -279,7 +285,7 @@ def remove_article(uuid):
         user = User.query.get(session['user_id'])
         article = Article.query.get(uuid)
 
-        if not article in user.articles:
+        if (not article in user.articles) or user.registration_done:
             return "Not allowed to delete article.", 403
 
         db.session.delete(article)
@@ -309,16 +315,17 @@ def print_qr(uuid):
 @app.route("/overview", methods=["GET"])
 def overview():
     if 'user_id' in session:
+        user = User.query.get(session['user_id'])
         if ('organizer' in session) and (session['organizer'] == True):
             articles = Article.query.all()
             org = True
         else:
-            user = User.query.get(session['user_id'])
             articles = user.articles
             org = False
 
         return render_template(
                 'overview.html',
+                user=user,
                 articles=articles,
                 org=org
             )
@@ -478,10 +485,14 @@ def close_card(uuid):
     else:
         return redirect(url_for('login'))
 
-@app.route("/add_shopping_basket/", methods=["GET"])
+@app.route("/shopping_basket/add", methods=["GET"])
 def add_shopping_basket():
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
+
+        if user.registration_done:
+            return "Registration already done.", 403
+
         shopping_basket = Article()
         shopping_basket.name = "Einkaufskorb"
         shopping_basket.uuid = str(uuid.uuid4())
@@ -577,6 +588,17 @@ def get_clearing(id):
         )
     else:
         return redirect(url_for('overview'))
+
+@app.route("/user/registration_done", methods=["POST"])
+def registration_done():
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        user.registration_done = True
+        db.session.commit()
+        return f"Registration done set for user { user.id }", 200
+    else:
+        return redirect(url_for('login'))
+
 
 def as_euro(price):
     if (type(price) == int):
