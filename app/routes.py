@@ -554,16 +554,22 @@ def get_clearing(id):
         user = User.query.get(id)
         articles = Article.query.filter_by(seller=user.id).all()
 
+        articles_sold = []
+        articles_unsold = []
+
         sold_sum = 0
         for article in articles:
             if article.sold == True:
                 sold_sum += article.price
-
+                articles_sold.append(article)
+            else:
+                articles_unsold.append(article)
 
         return render_template(
             'clearing.html',
             user=user,
-            articles=articles,
+            articles_sold=articles_sold,
+            articles_unsold=articles_unsold,
             sold_sum=sold_sum
         )
     else:
