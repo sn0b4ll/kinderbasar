@@ -58,7 +58,7 @@
 				{% for article in articles -%}
 				<tr>
 					<td>{{ article.name }}</td>
-					<td>{{ article.seller }}</td>
+					<td>{{ article.seller.id }}</td>
 					<td>{{ article.clothing_size|to_german }}</td>
 					<td>{{ article.price|as_euro }}</td>
 					{% if org %}

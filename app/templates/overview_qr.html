@@ -6,7 +6,7 @@
     {% for article in articles %}
         <div class="col-4 mt-2 border border-dark border-2 pb-2">
             {{ article.name }} <br> 
-            <font style="color:red">{{ article.seller }}</font> <br>
+            <font style="color:red">{{ article.seller.id }}</font> <br>
             {% if article.clothing_size != "" %}
             {{ article.clothing_size }}<br>
             {% endif %}

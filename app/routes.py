@@ -139,6 +139,7 @@ def register():
     user.activation_code = activation_code
     user.activated = False
     user.organizer = False
+    user.registration_done = False
 
     logging.info(f"User {user.id}/{user.email} was created.")
 
@@ -234,7 +235,7 @@ def add_article():
             article = Article()
             article.uuid = str(uuid.uuid4())
             article.name = name
-            article.seller = session['user_id']
+            article.seller = User.query.get(session['user_id'])
             article.clothing_size = clothing_size
             article.price = price
             article.sold = False
@@ -278,7 +279,7 @@ def remove_article(uuid):
         user = User.query.get(session['user_id'])
         article = Article.query.get(uuid)
 
-        if article.seller != user.id:
+        if not article in user.articles:
             return "Not allowed to delete article.", 403
 
         db.session.delete(article)
@@ -312,7 +313,8 @@ def overview():
             articles = Article.query.all()
             org = True
         else:
-            articles = Article.query.filter_by(seller=session['user_id'])
+            user = User.query.get(session['user_id'])
+            articles = user.articles
             org = False
 
         return render_template(
@@ -327,11 +329,12 @@ def overview():
 def overview_qr():
     # pass all articles for currently logged in user to template
     if 'user_id' in session:
-        articles = Article.query.filter_by(seller=session['user_id'])
+        user = User.query.get(session['user_id'])
+        # articles = Article.query.filter_by(seller=session['user_id'])
 
         return render_template(
                 'overview_qr.html',
-                articles=articles,
+                articles=user.articles,
                 url_template=f"{config['APP']['URL']}/article/"
             )
     else:
@@ -484,7 +487,7 @@ def add_shopping_basket():
         shopping_basket.uuid = str(uuid.uuid4())
         shopping_basket.price = 0
         shopping_basket.sold = True
-        shopping_basket.seller = user.id
+        shopping_basket.seller = user
 
         db.session.add(shopping_basket)
         db.session.commit()
@@ -500,7 +503,7 @@ def get_registration_sheet():
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
 
-        articles = Article.query.filter_by(seller=session['user_id'])
+        articles = user.articles
 
         article_sum = 0
         for article in articles:
@@ -525,7 +528,7 @@ def get_sellers():
         all_users = User.query.all()
         seller_list = []
         for user in all_users:
-            articles = Article.query.filter_by(seller=user.id).all() # TODO(Better data model..)
+            articles = user.articles
             articles_overall = len(articles)
             articles_sold = 0
             for article in articles:
@@ -552,7 +555,7 @@ def get_sellers():
 def get_clearing(id):
     if ('organizer' in session) and (session['organizer'] == True):
         user = User.query.get(id)
-        articles = Article.query.filter_by(seller=user.id).all()
+        articles = user.articles
 
         articles_sold = []
         articles_unsold = []
@@ -609,6 +612,7 @@ def create_test_data():
     user.name = "testuser1"
     user.organizer = False
     user.activated = True
+    user.registration_done = False
     db.session.add(user)
 
     user2 = User()
@@ -618,6 +622,7 @@ def create_test_data():
     user2.name = "testuser2"
     user2.organizer = True
     user2.activated = True
+    user2.registration_done = False
     db.session.add(user2)
 
     db.session.commit()
@@ -625,7 +630,7 @@ def create_test_data():
     article = Article()
     article.uuid = str(uuid.uuid4())
     article.name = "Testname"
-    article.seller = user.id
+    article.seller = user
     article.clothing_size = ""
     article.price = 1330
     article.sold = False
@@ -634,7 +639,7 @@ def create_test_data():
     article2 = Article()
     article2.uuid = str(uuid.uuid4())
     article2.name = "Testname2"
-    article2.seller = user.id
+    article2.seller = user
     article2.clothing_size = "42"
     article2.price = 2450
     article2.sold = False
@@ -643,7 +648,7 @@ def create_test_data():
     article3 = Article()
     article3.uuid = str(uuid.uuid4())
     article3.name = "Testname3"
-    article3.seller = user.id
+    article3.seller = user2
     article3.clothing_size = "42"
     article3.price = 2450
     article3.sold = False
@@ -663,6 +668,9 @@ def create_test_data():
 if __name__ == '__main__':
     app.app_context().push()
     db.create_all()
+
+    # Remove before production
+    # create_test_data()
     
     app.jinja_env.filters['as_euro'] = as_euro
     app.jinja_env.filters['to_german'] = to_german
