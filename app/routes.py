@@ -376,13 +376,16 @@ def card(uuid):
 
         seller_margin = int(price_overall * 0.05)
         total_price = price_overall + seller_margin
+        total_price_rounded = math.ceil(total_price/10)*10
 
         return render_template(
                 'card.html',
                 card=card,
                 price_overall=price_overall,
                 seller_margin=seller_margin,
-                total_price=total_price
+                total_price=total_price,
+                total_price_rounded=total_price_rounded,
+                org=True
             )
     else:
         return redirect(url_for('login'))
@@ -415,13 +418,16 @@ def add_article_to_card(card_uuid, article_uuid):
 
         seller_margin = int(price_overall * 0.05)
         total_price = price_overall + seller_margin
+        total_price_rounded = math.ceil(total_price/10)*10
 
         return render_template(
                 'card.html',
                 card=card,
                 price_overall=price_overall,
                 seller_margin=seller_margin,
-                total_price=total_price
+                total_price=total_price,
+                total_price_rounded=total_price_rounded,
+                org=True
             )
     else:
         return redirect(url_for('login'))
@@ -455,13 +461,16 @@ def close_card(uuid):
 
         seller_margin = int(price_overall * 0.05)
         total_price = price_overall + seller_margin
+        total_price_rounded = math.ceil(total_price/10)*10
 
         return render_template(
                 'card.html',
                 card=card,
                 price_overall=price_overall,
                 seller_margin=seller_margin,
-                total_price=total_price
+                total_price=total_price,
+                total_price_rounded=total_price_rounded,
+                org=True
             )
     else:
         return redirect(url_for('login'))
@@ -612,7 +621,7 @@ def create_test_data():
     article.name = "Testname"
     article.seller = user.id
     article.clothing_size = ""
-    article.price = 1337
+    article.price = 1330
     article.sold = False
     db.session.add(article)
 
@@ -621,7 +630,7 @@ def create_test_data():
     article2.name = "Testname2"
     article2.seller = user.id
     article2.clothing_size = "42"
-    article2.price = 2456
+    article2.price = 2450
     article2.sold = False
     db.session.add(article2)
 
@@ -630,7 +639,7 @@ def create_test_data():
     article3.name = "Testname3"
     article3.seller = user.id
     article3.clothing_size = "42"
-    article3.price = 2456
+    article3.price = 2450
     article3.sold = False
     db.session.add(article3)
 

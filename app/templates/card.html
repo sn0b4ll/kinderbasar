@@ -69,8 +69,12 @@
                     <td>{{ seller_margin|as_euro }}</td>
                 </tr>
 				<tr>
-                    <td>Gesamt-Summe:</td>
+                    <td>Gesamt-Summe ungerundet:</td>
                     <td>{{ total_price|as_euro }}</td>
+                </tr>
+				<tr>
+                    <td>End-Summe:</td>
+                    <td>{{ total_price_rounded|as_euro }}</td>
                 </tr>
                 <tr>
                     <td>Aktiv:</td>
