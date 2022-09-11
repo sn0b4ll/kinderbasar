@@ -288,7 +288,7 @@ def remove_article(uuid):
         user = User.query.get(session['user_id'])
         article = Article.query.get(uuid)
 
-        if (not article in user.articles) or user.registration_done:
+        if (not article in user.articles) or user.registration_done or article.sold:
             return "Not allowed to delete article.", 403
 
         db.session.delete(article)

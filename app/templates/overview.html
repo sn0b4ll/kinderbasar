@@ -64,7 +64,7 @@
 					<td>{{ article.sold|to_german }}</td>
 					<td><a href="/article/{{ article.uuid }}" class="btn btn-info" role="button">Details</a></td>
 					<td>
-						{% if (article.seller == user) and (not user.registration_done) %}
+						{% if (article.seller == user) and (not user.registration_done) and (not article.sold) %}
 						<form action="/article/{{ article.uuid }}/remove" method="post">
 							<button type="submit" class="btn btn-info">Entfernen</button>
 						</form>
