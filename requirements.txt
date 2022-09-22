@@ -3,3 +3,4 @@ jinja2
 flask_sqlalchemy
 flask-qrcode
 argon2-cffi
+pdfkit

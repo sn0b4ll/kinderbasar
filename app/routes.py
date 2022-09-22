@@ -4,6 +4,7 @@ from http.client import OK
 import uuid
 import math
 import logging
+import pdfkit
 
 from configparser import ConfigParser
 from random import random
@@ -335,18 +336,27 @@ def overview():
     else:
         return redirect(url_for('login'))
 
+
 @app.route("/overview/qr", methods=["GET"])
 def overview_qr():
-    # pass all articles for currently logged in user to template
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
-        # articles = Article.query.filter_by(seller=session['user_id'])
-
-        return render_template(
+        
+        html = render_template(
                 'overview_qr.html',
                 articles=user.articles,
                 url_template=f"{config['APP']['URL']}/article/"
             )
+
+        options = {
+            'page-height': '297mm', 
+            'page-width': '210mm',
+        }
+
+        return Response(pdfkit.from_string(html, options=options),
+                       mimetype="application/pdf",
+                       headers={"Content-Disposition":
+                                    "attachment;filename=kinderbasar.pdf"})
     else:
         return redirect(url_for('login'))
 

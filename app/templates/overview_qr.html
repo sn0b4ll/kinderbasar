@@ -6,7 +6,7 @@
         height: 100%;
         margin: 0;
         padding: 0;
-        /* background-color: #FAFAFA;*/
+        background-color: #FAFAFA;
         font: 12pt "Tahoma";
     }
     * {
@@ -14,10 +14,10 @@
         -moz-box-sizing: border-box;
     }
     .page {
-        width: 210mm;
-        min-height: 297mm;
-        padding: 20mm;
-        margin: 10mm auto;
+        /*width: 500mm;*/
+        /*min-height: 297mm;*/
+        /*padding: 20mm;*/
+        /*margin: 10mm auto;*/
         border: 1px #D3D3D3 solid;
         border-radius: 5px;
         background: white;
@@ -26,8 +26,9 @@
     .subpage {
         padding: 0.5cm;
         /*border: 5px red solid;*/
-        height: 257mm;
-        /* outline: 2cm #FFEAEA solid;*/
+        width: 210mm;
+        height: 375mm;        
+        /*outline: 2cm #FFEAEA solid;*/
     }
     
     @page {
@@ -63,9 +64,9 @@
             {{ article.clothing_size }}<br>
             {% endif %}
             {{ article.price|as_euro }}<br>
-            <img src="{{ qrcode(url_template + article.uuid, error_correction='H', box_size=3) }}">
+            <img src="{{ qrcode(url_template + article.uuid, error_correction='H', box_size=4) }}">
         </div>
-    {% if loop.index is divisibleby 12 %}
+    {% if loop.index is divisibleby 15 %}
     </div>
     </div>
 </div>
