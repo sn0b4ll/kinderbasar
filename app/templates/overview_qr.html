@@ -18,16 +18,17 @@
         /*min-height: 297mm;*/
         /*padding: 20mm;*/
         /*margin: 10mm auto;*/
-        border: 1px #D3D3D3 solid;
-        border-radius: 5px;
+        /*border: 1px #D3D3D3 solid;*/
+        /*border-radius: 5px;*/
         background: white;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
     .subpage {
-        padding: 0.5cm;
+        /*padding: 0.5cm;*/
         /*border: 5px red solid;*/
-        width: 210mm;
-        height: 375mm;        
+        /*width: 210mm;*/
+        height: 375mm;
+        page-break-after: always;        
         /*outline: 2cm #FFEAEA solid;*/
     }
     
@@ -37,8 +38,8 @@
     }
     @media print {
         html, body {
-            width: 210mm;
-            height: 297mm;        
+            /*width: 210mm;*/
+            /*height: 297mm;*/        
         }
         .page {
             margin: 0;
@@ -58,15 +59,17 @@
     <div class="row">
     {% for article in articles %}
         <div class="col-4 mt-2 border border-dark border-2 pb-2">
-            {{ article.name }} <br> 
+            {{ article.name|truncate(35) }} <br> 
             <font style="color:red">{{ article.seller.id }}</font> <br>
             {% if article.clothing_size != "" %}
             {{ article.clothing_size }}<br>
+            {% else %}
+            <br>
             {% endif %}
             {{ article.price|as_euro }}<br>
             <img src="{{ qrcode(url_template + article.uuid, error_correction='H', box_size=4) }}">
         </div>
-    {% if loop.index is divisibleby 15 %}
+    {% if loop.index is divisibleby 12 %}
     </div>
     </div>
 </div>
