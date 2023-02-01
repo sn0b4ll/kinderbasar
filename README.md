@@ -15,3 +15,15 @@ Aber ich glaube, dass man das sogar einfacher hinbekommen könnte, ohne extra La
 
 Zur Code-Generierung hab ich noch keine zu gute Idee - eine extra Webseite dafür scheint sehr umständlich. Aber ist vlt. die einzige Möglichkeit. Eine verkaufende Person könnte da einen Namen für den Artikel, den Preis und ich würde sagen eine "Verkäufer ID" eingeben können, die ihr den Leuten ja vorher geben könnt. Vorteil mit der ID ist, dass man dann keinerlei personenbezogene Daten im System hat und sich dann keine Gedanken um Datenschutz etc machen muss. Auf jeden Fall gibt der Verkäufer die Daten ein, drück auf abschicken und bekommt einen QR-Code mit dem Artikel-Namen für einfache Zuordnung zurück, der dann ausgedruckt werden kann. An der Kasse könntet ihr den QR-Code Scannen, welcher zu einer kleinen Webanwendung führt. Dort könnte man dann nochmal den Artikel, Verkäufer-ID und den Preis vorbefüllt aber veränderbar anzeigen. Darunter wäre ein Button mit "Bezahlt" (oder Verkauft oder so) den ihr am Handy drücken könnt, wenn ihr das Geld bekommen habt. Im Hintergrund würde der Artikel dann mit Preis als Verkauf markiert werden und ich kann ich danach die Daten exportieren, damit ihr jeweils Ausrechnen könnt, wie vie Umsatz jeder Verkäufer gemacht hat. Nur so als Idee.
 hört sich auch gut an wenn ich mir das richtig vorstelle 😁👍🏻
+
+
+# Rebuild and start application
+- Remove old containers
+`docker compose stop`
+`docker compose rm`
+
+- Rebuild containers
+`docker compose build`
+
+- Start containers
+`docker compose up --force-recreate --remove-orphans`

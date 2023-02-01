@@ -4,12 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class Article(db.Model):
-    uuid = db.Column(db.String, primary_key=True)
-    name = db.Column(db.String)
+    uuid = db.Column(db.String(36), primary_key=True)
+    name = db.Column(db.String(100))
     price = db.Column(db.Integer)
     sold = db.Column(db.Boolean)
-    clothing_size = db.Column(db.String)
-    card_uuid = db.Column(db.String, db.ForeignKey('card.uuid'))
+    clothing_size = db.Column(db.String(20))
+    card_uuid = db.Column(db.String(36), db.ForeignKey('card.uuid'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
@@ -17,10 +17,10 @@ class Article(db.Model):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    password = db.Column(db.String)
-    salt = db.Column(db.String)
-    email = db.Column(db.String)
-    activation_code = db.Column(db.String)
+    password = db.Column(db.String(100))
+    salt = db.Column(db.String(36))
+    email = db.Column(db.String(50))
+    activation_code = db.Column(db.String(36))
     activated = db.Column(db.Boolean)
     organizer = db.Column(db.Boolean)
     registration_done = db.Column(db.Boolean) # Did the user confirm that the entered all articles
@@ -28,7 +28,7 @@ class User(db.Model):
     articles = db.relationship('Article', backref='seller', lazy=True) # Iterator for articles owned by the user
 
 class Card(db.Model):
-    uuid = db.Column(db.String, primary_key=True)
+    uuid = db.Column(db.String(36), primary_key=True)
     articles = db.relationship('Article', backref='card', lazy=True)
     active = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

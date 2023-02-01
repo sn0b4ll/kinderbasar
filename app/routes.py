@@ -30,7 +30,8 @@ config.read('./conf/env.conf')
 
 app = Flask(__name__)
 app.secret_key = config.get('APP', 'secret_key')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../db/test.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../db/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://kinderbasar:passpass@db/kinderbasar'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
@@ -702,10 +703,12 @@ def create_test_data():
 
 if __name__ == '__main__':
     app.app_context().push()
+
+    # Create the database
     db.create_all()
 
     # Remove before production
-    # create_test_data()
+    create_test_data()
     
     app.jinja_env.filters['as_euro'] = as_euro
     app.jinja_env.filters['to_german'] = to_german

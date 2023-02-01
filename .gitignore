@@ -132,4 +132,5 @@ dmypy.json
 .vscode/settings.json
 conf/env.conf
 db/test.db
+db/mysql/
 logs/kinderbasar.log

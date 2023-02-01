@@ -3,7 +3,9 @@ FROM python:3
 RUN mkdir /data
 WORKDIR /data/
 
-RUN /bin/sh -c apt-get update && apt-get install wkhtmltopdf -y
+RUN apt-get update
+RUN apt-get -y upgrade
+RUN apt-get -y install wkhtmltopdf default-libmysqlclient-dev
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
