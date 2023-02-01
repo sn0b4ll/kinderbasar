@@ -709,7 +709,7 @@ if __name__ == '__main__':
 
     # Remove before production
     create_test_data()
-    
+
     app.jinja_env.filters['as_euro'] = as_euro
     app.jinja_env.filters['to_german'] = to_german
     app.run(debug=config.getboolean('APP', 'DEBUG'), host='0.0.0.0')

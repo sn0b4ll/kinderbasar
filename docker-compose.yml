@@ -27,6 +27,7 @@ services:
     build: .
     volumes:
       #- ./db:/data/db # No longer needed with mysql
+      - ./app:/data/app
       - ./conf:/data/conf
       - ./logs:/data/logs
     ports:
