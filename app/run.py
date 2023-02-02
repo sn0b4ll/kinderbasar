@@ -1,24 +1,19 @@
 """This is the main module holding all the routes and app logic."""
 
-from http.client import OK
 import uuid
 import math
 import logging
-import pdfkit
 
 from configparser import ConfigParser
-from random import random
-from time import sleep
 
-from flask import Flask
-from flask import abort
+import pdfkit
+
+from flask import Flask, Response
 from flask import render_template
-from flask import request
-from flask import redirect, url_for, Response
+from flask import redirect, url_for
 from flask import session
 
 from argon2 import PasswordHasher
-from argon2.exceptions import VerifyMismatchError
 
 from flask_qrcode import QRcode
 
@@ -27,6 +22,7 @@ from models import db
 from routes.register import register_process
 from routes.session import session_handling
 from routes.article import article_handling
+from routes.card import card_handling
 
 # Init config parser
 config = ConfigParser()
@@ -42,6 +38,7 @@ db.init_app(app)
 app.register_blueprint(register_process)
 app.register_blueprint(session_handling)
 app.register_blueprint(article_handling)
+app.register_blueprint(card_handling)
 
 from models import  Article, User, Card
 
@@ -117,144 +114,6 @@ def overview_qr():
     else:
         return redirect(url_for('login'))
 
-def _get_card_uuid_for_user():
-        user = User.query.get(session['user_id'])
-        for card in user.cards:
-            if card.active:
-                return card.uuid
-        
-        # No active card, create one
-        card = Card()
-        card.uuid = str(uuid.uuid4())
-        card.articles = []
-        card.active = True
-        card.user_id = user.id
-        db.session.add(card)
-
-        db.session.commit()
-
-        return card.uuid
-
-@app.route("/card/<string:uuid>/", methods=["GET"])
-def card(uuid):
-    '''Display a card. '''
-    if ('organizer' in session) and (session['organizer'] == True) :
-        if uuid == "active":
-            uuid = _get_card_uuid_for_user()
-
-        card = Card.query.get(uuid)
-
-        if card is None:
-            return "Card not found."
-
-        if card.user_id != session['user_id']:
-            return "Wrong Session!"
-
-        price_overall = 0
-        for article in card.articles:
-            price_overall += int(article.price)
-
-        seller_margin = int(price_overall * 0.05)
-        total_price = price_overall + seller_margin
-        total_price_rounded = math.ceil(total_price/10)*10
-
-        return render_template(
-                'card.html',
-                card=card,
-                price_overall=price_overall,
-                seller_margin=seller_margin,
-                total_price=total_price,
-                total_price_rounded=total_price_rounded,
-                org=True
-            )
-    else:
-        return redirect(url_for('login'))
-
-@app.route("/card/<string:card_uuid>/add/<string:article_uuid>/", methods=["POST"])
-def add_article_to_card(card_uuid, article_uuid):
-    if ('organizer' in session) and (session['organizer'] == True) :
-        if card_uuid == "active":
-            uuid = _get_card_uuid_for_user()
-
-        card = Card.query.get(uuid)
-
-        if card is None:
-            return "Card not found."
-
-        if card.user_id != session['user_id']:
-            return "Wrong Session!"
-
-        article = Article.query.get(article_uuid)
-
-        if article is None:
-            return "Article UUID wrong!"
-
-        card.articles.append(article)
-        db.session.commit() 
-
-        price_overall = 0
-        for article in card.articles:
-            price_overall += int(article.price)
-
-        seller_margin = int(price_overall * 0.05)
-        total_price = price_overall + seller_margin
-        total_price_rounded = math.ceil(total_price/10)*10
-
-        return render_template(
-                'card.html',
-                card=card,
-                price_overall=price_overall,
-                seller_margin=seller_margin,
-                total_price=total_price,
-                total_price_rounded=total_price_rounded,
-                org=True
-            )
-    else:
-        return redirect(url_for('login'))
-
-@app.route("/card/<string:uuid>/close/", methods=["POST"])
-def close_card(uuid):
-    if ('organizer' in session) and (session['organizer'] == True) :
-        if uuid == "active":
-            uuid = _get_card_uuid_for_user()
-        
-        card = Card.query.get(uuid)
-        
-        if card is None:
-            return "Card not found."
-
-        if card.user_id != session['user_id']:
-            return "Wrong Session!"
-
-        card.active = False
-
-        for article in card.articles:
-            article.sold = True
-
-        db.session.commit()
-
-        logging.info(f"The card {uuid} was closed.")
-
-        price_overall = 0
-        for article in card.articles:
-            price_overall += int(article.price)
-
-        seller_margin = int(price_overall * 0.05)
-        total_price = price_overall + seller_margin
-        total_price_rounded = math.ceil(total_price/10)*10
-
-        return render_template(
-                'card.html',
-                card=card,
-                price_overall=price_overall,
-                seller_margin=seller_margin,
-                total_price=total_price,
-                total_price_rounded=total_price_rounded,
-                org=True
-            )
-    else:
-        return redirect(url_for('login'))
-
 @app.route("/shopping_basket/add", methods=["GET"])
 def add_shopping_basket():
     if 'user_id' in session:
@@ -323,7 +182,7 @@ def get_sellers():
                     articles_sold
                 )
             )
-        
+
         return render_template(
             'sellers.html',
             seller_list=seller_list,
@@ -371,11 +230,12 @@ def registration_done():
 
 
 def as_euro(price):
-    if (type(price) == int):
+    '''Display an int as euro.'''
+    if type(price) == int:
         price = str(price)
-    elif (type(price) == float):
+    elif type(price) == float:
         price = str(math.ceil(price/10)*10)
-    
+
     euro = price[:-2]
     if euro == "": euro = "0"
     cent = price[-2:]
