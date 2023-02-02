@@ -12,4 +12,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # COPY ./app ./app
 
-CMD [ "python", "-u", "app/routes.py" ]
+CMD [ "python", "-u", "app/run.py" ]
