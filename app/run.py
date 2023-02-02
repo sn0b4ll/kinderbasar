@@ -1,11 +1,12 @@
 """This is the main module holding all the routes and app logic."""
+# pylint: disable=no-member
 
 import math
 import logging
 
 from configparser import ConfigParser
 
-import pdfkit
+import pdfkit #pylint: disable=import-error
 
 from flask import Flask, Response
 from flask import render_template
@@ -20,7 +21,7 @@ from models import db
 
 from routes.register import register_process
 from routes.session import session_handling
-from routes.article import article_handling
+from routes.article import article_handling #pylint: disable=no-name-in-module
 from routes.card import card_handling
 
 # Init config parser
@@ -87,8 +88,7 @@ def overview():
                 articles=articles,
                 org=org
             )
-    else:
-        return redirect(url_for('login'))
+    return redirect(url_for('login'))
 
 
 @app.route("/overview/qr", methods=["GET"])
@@ -96,7 +96,7 @@ def overview_qr():
     '''Create the print overview for QR Codes.'''
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
-        
+
         html = render_template(
                 'overview_qr.html',
                 articles=user.articles,
@@ -112,8 +112,8 @@ def overview_qr():
                        mimetype="application/pdf",
                        headers={"Content-Disposition":
                                     "attachment;filename=kinderbasar.pdf"})
-    else:
-        return redirect(url_for('login'))
+
+    return redirect(url_for('login'))
 
 @app.route("/registration_sheet/", methods=["GET"])
 def get_registration_sheet():
@@ -136,8 +136,8 @@ def get_registration_sheet():
             article_sum=article_sum,
             registration_fee=registration_fee
         )
-    else:
-        return redirect(url_for('overview'))
+    
+    return redirect(url_for('overview'))
 
 @app.route("/sellers/", methods=["GET"])
 def get_sellers():
@@ -166,14 +166,14 @@ def get_sellers():
             seller_list=seller_list,
             org=True
         )
-    else:
-        return redirect(url_for('overview'))
+    
+    return redirect(url_for('overview'))
 
-@app.route("/clearing/<int:id>/", methods=["GET"])
-def get_clearing(id):
+@app.route("/clearing/<int:user_id>/", methods=["GET"])
+def get_clearing(user_id):
     '''Get the final clearing document for a user after the basar ended.'''
     if ('organizer' in session) and (session['organizer'] == True):
-        user = User.query.get(id)
+        user = User.query.get(user_id)
         articles = user.articles
 
         articles_sold = []
@@ -181,7 +181,7 @@ def get_clearing(id):
 
         sold_sum = 0
         for article in articles:
-            if article.sold == True:
+            if article.sold is True:
                 sold_sum += article.price
                 articles_sold.append(article)
             else:
@@ -194,8 +194,8 @@ def get_clearing(id):
             articles_unsold=articles_unsold,
             sold_sum=sold_sum
         )
-    else:
-        return redirect(url_for('overview'))
+    
+    return redirect(url_for('overview'))
 
 @app.route("/user/registration_done", methods=["POST"])
 def registration_done():
@@ -211,13 +211,14 @@ def registration_done():
 
 def as_euro(price):
     '''Display an int as euro.'''
-    if type(price) == int:
+    if isinstance(price, int):
         price = str(price)
-    elif type(price) == float:
+    elif isinstance(price, float):
         price = str(math.ceil(price/10)*10)
 
     euro = price[:-2]
-    if euro == "": euro = "0"
+    if euro == "":
+        euro = "0"
     cent = price[-2:]
     price = f'{euro},{cent}€'
     return price
