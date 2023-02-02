@@ -129,3 +129,28 @@ def print_qr(uuid):
         article=article
     )
 '''
+
+@article_handling.route("/shopping_basket/add", methods=["GET"])
+def add_shopping_basket():
+    '''Add a shoping basket as an article.'''
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+
+        if user.registration_done:
+            return "Registration already done.", 403
+
+        shopping_basket = Article()
+        shopping_basket.name = "Einkaufskorb"
+        shopping_basket.uuid = str(uuid.uuid4())
+        shopping_basket.price = 0
+        shopping_basket.sold = True
+        shopping_basket.seller = user
+
+        db.session.add(shopping_basket)
+        db.session.commit()
+
+        logging.info(f"The shopping basket {shopping_basket.uuid} was created.")
+
+        return redirect(url_for('overview'))
+    else:
+        return redirect(url_for('login'))

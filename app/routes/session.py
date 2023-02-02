@@ -60,8 +60,9 @@ def login():
                 'login.html',
                 title="Login"
             )
-        except:
+        except Exception as exception: # pylint: disable=broad-except
             # Something else went wrong, but better be sure not to skip this check
+            logging.warning(f"Something went wrong with the login:{exception}.")
             return render_template(
                 'login.html',
                 title="Login"

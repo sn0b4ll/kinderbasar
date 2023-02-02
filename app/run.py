@@ -1,6 +1,5 @@
 """This is the main module holding all the routes and app logic."""
 
-import uuid
 import math
 import logging
 
@@ -40,7 +39,7 @@ app.register_blueprint(session_handling)
 app.register_blueprint(article_handling)
 app.register_blueprint(card_handling)
 
-from models import  Article, User, Card
+from models import  Article, User
 
 from tests.data import create_test_data
 
@@ -72,6 +71,7 @@ def home():
 
 @app.route("/overview", methods=["GET"])
 def overview():
+    '''Create an overview of articles for the user.'''
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
         if ('organizer' in session) and (session['organizer'] == True):
@@ -93,6 +93,7 @@ def overview():
 
 @app.route("/overview/qr", methods=["GET"])
 def overview_qr():
+    '''Create the print overview for QR Codes.'''
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
         
@@ -114,32 +115,9 @@ def overview_qr():
     else:
         return redirect(url_for('login'))
 
-@app.route("/shopping_basket/add", methods=["GET"])
-def add_shopping_basket():
-    if 'user_id' in session:
-        user = User.query.get(session['user_id'])
-
-        if user.registration_done:
-            return "Registration already done.", 403
-
-        shopping_basket = Article()
-        shopping_basket.name = "Einkaufskorb"
-        shopping_basket.uuid = str(uuid.uuid4())
-        shopping_basket.price = 0
-        shopping_basket.sold = True
-        shopping_basket.seller = user
-
-        db.session.add(shopping_basket)
-        db.session.commit()
-
-        logging.info(f"The shopping basket {shopping_basket.uuid} was created.")
-
-        return redirect(url_for('overview'))
-    else:
-        return redirect(url_for('login'))
-
 @app.route("/registration_sheet/", methods=["GET"])
 def get_registration_sheet():
+    '''Create the registration sheet for the article onsite delivery.'''
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
 
@@ -193,6 +171,7 @@ def get_sellers():
 
 @app.route("/clearing/<int:id>/", methods=["GET"])
 def get_clearing(id):
+    '''Get the final clearing document for a user after the basar ended.'''
     if ('organizer' in session) and (session['organizer'] == True):
         user = User.query.get(id)
         articles = user.articles
@@ -220,6 +199,7 @@ def get_clearing(id):
 
 @app.route("/user/registration_done", methods=["POST"])
 def registration_done():
+    '''If the registration for onsite article drop is done, reflect that to the db.'''
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
         user.registration_done = True

@@ -48,8 +48,8 @@ def register():
             break
 
     if existing_user:
-        # If the user exists but the E-Mail is not actived yet, it should be allowed to overwrite the params
-        # of the existing User
+        # If the user exists but the E-Mail is not actived yet, it should be allowed to overwrite
+        # the params of the existing User
         if tmp_user.activated:
             return "User already registered" # TODO (Prevent enum)
         else:
@@ -96,8 +96,8 @@ Ihr Kinderbasar Elsendorf Team
         s.login(config['EMAIL']['username'], config['EMAIL']['password'])
         s.send_message(msg)
         s.quit()
-    except Exception as e:
-        logging.error(e)
+    except Exception as exception: # pylint: disable=broad-except
+        logging.error(exception)
         return "Something went wrong, please wait some minutes and retry."
 
     message = "Erfolg!"
@@ -108,13 +108,13 @@ Ihr Kinderbasar Elsendorf Team
         message=message
     )
 
-@register_process.route("/activate/<int:id>/<string:uuid>")
-def activate(id, uuid):
+@register_process.route("/activate/<int:user_id>/<string:activation_uuid>")
+def activate(user_id, activation_uuid):
     '''Receive the activation uuid for an account id.'''
     sleep(random()) # Let's slow bots down..
-    user = User.query.get(id)
+    user = User.query.get(user_id)
     if user is not None:
-        if user.activation_code == uuid:
+        if user.activation_code == activation_uuid:
             user.activated = True
             db.session.commit()
             logging.info(f"User {user.id}/{user.email} was activated.")
