@@ -1,13 +1,16 @@
-from models import db
+'''This module is responsible for creating test-data.'''
+# pylint: disable=no-member
 
 import uuid
 
+from models import db
 from models import  Article, User, Card
 
 from argon2 import PasswordHasher
 ph = PasswordHasher()
 
 def create_test_data():
+    '''Creates test-data.'''
     # Test-Data
     print("Creating test data")
     user = User()
@@ -66,6 +69,5 @@ def create_test_data():
     db.session.add(card)
 
     user2.cards = [card]
-    
 
     db.session.commit()
