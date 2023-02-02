@@ -25,6 +25,7 @@ from flask_qrcode import QRcode
 from models import db
 
 from routes.register import register_process
+from routes.session import session_handling
 
 # Init config parser
 config = ConfigParser()
@@ -38,6 +39,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
 app.register_blueprint(register_process)
+app.register_blueprint(session_handling)
 
 from models import  Article, User, Card
 
@@ -68,66 +70,6 @@ def home():
             return redirect(url_for('login'))    
     else:
         return redirect(url_for('login'))
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == 'POST':
-        sleep(random()) # Let's slow bots down..
-        email = request.form['username']
-        password = request.form['password']
-
-        # Check if user exists
-        user = User.query.filter_by(email=email).first()
-        if user is None:
-            # and if not, return to the login page
-            return render_template(
-                'login.html',
-                title="Login"
-            )
-
-        pass_hash = user.password
-        salt = user.salt
-
-        try:
-            ph.verify(pass_hash, password+salt)
-        except VerifyMismatchError:
-            # Verify failed
-            logging.warning(f"Failed login attemp for user {user.email}.")
-            return render_template(
-                'login.html',
-                title="Login"
-            )
-        except:
-            # Something else went wrong, but better be sure not to skip this check
-            return render_template(
-                'login.html',
-                title="Login"
-            )
-
-        if not user.activated: # Eventuell Warnung anzeigen
-            return render_template(
-                'login.html',
-                title="Login"
-            )
-
-        # All checks passed :)
-        session['user_id'] = user.id
-        session['organizer'] = user.organizer
-        logging.info(f"User {user.id}/{user.email} logged in successfully.")
-        return redirect(url_for('overview'))
-    else:
-        return render_template(
-            'login.html',
-            title="Login"
-        )
-
-@app.route("/logout")
-def logout():
-    if 'user_id' in session:
-        logging.info(f"User {session['user_id']} logged out.")
-        session.pop('user_id')
-        session.pop('organizer')
-    return redirect(url_for('login'))
 
 @app.route("/article/add", methods=["GET", "POST"])
 def add_article():

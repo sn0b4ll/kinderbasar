@@ -1,0 +1,94 @@
+'''Serves pages linked to the sesion handling.'''
+# pylint: disable=no-member,logging-fstring-interpolation
+
+import logging
+
+from random import random
+from time import sleep
+from configparser import ConfigParser
+
+from flask import Blueprint
+from flask import render_template, redirect, url_for
+from flask import request, session
+
+from models import User
+
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
+ph = PasswordHasher()
+
+# Init config parser
+config = ConfigParser()
+config.read('./conf/env.conf') # TODO(Do only once -> own module)
+
+# Init logging
+logging.basicConfig( # TODO(Do only once -> own module)
+    filename='./logs/kinderbasar.log', 
+    format='%(asctime)s:%(levelname)s:%(message)s', 
+    level=logging.DEBUG
+)
+
+session_handling = Blueprint('session_handling', __name__, template_folder='templates')
+
+
+@session_handling.route("/login", methods=["GET", "POST"])
+def login():
+    '''Serves the login page and handles the login-request.'''
+    if request.method == 'POST':
+        sleep(random()) # Let's slow bots down..
+        email = request.form['username']
+        password = request.form['password']
+
+        # Check if user exists
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            # and if not, return to the login page
+            return render_template(
+                'login.html',
+                title="Login"
+            )
+
+        pass_hash = user.password
+        salt = user.salt
+
+        try:
+            ph.verify(pass_hash, password+salt)
+        except VerifyMismatchError:
+            # Verify failed
+            logging.warning(f"Failed login attemp for user {user.email}.")
+            return render_template(
+                'login.html',
+                title="Login"
+            )
+        except:
+            # Something else went wrong, but better be sure not to skip this check
+            return render_template(
+                'login.html',
+                title="Login"
+            )
+
+        if not user.activated: # Eventuell Warnung anzeigen
+            return render_template(
+                'login.html',
+                title="Login"
+            )
+
+        # All checks passed :)
+        session['user_id'] = user.id
+        session['organizer'] = user.organizer
+        logging.info(f"User {user.id}/{user.email} logged in successfully.")
+        return redirect(url_for('overview'))
+    else:
+        return render_template(
+            'login.html',
+            title="Login"
+        )
+
+@session_handling.route("/logout")
+def logout():
+    '''Handles logout requests.'''
+    if 'user_id' in session:
+        logging.info(f"User {session['user_id']} logged out.")
+        session.pop('user_id')
+        session.pop('organizer')
+    return redirect(url_for('session_handling.login'))
