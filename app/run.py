@@ -122,20 +122,25 @@ def overview_qr():
 def get_registration_sheet():
     '''Create the registration sheet for the article onsite delivery.'''
     if 'user_id' in session:
-        user = User.query.get(session['user_id'])
+        user = db.session.get(User, session['user_id'])
 
         articles = user.articles
 
+        # Calculate the sums
         article_sum = 0
         for article in articles:
             article_sum += article.price
 
         registration_fee = article_sum * 0.05
 
+        # Get number of baskets
+        basket_count = len(user.shoppingbaskets)
+
         return render_template(
             'registration_sheet.html',
             user=user,
             articles=articles,
+            basket_count=basket_count,
             article_sum=article_sum,
             registration_fee=registration_fee
         )
