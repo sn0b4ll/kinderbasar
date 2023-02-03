@@ -60,13 +60,13 @@
     {% for article in articles %}
         <div class="col-4 mt-2 border border-dark border-2 pb-2">
             {{ article.name|truncate(35) }} <br> 
-            <font style="color:red">{{ article.seller.id }}</font> <br>
+            <font style="color:red; text-decoration: underline;">Verkäufer: {{ article.seller.id }}</font> <br>
             {% if article.clothing_size != "" %}
-            {{ article.clothing_size }}<br>
+            Größe: {{ article.clothing_size }}<br>
             {% else %}
             <br>
             {% endif %}
-            {{ article.price|as_euro }}<br>
+            Preis: {{ article.price|as_euro }}<br>
             <img src="{{ qrcode(url_template + article.uuid, error_correction='H', box_size=4) }}">
         </div>
     {% if loop.index is divisibleby 12 %}
@@ -83,11 +83,16 @@
     
     {% endfor %}
     </div>
-    <div class="row">
-		<div class="col">
-			<button class="btn btn-primary btn-block mt-3 mb-3 d-print-none" onclick="window.print();return false;">Drucken</button>
-		</div>
-	</div>
+    </div>
 </div>
 
-{% include 'footer.html' %}
+<div class="container mt-2 page">
+    <div class="subpage">
+        <div class="row">
+        {% for basket in baskets %}
+        <div class="col-4 mt-2 border border-dark border-2 pb-2">
+            <font style="text-align: center; font-size: 4cm;"> {{ basket.owner.id }}</font>
+        </div>
+        {% endfor %}
+    </div>
+</div>

@@ -41,7 +41,7 @@ app.register_blueprint(session_handling)
 app.register_blueprint(article_handling)
 app.register_blueprint(card_handling)
 
-from models import  Article, User
+from models import  Article, User, Shoppingbasket
 
 from tests.data import create_test_data
 
@@ -64,29 +64,30 @@ QRcode(app)
 def home():
     """ Returns the default page - either overview or login, based on the status of the session."""
     if 'user_id' in session:
-        if User.query.get(session['user_id']) is not None:
+        if db.session.get(User, session['user_id']) is not None:
             return redirect(url_for('overview'))
-        else:
-            return redirect(url_for('login'))    
-    else:
-        return redirect(url_for('login'))
+        return redirect(url_for('session_handling.login'))
+    return redirect(url_for('session_handling.login'))
 
 @app.route("/overview", methods=["GET"])
 def overview():
     '''Create an overview of articles for the user.'''
     if 'user_id' in session:
-        user = User.query.get(session['user_id'])
-        if ('organizer' in session) and (session['organizer'] == True):
-            articles = Article.query.all()
+        user = db.session.get(User, session['user_id'])
+        if ('organizer' in session) and (session['organizer'] is True):
+            articles = db.session.query(Article).all()
+            shoppingbaskets = db.session.query(Shoppingbasket).all()
             org = True
         else:
             articles = user.articles
+            shoppingbaskets = user.shoppingbaskets
             org = False
 
         return render_template(
                 'overview.html',
                 user=user,
                 articles=articles,
+                shoppingbaskets=shoppingbaskets,
                 org=org
             )
     return redirect(url_for('login'))
@@ -96,16 +97,17 @@ def overview():
 def overview_qr():
     '''Create the print overview for QR Codes.'''
     if 'user_id' in session:
-        user = User.query.get(session['user_id'])
+        user = db.session.get(User, session['user_id'])
 
         html = render_template(
                 'overview_qr.html',
                 articles=user.articles,
+                baskets=user.shoppingbaskets,
                 url_template=f"{config['APP']['URL']}/article/"
             )
 
         options = {
-            'page-height': '297mm', 
+            'page-height': '297mm',
             'page-width': '210mm',
         }
 
@@ -137,7 +139,7 @@ def get_registration_sheet():
             article_sum=article_sum,
             registration_fee=registration_fee
         )
-    
+
     return redirect(url_for('overview'))
 
 @app.route("/sellers/", methods=["GET"])
@@ -167,7 +169,7 @@ def get_sellers():
             seller_list=seller_list,
             org=True
         )
-    
+
     return redirect(url_for('overview'))
 
 @app.route("/clearing/<int:user_id>/", methods=["GET"])
@@ -195,7 +197,7 @@ def get_clearing(user_id):
             articles_unsold=articles_unsold,
             sold_sum=sold_sum
         )
-    
+
     return redirect(url_for('overview'))
 
 @app.route("/user/registration_done", methods=["POST"])

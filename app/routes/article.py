@@ -11,7 +11,7 @@ from flask import render_template, redirect, url_for, abort
 from flask import request, session
 
 from models import db
-from models import Article, User
+from models import Article, User, Shoppingbasket
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
@@ -130,7 +130,7 @@ def print_qr(uuid):
     )
 '''
 
-@article_handling.route("/shopping_basket/add", methods=["GET"])
+@article_handling.route("/shoppingbasket/add", methods=["GET"])
 def add_shopping_basket():
     '''Add a shoping basket as an article.'''
     if 'user_id' in session:
@@ -139,18 +139,33 @@ def add_shopping_basket():
         if user.registration_done:
             return "Registration already done.", 403
 
-        shopping_basket = Article()
-        shopping_basket.name = "Einkaufskorb"
-        shopping_basket.uuid = str(uuid.uuid4())
-        shopping_basket.price = 0
-        shopping_basket.sold = True
-        shopping_basket.seller = user
+        shopping_basket = Shoppingbasket()
+        shopping_basket.owner = user
 
         db.session.add(shopping_basket)
         db.session.commit()
 
-        logging.info(f"The shopping basket {shopping_basket.uuid} was created.")
+        logging.info(f"The shopping basket {shopping_basket.id} was created.")
 
         return redirect(url_for('overview'))
     else:
         return redirect(url_for('login'))
+
+@article_handling.route("/shoppingbasket/<string:basket_id>/remove", methods=["POST"])
+def remove_basket(basket_id):
+    if 'user_id' in session:
+        if basket_id is None:
+            return abort(Response('Basket ID missing.'))
+
+        user = db.session.get(User, session['user_id'])
+        shoppingbasket = db.session.get(Shoppingbasket, basket_id)
+
+        if (not shoppingbasket in user.shoppingbaskets) or user.registration_done:
+            return "Not allowed to delete basket.", 403
+
+        db.session.delete(shoppingbasket)
+        db.session.commit()
+
+        logging.info(f"Basket with ID {basket_id} was removed.")
+
+        return redirect(url_for('overview'))
