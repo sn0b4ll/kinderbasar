@@ -31,7 +31,8 @@ config.read('./conf/env.conf')
 app = Flask(__name__)
 app.secret_key = config.get('APP', 'secret_key')
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../db/test.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://kinderbasar:passpass@db/kinderbasar'
+app.config['SQLALCHEMY_DATABASE_URI'] = \
+    f"mysql://{config['DB']['user']}:{config['DB']['password']}@db/{config['DB']['database']}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
