@@ -32,6 +32,7 @@ class User(db.Model):
     activation_code = db.Column(db.String(36))
     activated = db.Column(db.Boolean)
     organizer = db.Column(db.Boolean)
+    checkin_done = db.Column(db.Boolean)
 
     # Did the user confirm that the entered all articles
     registration_done = db.Column(db.Boolean) 

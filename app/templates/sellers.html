@@ -35,7 +35,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col">
-			<h1>Artikel übersicht</h1>
+			<h1>Verkäufer-Übersicht</h1>
 		</div>
 	</div>
 	<div class="row">
@@ -45,6 +45,7 @@
 					<th scope="col">Verkäufer</th>
 					<th scope="col">Anzahl Artikel</th>
 					<th scope="col">Anzahl Artikel Verkauft</th>
+					<th scope="col">Checkin</th>
 					<th scope="col">Abrechnung drucken</th>
 				</tr>
 				{% for seller in seller_list -%}
@@ -53,10 +54,33 @@
 					<td>{{ seller[1] }}</td>
 					<td>{{ seller[2] }}</td>
 					<td>
+						{% if seller[3] %}
+						Eingecheckt
+						{% else %}
+						<a href="/org/checkin/{{ seller[0].id }}/" class="btn btn-info" role="button">Checkin</a>
+						{% endif %}
+					</td>
+					<td>
                         <a href="/clearing/{{ seller[0].id }}/" class="btn btn-info" role="button">Abrechnung anzeigen</a>
                     </td>
 				</tr>
 				{% endfor %}
+			</table> 
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">Verkäufer gesamt</th>
+					<td>{{ num_sellers }}</td>
+				</tr>
+				<tr>
+					<th scope="col">Verkäufer eingecheckt</th>
+					<td>{{ num_already_checkedin }}</td>
+				</tr>
 			</table> 
 		</div>
 	</div>

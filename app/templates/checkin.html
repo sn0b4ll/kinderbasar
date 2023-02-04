@@ -1,0 +1,124 @@
+{% include 'header.html' %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-light bg-light navbar-expand-lg">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="/">Kinderbaser Elsendorf</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		  </button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+			  <li class="nav-item">
+				<a class="nav-link active" aria-current="page" href="/overview">Artikel Übersicht</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="/overview/qr">QR-Codes</a>
+			  </li>
+			  {% if org %}
+			  <li class="nav-item">
+				<a class="nav-link" href="/card/active/">Einkaufswagen</a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="/sellers/">Verkäufer-Übersicht</a>
+			  </li>
+			  {% endif %}
+			  <li class="nav-item">
+				<a class="nav-link" href="/logout">Logout</a>
+			  </li>
+			</ul>
+		  </div>
+	</div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Informationen</h1>
+        </div>
+    </div>
+
+    <div class="row">
+		<div class="col">
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">ID</th>
+                    <td>{{ user.id }}</td>
+                </tr>
+                <tr>
+					<th scope="col">E-Mail</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+			</table> 
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			<h1>Artikelübersicht</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<h2>Artikel über 10€</h2>
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Verkauft</th>
+					<th scope="col">Preis</th>
+				</tr>
+				{% for article in articles_over -%}
+				<tr>
+					<td>{{ article.name }}</td>
+					<td>{{ article.sold|to_german }}</td>
+					<td>{{ article.price|as_euro }}</td>
+				</tr>
+				{% endfor %}
+			</table> 
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<h2>Artikel unter 10€</h2>
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Verkauft</th>
+					<th scope="col">Preis</th>
+				</tr>
+				{% for article in articles_under -%}
+				<tr>
+					<td>{{ article.name }}</td>
+					<td>{{ article.sold|to_german }}</td>
+					<td>{{ article.price|as_euro }}</td>
+				</tr>
+				{% endfor %}
+			</table> 
+		</div>
+	</div>
+
+    <div class="row">
+		<div class="col">
+			<h1>Kostenübersicht</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">Provision:</th>
+					<td>{{ provision|as_euro }}</td>
+				</tr>
+			</table> 
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<form action="/org/checkin/done/{{ user.id }}/" method="post">
+				<button type="submit" class="btn btn-info">Einchecken!</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% include 'footer.html' %}

@@ -133,7 +133,7 @@ def get_registration_sheet():
         for article in articles:
             article_sum += article.price
 
-        registration_fee = article_sum * 0.05
+        registration_fee = article_sum * 0.05 # TODO(Wrong with new model)
 
         # Get number of baskets
         basket_count = len(user.shoppingbaskets)

@@ -19,6 +19,7 @@ def create_test_data():
     user.organizer = False
     user.activated = True
     user.registration_done = False
+    user.checkin_done = False
     db.session.add(user)
 
     user2 = User()
@@ -29,6 +30,7 @@ def create_test_data():
     user2.organizer = True
     user2.activated = True
     user2.registration_done = False
+    user2.checkin_done = False
     db.session.add(user2)
 
     db.session.commit()
