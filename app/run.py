@@ -49,7 +49,7 @@ from tests.data import create_test_data
 logging.basicConfig(
     filename='./logs/kinderbasar.log', 
     format='%(asctime)s:%(levelname)s:%(message)s', 
-    level=logging.DEBUG
+    level=logging.INFO
 )
 
 # Init password hasher
@@ -248,8 +248,16 @@ if __name__ == '__main__':
     # Create the database
     db.create_all()
 
-    # Remove before production
-    create_test_data()
+    if config['TESTING'].getboolean('CREATE_DATA'):
+        logging.info("[.] Creating test data.")
+        create_test_data()
+        config.set('TESTING', 'CREATE_DATA', 'False')
+
+        # Update
+        with open('./conf/env.conf', 'w') as configfile:
+            config.write(configfile)
+            logging.info("[.] Disabled data creation after running once.")
+
 
     app.jinja_env.filters['as_euro'] = as_euro
     app.jinja_env.filters['to_german'] = to_german

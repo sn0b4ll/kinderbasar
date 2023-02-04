@@ -11,8 +11,6 @@ ph = PasswordHasher()
 
 def create_test_data():
     '''Creates test-data.'''
-    # Test-Data
-    print("Creating test data")
     user = User()
     user.salt = str(uuid.uuid4())
     user.password = ph.hash("abcd"+user.salt)
