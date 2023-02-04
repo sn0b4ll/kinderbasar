@@ -23,6 +23,7 @@ from routes.register import register_process
 from routes.session import session_handling
 from routes.article import article_handling #pylint: disable=no-name-in-module
 from routes.card import card_handling
+from routes.organizer import organization_routes
 
 # Init config parser
 config = ConfigParser()
@@ -40,6 +41,7 @@ app.register_blueprint(register_process)
 app.register_blueprint(session_handling)
 app.register_blueprint(article_handling)
 app.register_blueprint(card_handling)
+app.register_blueprint(organization_routes)
 
 from models import  Article, User, Shoppingbasket
 
@@ -143,64 +145,6 @@ def get_registration_sheet():
             basket_count=basket_count,
             article_sum=article_sum,
             registration_fee=registration_fee
-        )
-
-    return redirect(url_for('overview'))
-
-@app.route("/sellers/", methods=["GET"])
-def get_sellers():
-    '''List all sellers with their sold / unsold product count. '''
-    if ('organizer' in session) and (session['organizer'] == True):
-        all_users = User.query.all()
-        seller_list = []
-        for user in all_users:
-            articles = user.articles
-            articles_overall = len(articles)
-            articles_sold = 0
-            for article in articles:
-                if article.sold == True:
-                    articles_sold += 1
-
-            seller_list.append(
-                (
-                    user,
-                    articles_overall,
-                    articles_sold
-                )
-            )
-
-        return render_template(
-            'sellers.html',
-            seller_list=seller_list,
-            org=True
-        )
-
-    return redirect(url_for('overview'))
-
-@app.route("/clearing/<int:user_id>/", methods=["GET"])
-def get_clearing(user_id):
-    '''Get the final clearing document for a user after the basar ended.'''
-    if ('organizer' in session) and (session['organizer'] == True):
-        user = User.query.get(user_id)
-        articles = user.articles
-
-        articles_sold = []
-        articles_unsold = []
-
-        sold_sum = 0
-        for article in articles:
-            if article.sold is True:
-                sold_sum += article.price
-                articles_sold.append(article)
-            else:
-                articles_unsold.append(article)
-
-        return render_template(
-            'clearing.html',
-            user=user,
-            articles_sold=articles_sold,
-            articles_unsold=articles_unsold,
-            sold_sum=sold_sum
         )
 
     return redirect(url_for('overview'))
