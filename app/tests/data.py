@@ -40,6 +40,7 @@ def create_test_data():
     article.name = "Testname"
     article.seller = user
     article.clothing_size = ""
+    article.current = True
     article.price = 1330
     article.sold = False
     db.session.add(article)
@@ -49,6 +50,7 @@ def create_test_data():
     article2.name = "Testname2"
     article2.seller = user
     article2.clothing_size = "42"
+    article.current = True
     article2.price = 2450
     article2.sold = False
     db.session.add(article2)
@@ -58,6 +60,7 @@ def create_test_data():
     article3.name = "Testname3"
     article3.seller = user2
     article3.clothing_size = "42"
+    article.current = True
     article3.price = 2450
     article3.sold = False
     db.session.add(article3)

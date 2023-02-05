@@ -11,12 +11,10 @@ class Article(db.Model):
     name = db.Column(db.String(100))
     price = db.Column(db.Integer)
     sold = db.Column(db.Boolean)
-    clothing_size = db.Column(db.String(20))
+    clothing_size = db.Column(db.String(50))
+    current = db.Column(db.Boolean) # Is the article in the current bazar run
     card_uuid = db.Column(db.String(36), db.ForeignKey('card.uuid'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-    def __repr__(self):
-        return f"<Article(uuid='{self.uuid}', name='{self.name}', seller='{self.seller}', price='{self.price}, sold='{self.sold}'"
 
 class Shoppingbasket(db.Model):
     '''Since most customers bring their stuff in baskets, we need to org them.'''

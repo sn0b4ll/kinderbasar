@@ -1,0 +1,96 @@
+import json
+import logging
+
+from models import Article, User
+from models import db
+
+# Init logging
+logging.basicConfig(
+    filename='./logs/kinderbasar.log', 
+    format='%(asctime)s:%(levelname)s:%(message)s', 
+    level=logging.INFO
+)
+
+USER_JSON_PATH = "app/utils/db_migration_files/user.json"
+ARTICLE_JSON_PATH = "app/utils/db_migration_files/article.json"
+
+def create_user(id, password, salt, email, activated, organizer):
+    new_user = User()
+
+    new_user.id = int(id)
+    new_user.password = password
+    new_user.salt = salt
+    new_user.email = email
+    new_user.activation_code = None
+    new_user.activated = bool(int(activated))
+    new_user.organizer = bool(int(organizer))
+    new_user.checkin_done = False
+
+    db.session.add(new_user)
+
+def create_article(uuid, name, price, clothing_size, user_id):
+    new_article = Article()
+
+    new_article.uuid = uuid
+    new_article.name = name
+    new_article.price = price
+    new_article.sold = False
+    new_article.clothing_size = clothing_size
+    new_article.current = False
+    new_article.card_uuid = None
+    
+    # Set correct selling user
+    new_article.seller = db.session.get(User, user_id)
+
+    db.session.add(new_article)
+    
+def remove_users_without_articles():
+    '''Remove all users without articles.'''
+
+    user_list = db.session.query(User).all()
+    for us in user_list:
+        if len(us.articles) == 0:
+            logging.info(f"Found { us.id } with 0 articles.")
+            db.session.delete(us)
+        else:
+            logging.info(f"Found { us.id } with { len(us.articles) } articles.")
+
+def migrate_data():
+    logging.info('[+] Starting data migration.')
+    data = json.load(open(USER_JSON_PATH))
+    for us in data:
+        create_user(
+            us['id'],
+            us['password'],
+            us['salt'],
+            us['email'],
+            us['activated'],
+            us['organizer']
+        )
+    
+    db.session.commit()
+    logging.info('[+] Finished with users, switiching to articles.')
+
+    data = json.load(open(ARTICLE_JSON_PATH))
+    cnt = len(data)
+    cur = 0
+    logging.info('[+] Got here (before migrate).')
+    for art in data:
+        logging.info(f"[+] Migrating Art { cur }/{ cnt }")
+        if not art['sold'] == '1':
+            create_article(
+                art['uuid'],
+                art['name'],
+                int(art['price']),
+                art['clothing_size'],
+                int(art['user_id'])
+            )
+        cur += 1
+
+    db.session.commit()
+    logging.info('[+] Finished with articles, cleaing up DB.')
+
+    remove_users_without_articles()
+    db.session.commit()
+
+    logging.info('[+] Migration done.')

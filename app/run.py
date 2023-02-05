@@ -18,6 +18,7 @@ from argon2 import PasswordHasher
 from flask_qrcode import QRcode
 
 from models import db
+from utils.db_migration import migrate_data
 
 from routes.register import register_process
 from routes.session import session_handling
@@ -192,6 +193,7 @@ if __name__ == '__main__':
     # Create the database
     db.create_all()
 
+    # Create test data
     if config['TESTING'].getboolean('CREATE_DATA'):
         logging.info("[.] Creating test data.")
         create_test_data()
@@ -201,6 +203,16 @@ if __name__ == '__main__':
         with open('./conf/env.conf', 'w') as configfile:
             config.write(configfile)
             logging.info("[.] Disabled data creation after running once.")
+    elif config['TESTING'].getboolean('MIGRATE_DB'):
+        logging.info("[.] Importing data.")
+        migrate_data()
+        config.set('TESTING', 'MIGRATE_DB', 'False')
+
+        # Update
+        with open('./conf/env.conf', 'w') as configfile:
+            config.write(configfile)
+            logging.info("[.] Disabled data import after running once.")
+
 
 
     app.jinja_env.filters['as_euro'] = as_euro

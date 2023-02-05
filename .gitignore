@@ -134,3 +134,4 @@ conf/env.conf
 db/test.db
 db/mysql/
 logs/kinderbasar.log
+app/utils/db_migration_files/*
