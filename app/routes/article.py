@@ -61,6 +61,7 @@ def add_article():
             article.name = name
             article.seller = User.query.get(session['user_id'])
             article.clothing_size = clothing_size
+            article.current = True
             article.price = price
             article.sold = False
         
@@ -93,6 +94,27 @@ def article_view(uuid):
         article=article,
         org=org
     )
+
+@article_handling.route("/article/<string:article_uuid>/reactivate", methods=["GET", "POST"])
+def reactivate_article(article_uuid):
+    if 'user_id' in session:
+        if article_uuid is None:
+            return abort(Response('Article UUID missing.'))
+
+        user = User.query.get(session['user_id'])
+        article = Article.query.get(article_uuid)
+
+        if article in user.articles:
+            article.current = True
+        else:
+            return abort(Response('Article not linked to user.'))
+
+        db.session.commit()
+
+        return redirect(url_for('overview'))
+
+    return abort(Response('Please login to use this functionality.'))
+
 
 @article_handling.route("/article/<string:uuid>/remove", methods=["GET", "POST"])
 def remove_article(uuid):

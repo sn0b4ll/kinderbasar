@@ -53,6 +53,7 @@
 					<th scope="col">Entfernen</th>
 				</tr>
 				{% for article in articles -%}
+				{% if article.current %}
 				<tr>
 					<td>{{ article.name }}</td>
 					<td>{{ article.seller.id }}</td>
@@ -72,6 +73,7 @@
 						{% endif %}
 					</td>
 				</tr>
+				{% endif %}
 				{% endfor %}
 				{% for basket in shoppingbaskets -%}
 				<tr>
