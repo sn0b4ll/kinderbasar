@@ -58,6 +58,10 @@
 		<div class="col">
 			<table class="table table-striped">
                 <tr>
+                    <td>Anzahl Artikel:</td>
+                    <td>{{ card.articles|length }}</td>
+                </tr>
+				<tr>
                     <td>Summe:</td>
                     <td>{{ price_overall|as_euro }}</td>
                 </tr>

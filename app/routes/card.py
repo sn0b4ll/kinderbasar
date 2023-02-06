@@ -49,7 +49,7 @@ def _get_card_uuid_for_user():
 @card_handling.route("/card/<string:card_uuid>/", methods=["GET"])
 def card(card_uuid):
     '''Display a card. '''
-    if ('organizer' in session) and (session['organizer'] == True) :
+    if ('organizer' in session) and (session['organizer'] is True) :
         if card_uuid == "active":
             card_uuid = _get_card_uuid_for_user()
 
@@ -78,8 +78,8 @@ def card(card_uuid):
                 total_price_rounded=total_price_rounded,
                 org=True
             )
-    else:
-        return redirect(url_for('login'))
+
+    return redirect(url_for('login'))
 
 @card_handling.route("/card/<string:card_uuid>/add/<string:article_uuid>/", methods=["POST"])
 def add_article_to_card(card_uuid, article_uuid):
