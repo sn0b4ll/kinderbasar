@@ -40,22 +40,23 @@ def register():
     '''Start a registration process.'''
     sleep(random())
     email = request.form['email']
-    existing_user = False
-    for user in User.query.all():
-        if user.email == email:
-            existing_user = True
-            tmp_user = user
-            break
+    
 
-    if existing_user:
-        # If the user exists but the E-Mail is not actived yet, it should be allowed to overwrite
-        # the params of the existing User
-        if tmp_user.activated:
+    user = db.session.query(User).filter(User.email == email).first()
+    if user is not None:
+        # Existing user
+        if user.activated:
+            # User is already fully activated, do not allow that stuff will be changed.
             return "User already registered" # TODO (Prevent enum)
-        else:
-            user = tmp_user
     else:
-        user= User()
+        # New user
+        user = User()
+
+        # Let's assign the next possible id.
+        id = 1
+        while db.session.get(User, id) is not None:
+            id += 1
+        user.id = id
 
     salt = str(uuid.uuid4())
     pass_hash = ph.hash(request.form['password'] + salt)
@@ -67,6 +68,7 @@ def register():
     user.activated = False
     user.organizer = False
     user.registration_done = False
+    user.checkin_done = False
 
     logging.info(f"User {user.id}/{user.email} was created.")
 

@@ -23,7 +23,7 @@ class Shoppingbasket(db.Model):
 
 class User(db.Model):
     '''Class for holding sellers and organizers.'''
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     password = db.Column(db.String(100))
     salt = db.Column(db.String(36))
     email = db.Column(db.String(50))
