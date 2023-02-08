@@ -2,9 +2,6 @@
 # pylint: disable=no-member
 
 import math
-import logging
-
-from configparser import ConfigParser
 
 import pdfkit #pylint: disable=import-error
 
@@ -26,9 +23,7 @@ from routes.article import article_handling #pylint: disable=no-name-in-module
 from routes.card import card_handling
 from routes.organizer import organization_routes
 
-# Init config parser
-config = ConfigParser()
-config.read('./conf/env.conf')
+from helper import logging, config, ph
 
 app = Flask(__name__)
 app.secret_key = config.get('APP', 'secret_key')
@@ -54,10 +49,6 @@ logging.basicConfig(
     format='%(asctime)s:%(levelname)s:%(message)s', 
     level=logging.INFO
 )
-
-# Init password hasher
-# https://pypi.org/project/argon2-cffi/
-ph = PasswordHasher()
 
 # Load QR Module
 QRcode(app)

@@ -2,11 +2,9 @@
 # pylint: disable=no-member,logging-fstring-interpolation
 
 import uuid
-import logging
 
 from random import random
 from time import sleep
-from configparser import ConfigParser
 
 # Import smtplib for the actual sending function
 import smtplib
@@ -19,19 +17,7 @@ from flask import Blueprint, render_template, request
 from models import db
 from models import User
 
-from argon2 import PasswordHasher
-ph = PasswordHasher()
-
-# Init config parser
-config = ConfigParser()
-config.read('./conf/env.conf') # TODO(Do only once -> own module)
-
-# Init logging
-logging.basicConfig( # TODO(Do only once -> own module)
-    filename='./logs/kinderbasar.log', 
-    format='%(asctime)s:%(levelname)s:%(message)s', 
-    level=logging.DEBUG
-)
+from helper import logging, config, ph
 
 register_process = Blueprint('register', __name__, template_folder='templates')
 

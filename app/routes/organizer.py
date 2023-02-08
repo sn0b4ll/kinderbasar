@@ -1,10 +1,6 @@
 '''Serves pages linked to organizer functions.'''
 # pylint: disable=no-member,logging-fstring-interpolation
 
-import logging
-
-from configparser import ConfigParser
-
 from flask import Blueprint
 from flask import render_template, redirect, url_for
 from flask import session
@@ -12,16 +8,7 @@ from flask import session
 from models import db
 from models import User
 
-# Init config parser
-config = ConfigParser()
-config.read('./conf/env.conf') # TODO(Do only once -> own module)
-
-# Init logging
-logging.basicConfig( # TODO(Do only once -> own module)
-    filename='./logs/kinderbasar.log', 
-    format='%(asctime)s:%(levelname)s:%(message)s', 
-    level=logging.DEBUG
-)
+from helper import logging, config
 
 organization_routes = Blueprint('organization_routes', __name__, template_folder='templates')
 

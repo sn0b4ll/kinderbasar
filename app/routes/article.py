@@ -2,9 +2,6 @@
 # pylint: disable=no-member,logging-fstring-interpolation
 
 import uuid
-import logging
-
-from configparser import ConfigParser
 
 from flask import Blueprint, Response
 from flask import render_template, redirect, url_for, abort
@@ -13,20 +10,9 @@ from flask import request, session
 from models import db
 from models import Article, User, Shoppingbasket
 
-from argon2 import PasswordHasher
+from helper import logging, config, ph
+
 from argon2.exceptions import VerifyMismatchError
-ph = PasswordHasher()
-
-# Init config parser
-config = ConfigParser()
-config.read('./conf/env.conf') # TODO(Do only once -> own module)
-
-# Init logging
-logging.basicConfig( # TODO(Do only once -> own module)
-    filename='./logs/kinderbasar.log', 
-    format='%(asctime)s:%(levelname)s:%(message)s', 
-    level=logging.DEBUG
-)
 
 article_handling = Blueprint('article_handling', __name__, template_folder='templates')
 
