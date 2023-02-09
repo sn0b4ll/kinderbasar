@@ -23,7 +23,7 @@ from routes.article import article_handling #pylint: disable=no-name-in-module
 from routes.card import card_handling
 from routes.organizer import organization_routes
 
-from helper import logging, config, ph
+from helper import logging, config
 
 app = Flask(__name__)
 app.secret_key = config.get('APP', 'secret_key')
@@ -42,13 +42,6 @@ app.register_blueprint(organization_routes)
 from models import  Article, User, Shoppingbasket
 
 from tests.data import create_test_data
-
-# Init logging
-logging.basicConfig(
-    filename='./logs/kinderbasar.log', 
-    format='%(asctime)s:%(levelname)s:%(message)s', 
-    level=logging.INFO
-)
 
 # Load QR Module
 QRcode(app)
