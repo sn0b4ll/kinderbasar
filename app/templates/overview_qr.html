@@ -67,7 +67,7 @@
             <br>
             {% endif %}
             Preis: {{ article.price|as_euro }}<br>
-            <img src="{{ qrcode(url_template + article.uuid, error_correction='H', box_size=4) }}">
+            <img src="{{ qrcode(url_template + article.uuid, box_size=4, border=1) }}">
         </div>
     {% if loop.index is divisibleby 12 %}
     </div>
