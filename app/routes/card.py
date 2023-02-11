@@ -11,7 +11,7 @@ from flask import session
 from models import db
 from models import Article, User, Card
 
-from helper import logging, config
+from helper import logging
 
 card_handling = Blueprint('card_handling', __name__, template_folder='templates')
 
@@ -132,6 +132,12 @@ def close_card(card_uuid):
         for article in current_card.articles:
             article.sold = True
 
+            # If an article was NOT added to the current basar, money goes to org
+            # Assumption: User ID 1 has been created as an organizer
+            if not article.current:
+                article.seller = User.query.get(1)
+                article.current = True
+
         db.session.commit()
 
         logging.info(f"The card {card_uuid} was closed.")
@@ -153,5 +159,5 @@ def close_card(card_uuid):
                 total_price_rounded=total_price_rounded,
                 org=True
             )
-    
+
     return redirect(url_for('login'))

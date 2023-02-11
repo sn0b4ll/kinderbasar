@@ -68,17 +68,14 @@ def article_view(uuid):
     if uuid is None:
         logging.debug(f"There was a try to access an not existing article {uuid}.")
         return abort(Response('Article UUID missing.'))
-    if ('organizer' in session) and (session['organizer'] == True):
-        org = True
-    else:
-        org = False
-
+    
+    user = User.query.get(session['user_id'])
     article = Article.query.filter_by(uuid=uuid).first()
 
     return render_template(
         'article.html',
         article=article,
-        org=org
+        user=user
     )
 
 @article_handling.route("/article/<string:article_uuid>/reactivate", methods=["GET", "POST"])
