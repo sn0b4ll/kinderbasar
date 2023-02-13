@@ -64,13 +64,11 @@
 			<table class="table table-striped">
 				<tr>
 					<th scope="col">Name</th>
-					<th scope="col">Verkauft</th>
 					<th scope="col">Preis</th>
 				</tr>
 				{% for article in articles_over -%}
 				<tr>
 					<td>{{ article.name }}</td>
-					<td>{{ article.sold|to_german }}</td>
 					<td>{{ article.price|as_euro }}</td>
 				</tr>
 				{% endfor %}
@@ -83,13 +81,11 @@
 			<table class="table table-striped">
 				<tr>
 					<th scope="col">Name</th>
-					<th scope="col">Verkauft</th>
 					<th scope="col">Preis</th>
 				</tr>
 				{% for article in articles_under -%}
 				<tr>
 					<td>{{ article.name }}</td>
-					<td>{{ article.sold|to_german }}</td>
 					<td>{{ article.price|as_euro }}</td>
 				</tr>
 				{% endfor %}
