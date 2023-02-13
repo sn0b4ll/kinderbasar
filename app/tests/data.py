@@ -1,76 +1,111 @@
 '''This module is responsible for creating test-data.'''
-# pylint: disable=no-member
+# pylint: disable=no-member,import-error
 
 import uuid
 
 from models import db
-from models import  Article, User, Card
+from models import Article, User, Shoppingbasket
 
-from argon2 import PasswordHasher
-ph = PasswordHasher()
+from helper import ph
+
+# TODO (Move as constructors into models)
+def _create_user(user_id, password, email, activated, organizer, checkin_done):
+    '''Create an user.'''
+    new_user = User()
+
+    new_user.id = int(user_id)
+    new_user.salt = str(uuid.uuid4())
+    new_user.password = ph.hash(password+new_user.salt)
+    new_user.email = email
+    new_user.activation_code = None
+    new_user.activated = activated
+    new_user.organizer = organizer
+    new_user.checkin_done = checkin_done
+
+    db.session.add(new_user)
+
+    return new_user, user_id + 1
+
+def _create_article(user, name, price, clothing_size, current):
+    '''Create a new article'''
+    new_article = Article()
+
+    new_article.uuid = str(uuid.uuid4())
+    new_article.name = name
+    new_article.price = price
+    new_article.sold = False
+    new_article.clothing_size = clothing_size
+    new_article.current = current
+    new_article.card_uuid = None
+    new_article.seller = user
+
+    db.session.add(new_article)
+
+def _create_shoppingbasket(user):
+    '''Create a new shopping basket and assign to user.'''
+    new_basket = Shoppingbasket()
+    new_basket.owner = user
+
+    db.session.add(new_basket)
 
 def create_test_data():
     '''Creates test-data.'''
-    user = User()
-    user.salt = str(uuid.uuid4())
-    user.password = ph.hash("abcd"+user.salt)
-    user.email = "testuser1@user.de"
-    user.name = "testuser1"
-    user.organizer = False
-    user.activated = True
-    user.registration_done = False
-    user.checkin_done = False
-    db.session.add(user)
 
-    user2 = User()
-    user2.salt = str(uuid.uuid4())
-    user2.password = ph.hash("abcd"+user.salt)
-    user2.email = "testuser2@user.de"
-    user2.name = "testuser2"
-    user2.organizer = True
-    user2.activated = True
-    user2.registration_done = False
-    user2.checkin_done = False
-    db.session.add(user2)
+    # Users
+    ## Start the user ID counter at 1
+    user_id = 1
 
+    ## Org Users
+    user_admin, user_id = _create_user(user_id, 'test', 'admin@kinderbasar-elsendorf.de', True, True, False)
+    user_kasse1, user_id = _create_user(user_id, 'test', 'kasse1@kinderbasar-elsendorf.de', True, True, False)
+    user_kasse2, user_id = _create_user(user_id, 'test', 'kasse2@kinderbasar-elsendorf.de', True, True, False)
+    user_kasse3, user_id = _create_user(user_id, 'test', 'kasse3@kinderbasar-elsendorf.de', True, True, False)
+
+    ## Sellers
+    user_seller1, user_id = _create_user(user_id, 'test', 'seller1@kinderbasar-elsendorf.de', True, False, False)
+    user_seller2, user_id = _create_user(user_id, 'test', 'seller2@kinderbasar-elsendorf.de', True, False, False)
+    user_seller3, user_id = _create_user(user_id, 'test', 'seller3@kinderbasar-elsendorf.de', True, False, False)
+    user_seller4, user_id = _create_user(user_id, 'test', 'seller4@kinderbasar-elsendorf.de', True, False, False)
+
+    ## Commit the users
     db.session.commit()
 
-    article = Article()
-    article.uuid = str(uuid.uuid4())
-    article.name = "Testname"
-    article.seller = user
-    article.clothing_size = ""
-    article.current = True
-    article.price = 1330
-    article.sold = False
-    db.session.add(article)
+    # Articles
+    ## Create Articles for every user
+    _create_article(user_seller1, "Test-Art 1", 2000, 'XL', True)
+    _create_article(user_seller1, "Test-Art 2", 2500, 'L', True)
+    _create_article(user_seller1, "Test-Art 3", 500, '', True)
+    _create_article(user_seller1, "Test-Art 4", 12000, 'ASDASDASD', True)
+    _create_article(user_seller1, "Test-Art 5", 1250, 'XL', False)
+    _create_article(user_seller1, "Test-Art 6", 1000, '', False)
 
-    article2 = Article()
-    article2.uuid = str(uuid.uuid4())
-    article2.name = "Testname2"
-    article2.seller = user
-    article2.clothing_size = "42"
-    article.current = True
-    article2.price = 2450
-    article2.sold = False
-    db.session.add(article2)
+    _create_article(user_seller2, "Test-Art 7", 2000, 'XL', True)
+    _create_article(user_seller2, "Test-Art 8", 2500, 'L', True)
+    _create_article(user_seller2, "Test-Art 9", 500, '', True)
+    _create_article(user_seller2, "Test-Art 10", 12000, 'ASDASDASD', True)
+    _create_article(user_seller2, "Test-Art 11", 1250, 'XL', False)
+    _create_article(user_seller2, "Test-Art 12", 1000, '', False)
 
-    article3 = Article()
-    article3.uuid = str(uuid.uuid4())
-    article3.name = "Testname3"
-    article3.seller = user2
-    article3.clothing_size = "42"
-    article.current = True
-    article3.price = 2450
-    article3.sold = False
-    db.session.add(article3)
+    _create_article(user_seller3, "Test-Art 13", 100, 'XL', False)
+    _create_article(user_seller3, "Test-Art 14", 10000, '', False)
 
-    card = Card()
-    card.uuid = str(uuid.uuid4())
-    card.articles = [article, article2]
-    card.active = True
-    db.session.add(card)
+    _create_article(user_seller4, "Test-Art 14", 100, '', True)
+    _create_article(user_seller4, "Test-Art 15", 1000, '', True)
 
-    user2.cards = [card]
-
+    ## Commit the users
     db.session.commit()
+
+    # Shopping Baskets
+    ## Create the baskets
+    _create_shoppingbasket(user_seller1)
+    _create_shoppingbasket(user_seller1)
+    _create_shoppingbasket(user_seller2)
+    _create_shoppingbasket(user_seller3)
+    _create_shoppingbasket(user_seller3)
+    _create_shoppingbasket(user_seller3)
+    _create_shoppingbasket(user_seller3)
+    _create_shoppingbasket(user_seller3)
+
+    ## Aaaaand commit them
+    db.session.commit()
+
