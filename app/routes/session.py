@@ -1,5 +1,5 @@
 '''Serves pages linked to the sesion handling.'''
-# pylint: disable=no-member,logging-fstring-interpolation
+# pylint: disable=no-member,logging-fstring-interpolation,import-error
 
 from random import random
 from time import sleep
@@ -10,7 +10,7 @@ from flask import request, session
 
 from models import User
 
-from helper import logging, config, ph
+from helper import logging, ph
 
 from argon2.exceptions import VerifyMismatchError
 
@@ -65,11 +65,11 @@ def login():
         session['organizer'] = user.organizer
         logging.info(f"User {user.id}/{user.email} logged in successfully.")
         return redirect(url_for('overview'))
-    else:
-        return render_template(
-            'login.html',
-            title="Login"
-        )
+
+    # Serve the default login page
+    return render_template(
+        'login.html'
+    )
 
 @session_handling.route("/logout")
 def logout():
@@ -78,4 +78,6 @@ def logout():
         logging.info(f"User {session['user_id']} logged out.")
         session.pop('user_id')
         session.pop('organizer')
+
+    logging.info("Someone tried to logout without being logged id.")
     return redirect(url_for('session_handling.login'))

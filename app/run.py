@@ -1,5 +1,5 @@
 """This is the main module holding all the routes and app logic."""
-# pylint: disable=no-member
+# pylint: disable=no-member,import-error
 
 import math
 
@@ -9,8 +9,6 @@ from flask import Flask, Response
 from flask import render_template
 from flask import redirect, url_for
 from flask import session
-
-from argon2 import PasswordHasher
 
 from flask_qrcode import QRcode
 
@@ -77,7 +75,7 @@ def overview():
                 shoppingbaskets=shoppingbaskets,
                 org=org
             )
-    return redirect(url_for('login'))
+    return redirect(url_for('session_handling.login'))
 
 
 @app.route("/overview/qr", methods=["GET"])
@@ -103,7 +101,7 @@ def overview_qr():
                        headers={"Content-Disposition":
                                     "attachment;filename=kinderbasar.pdf"})
 
-    return redirect(url_for('login'))
+    return redirect(url_for('session_handling.login'))
 
 @app.route("/registration_sheet/", methods=["GET"])
 def get_registration_sheet():
@@ -143,7 +141,7 @@ def registration_done():
         db.session.commit()
         return f"Registration done set for user { user.id }", 200
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('session_handling.login'))
 
 
 def as_euro(price):

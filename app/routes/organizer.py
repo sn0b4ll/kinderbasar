@@ -1,5 +1,5 @@
 '''Serves pages linked to organizer functions.'''
-# pylint: disable=no-member,logging-fstring-interpolation
+# pylint: disable=no-member,logging-fstring-interpolation,import-error
 
 from flask import Blueprint
 from flask import render_template, redirect, url_for
@@ -8,14 +8,16 @@ from flask import session
 from models import db
 from models import User
 
-from helper import logging, config
+from helper import logging
 
 organization_routes = Blueprint('organization_routes', __name__, template_folder='templates')
 
 @organization_routes.route("/org/checkin/<int:user_id>/", methods=["GET"])
 def get_checkin(user_id):
     '''Create the checking information.'''
-    if ('organizer' in session) and (session['organizer'] is True):
+
+    loggedin_user = User.query.get(session['user_id'])
+    if loggedin_user.organizer:
         user = db.session.get(User, user_id)
         articles_over = []
         articles_under = []
@@ -45,27 +47,37 @@ def get_checkin(user_id):
             org=True
         )
 
+    logging.info("Someone tried to navigate the login page without being an org.")
+    return redirect(url_for('session_handling.login'))
+
 @organization_routes.route("/org/checkin/done/<int:user_id>/", methods=["POST"])
 def set_checkin(user_id):
     '''Create the checking information.'''
-    if ('organizer' in session) and (session['organizer'] is True):
+    loggedin_user = User.query.get(session['user_id'])
+    if loggedin_user.organizer:
         user = db.session.get(User, user_id)
         user.checkin_done = True
         db.session.commit()
 
+        logging.info(f"Checking for user {user_id} was closed.")
+
         return redirect(url_for('organization_routes.get_sellers'))
 
+    logging.info("Someone without org right tried to do a checkin.")
+    return redirect(url_for('session_handling.login'))
 
 
 @organization_routes.route("/sellers/", methods=["GET"])
 def get_sellers():
     '''List all sellers with their sold / unsold product count.'''
-    if ('organizer' in session) and (session['organizer'] is True):
+
+    loggedin_user = User.query.get(session['user_id'])
+    if loggedin_user.organizer:
         all_users = User.query.all()
-        
+
         num_sellers = len(all_users)
         num_already_checkedin = 0
-        
+
         seller_list = []
         for user in all_users:
             articles = user.articles
@@ -95,7 +107,8 @@ def get_sellers():
             org=True
         )
 
-    return redirect(url_for('overview'))
+    logging.info("Someone without org right tried access the sellers list.")
+    return redirect(url_for('session_handling.login'))
 
 @organization_routes.route("/clearing/<int:user_id>/", methods=["GET"])
 def get_clearing(user_id):
@@ -123,4 +136,5 @@ def get_clearing(user_id):
             sold_sum=sold_sum
         )
 
+    logging.info("Someone without org right tried access the clearing for an seller.")
     return redirect(url_for('overview'))

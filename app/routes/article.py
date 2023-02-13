@@ -12,8 +12,6 @@ from models import Article, User, Shoppingbasket
 
 from helper import logging, config, ph
 
-from argon2.exceptions import VerifyMismatchError
-
 article_handling = Blueprint('article_handling', __name__, template_folder='templates')
 
 @article_handling.route("/article/add", methods=["GET", "POST"])
@@ -60,7 +58,7 @@ def add_article():
             
             return redirect(url_for('overview'))
     else:
-       return redirect(url_for('login'))
+       return redirect(url_for('session_handling.login'))
 
 @article_handling.route("/article/<string:uuid>", methods=["GET"])
 def article_view(uuid):
@@ -68,8 +66,12 @@ def article_view(uuid):
     if uuid is None:
         logging.debug(f"There was a try to access an not existing article {uuid}.")
         return abort(Response('Article UUID missing.'))
-    
-    user = User.query.get(session['user_id'])
+    try:
+        user = User.query.get(session['user_id']) # TODO(Allow viewing of articles without login.)
+    except KeyError:
+        # Anonymous user
+        user = None
+
     article = Article.query.filter_by(uuid=uuid).first()
 
     return render_template(
@@ -154,7 +156,7 @@ def add_shopping_basket():
 
         return redirect(url_for('overview'))
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('session_handling.login'))
 
 @article_handling.route("/shoppingbasket/<string:basket_id>/remove", methods=["POST"])
 def remove_basket(basket_id):

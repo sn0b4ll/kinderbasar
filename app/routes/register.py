@@ -1,5 +1,5 @@
 '''Serves pages linked to the register process.'''
-# pylint: disable=no-member,logging-fstring-interpolation
+# pylint: disable=no-member,logging-fstring-interpolation,import-error
 
 import uuid
 
@@ -24,25 +24,31 @@ register_process = Blueprint('register', __name__, template_folder='templates')
 @register_process.route("/register", methods=["POST"])
 def register():
     '''Start a registration process.'''
+
     sleep(random())
     email = request.form['email']
-    
 
     user = db.session.query(User).filter(User.email == email).first()
     if user is not None:
         # Existing user
         if user.activated:
             # User is already fully activated, do not allow that stuff will be changed.
-            return "User already registered" # TODO (Prevent enum)
+            # Still, return an success so iteration is not possible.
+
+            logging.info(f"Someone tried to register with already existing E-Mail {user.email}.")
+
+            return render_template(
+                'registration_success.html',
+            )
     else:
         # New user
         user = User()
 
         # Let's assign the next possible id.
-        id = 1
-        while db.session.get(User, id) is not None:
-            id += 1
-        user.id = id
+        next_id = 1
+        while db.session.get(User, next_id) is not None:
+            next_id += 1
+        user.id = next_id
 
     salt = str(uuid.uuid4())
     pass_hash = ph.hash(request.form['password'] + salt)
@@ -80,20 +86,16 @@ Ihr Kinderbasar Elsendorf Team
     msg['message-id'] = utils.make_msgid(domain='kinderbasar-elsendorf.de')
 
     try:
-        s = smtplib.SMTP_SSL(config['EMAIL']['server'], 465) # TODO(Port)
-        s.login(config['EMAIL']['username'], config['EMAIL']['password'])
-        s.send_message(msg)
-        s.quit()
+        smtp_con = smtplib.SMTP_SSL(config['EMAIL']['server'], 465) # TODO(Port)
+        smtp_con.login(config['EMAIL']['username'], config['EMAIL']['password'])
+        smtp_con.send_message(msg)
+        smtp_con.quit()
     except Exception as exception: # pylint: disable=broad-except
         logging.error(exception)
         return "Something went wrong, please wait some minutes and retry."
 
-    message = "Erfolg!"
-
     return render_template(
-        'registration_success.html',
-        title="Danke!",
-        message=message
+        'registration_success.html'
     )
 
 @register_process.route("/activate/<int:user_id>/<string:activation_uuid>")
@@ -107,8 +109,8 @@ def activate(user_id, activation_uuid):
             db.session.commit()
             logging.info(f"User {user.id}/{user.email} was activated.")
             return render_template(
-                'activation_success.html',
-                title="Danke!",
+                'activation_success.html'
             )
-    
+
+    logging.info(f"Someone entered an wrong activation code for user { user.id }.")
     return "User-ID oder Aktivierungs-Code falsch"
