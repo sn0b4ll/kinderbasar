@@ -116,7 +116,14 @@ def get_registration_sheet():
         for article in articles:
             article_sum += article.price
 
-        registration_fee = article_sum * 0.05 # TODO(Wrong with new model)
+        provision = 0
+
+        for article in user.articles:
+            # Calculate provision
+            if article.price < 5000:
+                provision += article.price*0.05
+            else:
+                provision += 250
 
         # Get number of baskets
         basket_count = len(user.shoppingbaskets)
@@ -127,7 +134,7 @@ def get_registration_sheet():
             articles=articles,
             basket_count=basket_count,
             article_sum=article_sum,
-            registration_fee=registration_fee
+            registration_fee=provision
         )
 
     return redirect(url_for('overview'))
