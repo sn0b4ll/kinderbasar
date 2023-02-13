@@ -13,21 +13,11 @@
         box-sizing: border-box;
         -moz-box-sizing: border-box;
     }
-    .page {
-        /*width: 500mm;*/
-        /*min-height: 297mm;*/
-        /*padding: 20mm;*/
-        /*margin: 10mm auto;*/
-        /*border: 1px #D3D3D3 solid;*/
-        /*border-radius: 5px;*/
-        background: white;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
     .subpage {
         /*padding: 0.5cm;*/
         /*border: 5px red solid;*/
         /*width: 210mm;*/
-        height: 375mm;
+        height: 297mm;
         page-break-after: always;        
         /*outline: 2cm #FFEAEA solid;*/
     }
@@ -35,7 +25,7 @@
         /*padding: 0.5cm;*/
         /*border: 5px red solid;*/
         /*width: 210mm;*/
-        height: 375mm;
+        height: 297mm;
         /*outline: 2cm #FFEAEA solid;*/
     }
     
@@ -61,26 +51,24 @@
     }
 </style>
 
-<div class="container mt-2 page">
+<div class="container mt-2">
     <div class="subpage">
-    <div class="row">
-    {% for article in articles %}
-        <div class="col-4 mt-2 border border-dark border-2 pb-2">
-            {{ article.name|truncate(35) }} <br> 
-            <font style="color:red; text-decoration: underline;">Verkäufer: {{ article.seller.id }}</font> <br>
-            {% if article.clothing_size != "" %}
-            Größe: {{ article.clothing_size }}<br>
-            {% else %}
-            <br>
-            {% endif %}
-            Preis: {{ article.price|as_euro }}<br>
-            <img src="{{ qrcode(url_template + article.uuid, box_size=4, border=1) }}">
+        <div class="row">
+        {% for article in articles %}
+            <div class="col-4 mt-2 border border-dark border-2 pb-2">
+                {{ article.name|truncate(35) }} <br> 
+                <font style="color:red; text-decoration: underline;">Verkäufer: {{ article.seller.id }}</font> <br>
+                {% if article.clothing_size != "" %}
+                Größe: {{ article.clothing_size }}<br>
+                {% else %}
+                <br>
+                {% endif %}
+                Preis: {{ article.price|as_euro }}<br>
+                <img src="{{ qrcode(url_template + article.uuid, box_size=4, border=1) }}">
+            </div>
+            {% if loop.index is divisibleby 15 %}
         </div>
-        {% if loop.index is divisibleby 12 %}
     </div>
-    </div>
-</div>
-<div class="container mt-2 page">
     <div class="subpage">
         <div class="row">
         {% elif loop.index is divisibleby 3 %}
