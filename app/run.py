@@ -84,9 +84,14 @@ def overview_qr():
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
 
+        current_articles = []
+        for article in user.articles:
+            if article.current:
+                current_articles.append(article)
+
         html = render_template(
                 'overview_qr.html',
-                articles=user.articles,
+                articles=current_articles,
                 baskets=user.shoppingbaskets,
                 url_template=f"{config['APP']['URL']}/article/"
             )
