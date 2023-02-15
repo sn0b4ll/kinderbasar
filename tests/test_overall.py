@@ -1,11 +1,10 @@
-# pylint: import-error
-import pytest
-import requests
+'''Test file dedicated to overall tests.'''
+# pylint: disable=import-error
 
 from configparser import ConfigParser
 
-import os
-print(os.getcwd())
+import pytest # pylint: disable=unused-import
+import requests
 
 # Init config parser
 config = ConfigParser()
