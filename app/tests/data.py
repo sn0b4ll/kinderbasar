@@ -56,10 +56,10 @@ def create_test_data():
     user_id = 1
 
     ## Org Users
-    user_admin, user_id = _create_user(user_id, 'test', 'admin@kinderbasar-elsendorf.de', True, True, False)
-    user_kasse1, user_id = _create_user(user_id, 'test', 'kasse1@kinderbasar-elsendorf.de', True, True, False)
-    user_kasse2, user_id = _create_user(user_id, 'test', 'kasse2@kinderbasar-elsendorf.de', True, True, False)
-    user_kasse3, user_id = _create_user(user_id, 'test', 'kasse3@kinderbasar-elsendorf.de', True, True, False)
+    _, user_id = _create_user(user_id, 'test', 'admin@kinderbasar-elsendorf.de', True, True, False)
+    _, user_id = _create_user(user_id, 'test', 'kasse1@kinderbasar-elsendorf.de', True, True, False)
+    _, user_id = _create_user(user_id, 'test', 'kasse2@kinderbasar-elsendorf.de', True, True, False)
+    _, user_id = _create_user(user_id, 'test', 'kasse3@kinderbasar-elsendorf.de', True, True, False)
 
     ## Sellers
     user_seller1, user_id = _create_user(user_id, 'test', 'seller1@kinderbasar-elsendorf.de', True, False, False)

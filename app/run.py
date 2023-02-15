@@ -194,7 +194,7 @@ if __name__ == '__main__':
         config.set('TESTING', 'CREATE_DATA', 'False')
 
         # Update
-        with open('./conf/env.conf', 'w') as configfile:
+        with open('./conf/env.conf', 'w', encoding='UTF-8') as configfile:
             config.write(configfile)
             logging.info("[.] Disabled data creation after running once.")
     elif config['TESTING'].getboolean('MIGRATE_DB'):
@@ -203,7 +203,7 @@ if __name__ == '__main__':
         config.set('TESTING', 'MIGRATE_DB', 'False')
 
         # Update
-        with open('./conf/env.conf', 'w') as configfile:
+        with open('./conf/env.conf', 'w', encoding='UTF-8') as configfile:
             config.write(configfile)
             logging.info("[.] Disabled data import after running once.")
 
