@@ -3,7 +3,7 @@
 
 import math
 
-import pdfkit #pylint: disable=import-error
+import pdfkit #pylint: disable=import-error # type: ignore
 
 from flask import Flask, Response
 from flask import render_template, redirect, url_for

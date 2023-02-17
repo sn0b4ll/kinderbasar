@@ -18,10 +18,10 @@ logging.basicConfig(
 USER_JSON_PATH = "app/utils/db_migration_files/user.json"
 ARTICLE_JSON_PATH = "app/utils/db_migration_files/article.json"
 
-def _create_user(id, password, salt, email, activated, organizer):
+def _create_user(user_id, password, salt, email, activated, organizer):
     new_user = User()
 
-    new_user.id = int(id)
+    new_user.id = int(user_id)
     new_user.password = password
     new_user.salt = salt
     new_user.email = email
@@ -51,7 +51,7 @@ def _create_article(uuid, name, price, clothing_size, user_id):
 
     db.session.add(new_article)
 
-def remove_users_without_articles():
+def _remove_users_without_articles():
     '''Remove all users without articles.'''
 
     user_list = db.session.query(User).all()
@@ -63,22 +63,26 @@ def remove_users_without_articles():
             logging.info(f"Found { us.id } with { len(us.articles) } articles.")
 
 def migrate_data():
+    '''Main function to migrate data.'''
     logging.info('[+] Starting data migration.')
-    data = json.load(open(USER_JSON_PATH))
-    for us in data:
+    with open(USER_JSON_PATH, encoding='utf-8') as user_file:
+        data = json.load(user_file)
+
+    for user in data:
         _create_user(
-            us['id'],
-            us['password'],
-            us['salt'],
-            us['email'],
-            us['activated'],
-            us['organizer']
+            user['id'],
+            user['password'],
+            user['salt'],
+            user['email'],
+            user['activated'],
+            user['organizer']
         )
-    
+
     db.session.commit()
     logging.info('[+] Finished with users, switiching to articles.')
 
-    data = json.load(open(ARTICLE_JSON_PATH))
+    with open(ARTICLE_JSON_PATH, encoding='utf-8') as article_file:
+        data = json.load(article_file)
     cnt = len(data)
     cur = 0
     logging.info('[+] Got here (before migrate).')
@@ -97,7 +101,7 @@ def migrate_data():
     db.session.commit()
     logging.info('[+] Finished with articles, cleaing up DB.')
 
-    remove_users_without_articles()
+    _remove_users_without_articles()
     db.session.commit()
 
     logging.info('[+] Migration done.')

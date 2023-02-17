@@ -1,7 +1,7 @@
 '''Serves pages linked to organizer functions.'''
 # pylint: disable=no-member,logging-fstring-interpolation,import-error
 
-import pdfkit #pylint: disable=import-error
+import pdfkit #pylint: disable=import-error # type: ignore
 
 from flask import Blueprint, Response
 from flask import render_template, redirect, url_for
