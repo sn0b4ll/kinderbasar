@@ -40,23 +40,6 @@
 	<div class="row">
 		<div class="col">
 			<table class="table table-striped">
-				<tr>
-					<th scope="col">Artikel</th>
-					<th scope="col">Preis</th>
-				</tr>
-				{% for article in card.articles -%}
-				<tr>
-					<td>{{ article.name }}</td>
-					<td>{{ article.price|as_euro }}</td>
-					</td>
-				</tr>
-				{% endfor %}
-			</table> 
-		</div>
-	</div>
-    <div class="row">
-		<div class="col">
-			<table class="table table-striped">
                 <tr>
                     <td>Anzahl Artikel:</td>
                     <td>{{ card.articles|length }}</td>
@@ -83,9 +66,9 @@
                 </tr>
             </table>
         </div>
-    </div>
-    <div class="row d-flex justify-content-center align-items-center mt-1">
-		<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
+	</div>
+	<div class="row d-flex justify-content-center align-items-center mt-1">
+		<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-2 mb-4 shadow">
             {% if card.active %}
             <form method="POST" action="/card/{{ card.uuid }}/close/">
 				<input type="submit" class="btn btn-danger btn-block mb-4 mt-3" value="Abschließen">
@@ -93,6 +76,23 @@
             {% endif %}
 		</div>
 	</div>
+    <div class="row">
+		<div class="col">
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">Artikel</th>
+					<th scope="col">Preis</th>
+				</tr>
+				{% for article in card.articles -%}
+				<tr>
+					<td>{{ article.name }}</td>
+					<td>{{ article.price|as_euro }}</td>
+					</td>
+				</tr>
+				{% endfor %}
+			</table> 
+		</div>
+    </div>
 </div>
 
 {% include 'footer.html' %}
