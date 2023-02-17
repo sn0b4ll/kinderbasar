@@ -10,7 +10,7 @@ from flask import session
 from models import db
 from models import User
 
-from helper import logging
+from helper import logging, _filter_article_current
 
 organization_routes = Blueprint('organization_routes', __name__, template_folder='templates')
 
@@ -26,7 +26,7 @@ def get_checkin(user_id):
 
         provision = 0
 
-        for article in user.articles:
+        for article in filter(_filter_article_current, user.articles):
             # Calculate provision
             if article.price < 5000:
                 provision += article.price*0.05
@@ -82,7 +82,7 @@ def get_sellers():
 
         seller_list = []
         for user in all_users:
-            articles = user.articles
+            articles = list(filter(_filter_article_current, user.articles))
             articles_overall = len(articles)
             articles_sold = 0
             for article in articles:
@@ -117,7 +117,7 @@ def get_clearing(user_id):
     '''Get the final clearing document for a user after the basar ended.'''
     if ('organizer' in session) and (session['organizer'] is True):
         user = db.session.get(User, user_id)
-        articles = user.articles
+        articles = list(filter(_filter_article_current, user.articles))
 
         articles_unsold_abv10 = []
 
@@ -153,7 +153,7 @@ def print_all_clearings():
             articles_unsold_abv10 = []
             sold_sum = 0
 
-            for article in articles:
+            for article in filter(_filter_article_current, articles):
                 if article.sold is True:
                     sold_sum += article.price
                 elif article.price >= 1000:

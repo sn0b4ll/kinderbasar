@@ -21,7 +21,7 @@ from routes.article import article_handling #pylint: disable=no-name-in-module
 from routes.card import card_handling
 from routes.organizer import organization_routes
 
-from helper import logging, config
+from helper import logging, config, _filter_article_current
 
 app = Flask(__name__)
 app.secret_key = config.get('APP', 'secret_key')
@@ -58,11 +58,11 @@ def overview():
     '''Create an overview of articles for the user.'''
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
-        if ('organizer' in session) and (session['organizer'] is True):
-            articles = db.session.query(Article).all()
+        if (user.organizer):
+            articles = db.session.query(Article).filter(Article.current)
             org = True
         else:
-            articles = user.articles
+            articles = list(filter(_filter_article_current, user.articles))
             org = False
 
         return render_template(
@@ -80,10 +80,7 @@ def overview_qr():
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
 
-        current_articles = []
-        for article in user.articles:
-            if article.current:
-                current_articles.append(article)
+        current_articles = list(filter(_filter_article_current, user.articles))
 
         html = render_template(
                 'overview_qr.html',
@@ -110,7 +107,7 @@ def get_registration_sheet():
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
 
-        articles = user.articles
+        articles = list(filter(_filter_article_current, user.articles))
 
         # Calculate the sums
         article_sum = 0
@@ -119,7 +116,7 @@ def get_registration_sheet():
 
         provision = 0
 
-        for article in user.articles:
+        for article in articles:
             # Calculate provision
             if article.price < 5000:
                 provision += article.price*0.05

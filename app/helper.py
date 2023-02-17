@@ -18,3 +18,7 @@ config.read('./conf/env.conf') # TODO(Do only once -> own module)
 # Init the password hasher
 
 ph = PasswordHasher()
+
+
+def _filter_article_current(article):
+    return article.current
