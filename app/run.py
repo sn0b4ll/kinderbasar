@@ -37,7 +37,7 @@ app.register_blueprint(article_handling)
 app.register_blueprint(card_handling)
 app.register_blueprint(organization_routes)
 
-from models import  Article, User, Shoppingbasket
+from models import  Article, User
 
 from tests.data import create_test_data
 
@@ -61,18 +61,15 @@ def overview():
         user = db.session.get(User, session['user_id'])
         if ('organizer' in session) and (session['organizer'] is True):
             articles = db.session.query(Article).all()
-            shoppingbaskets = db.session.query(Shoppingbasket).all()
             org = True
         else:
             articles = user.articles
-            shoppingbaskets = user.shoppingbaskets
             org = False
 
         return render_template(
                 'overview.html',
                 user=user,
                 articles=articles,
-                shoppingbaskets=shoppingbaskets,
                 org=org
             )
     return redirect(url_for('session_handling.login'))
@@ -92,7 +89,6 @@ def overview_qr():
         html = render_template(
                 'overview_qr.html',
                 articles=current_articles,
-                baskets=user.shoppingbaskets,
                 url_template=f"{config['APP']['URL']}/article/"
             )
 
@@ -130,14 +126,10 @@ def get_registration_sheet():
             else:
                 provision += 250
 
-        # Get number of baskets
-        basket_count = len(user.shoppingbaskets)
-
         return render_template(
             'registration_sheet.html',
             user=user,
             articles=articles,
-            basket_count=basket_count,
             article_sum=article_sum,
             registration_fee=provision
         )

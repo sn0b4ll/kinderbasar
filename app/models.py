@@ -16,11 +16,6 @@ class Article(db.Model):
     card_uuid = db.Column(db.String(36), db.ForeignKey('card.uuid'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-class Shoppingbasket(db.Model):
-    '''Since most customers bring their stuff in baskets, we need to org them.'''
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
 class User(db.Model):
     '''Class for holding sellers and organizers.'''
     id = db.Column(db.Integer, primary_key=True)
@@ -40,7 +35,6 @@ class User(db.Model):
 
     # Iterator for articles owned by the user
     articles = db.relationship('Article', backref='seller', lazy=True)
-    shoppingbaskets = db.relationship('Shoppingbasket', backref='owner', lazy=True)
 
 class Card(db.Model):
     '''An card holds all items currently beeing sold.'''

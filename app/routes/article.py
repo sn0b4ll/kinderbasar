@@ -8,7 +8,7 @@ from flask import render_template, redirect, url_for, abort
 from flask import request, session
 
 from models import db
-from models import Article, User, Shoppingbasket
+from models import Article, User
 
 from helper import logging, config, ph
 
@@ -117,62 +117,5 @@ def remove_article(uuid):
         db.session.commit()
 
         logging.info(f"Article with UUID {uuid} was removed.")
-
-        return redirect(url_for('overview'))
-
-'''
-Disabled, since it is no longer needed.
-
-@app.route("/article/<string:uuid>/qr", methods=["get"])
-def print_qr(uuid):
-    url = f"{config['APP']['URL']}/article/{uuid}"
-
-    article = Article.query.filter_by(uuid=uuid).first()
-    if article is None:
-            abort(Response('UUID for article is not existing.'))
-    return render_template(
-        'qr_code.html',
-        url=url, 
-        article=article
-    )
-'''
-
-@article_handling.route("/shoppingbasket/add", methods=["GET"])
-def add_shopping_basket():
-    '''Add a shoping basket as an article.'''
-    if 'user_id' in session:
-        user = User.query.get(session['user_id'])
-
-        if user.registration_done:
-            return "Registration already done.", 403
-
-        shopping_basket = Shoppingbasket()
-        shopping_basket.owner = user
-
-        db.session.add(shopping_basket)
-        db.session.commit()
-
-        logging.info(f"The shopping basket {shopping_basket.id} was created.")
-
-        return redirect(url_for('overview'))
-    else:
-        return redirect(url_for('session_handling.login'))
-
-@article_handling.route("/shoppingbasket/<string:basket_id>/remove", methods=["POST"])
-def remove_basket(basket_id):
-    if 'user_id' in session:
-        if basket_id is None:
-            return abort(Response('Basket ID missing.'))
-
-        user = db.session.get(User, session['user_id'])
-        shoppingbasket = db.session.get(Shoppingbasket, basket_id)
-
-        if (not shoppingbasket in user.shoppingbaskets) or user.registration_done:
-            return "Not allowed to delete basket.", 403
-
-        db.session.delete(shoppingbasket)
-        db.session.commit()
-
-        logging.info(f"Basket with ID {basket_id} was removed.")
 
         return redirect(url_for('overview'))

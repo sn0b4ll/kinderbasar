@@ -4,7 +4,7 @@
 import uuid
 
 from models import db
-from models import Article, User, Shoppingbasket
+from models import Article, User
 
 from helper import ph
 
@@ -40,13 +40,6 @@ def _create_article(user, name, price, clothing_size, current):
     new_article.seller = user
 
     db.session.add(new_article)
-
-def _create_shoppingbasket(user):
-    '''Create a new shopping basket and assign to user.'''
-    new_basket = Shoppingbasket()
-    new_basket.owner = user
-
-    db.session.add(new_basket)
 
 def create_test_data():
     '''Creates test-data.'''
@@ -94,18 +87,3 @@ def create_test_data():
 
     ## Commit the users
     db.session.commit()
-
-    # Shopping Baskets
-    ## Create the baskets
-    _create_shoppingbasket(user_seller1)
-    _create_shoppingbasket(user_seller1)
-    _create_shoppingbasket(user_seller2)
-    _create_shoppingbasket(user_seller3)
-    _create_shoppingbasket(user_seller3)
-    _create_shoppingbasket(user_seller3)
-    _create_shoppingbasket(user_seller3)
-    _create_shoppingbasket(user_seller3)
-
-    ## Aaaaand commit them
-    db.session.commit()
-

@@ -75,26 +75,6 @@
 				</tr>
 				{% endif %}
 				{% endfor %}
-				{% for basket in shoppingbaskets -%}
-				<tr>
-					<td>Einkaufswagen {{ loop.index }}</td>
-					<td>{{ basket.owner.id }}</td>
-					<td></td>
-					<td></td>
-					{% if org %}
-					<td></td>
-					{% endif %}
-					<td></td>
-					<td></td>
-					<td>
-						{% if (basket.owner == user) and (not user.registration_done) %}
-						<form action="/shoppingbasket/{{ basket.id }}/remove" method="post">
-							<button type="submit" class="btn btn-info">Entfernen</button>
-						</form>
-						{% endif %}
-					</td>
-				</tr>
-				{% endfor %}
 			</table> 
 		</div>
 	</div>
@@ -103,7 +83,6 @@
 		<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
 			{% if not user.registration_done %}
 			<input type="button" class="btn btn-primary btn-block mb-4 mt-4" value="Artikel hinzufügen" onclick="location.pathname='/article/add'"><br/>
-			<input type="button" class="btn btn-primary btn-block mb-4" value="Einkaufskorb hinzufügen" onclick="location.pathname='/shoppingbasket/add'"><br/>
 			<input type="submit" class="btn btn-primary btn-block mb-4" value="Abschließen & Registrierungsformular anzeigen" onclick="location.pathname='/registration_sheet/'">
 			{% else %}
 			<input type="submit" class="btn btn-primary btn-block mb-4 mt-4" value="Registrierungsformular anzeigen" onclick="location.pathname='/registration_sheet/'">
