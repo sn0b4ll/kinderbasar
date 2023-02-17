@@ -117,22 +117,19 @@ def get_clearing(user_id):
         user = db.session.get(User, user_id)
         articles = user.articles
 
-        articles_sold = []
-        articles_unsold = []
+        articles_unsold_abv10 = []
 
         sold_sum = 0
         for article in articles:
             if article.sold is True:
                 sold_sum += article.price
-                articles_sold.append(article)
-            else:
-                articles_unsold.append(article)
+            elif article.price >= 1000:
+                articles_unsold_abv10.append(article)
 
         return render_template(
             'clearing.html',
             user=user,
-            articles_sold=articles_sold,
-            articles_unsold=articles_unsold,
+            articles_unsold=articles_unsold_abv10,
             sold_sum=sold_sum
         )
 

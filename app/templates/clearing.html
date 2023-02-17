@@ -24,43 +24,15 @@
 
 	<div class="row">
 		<div class="col">
-			<h1>Artikelübersicht</h1>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col">
-			<h2>Nicht verkaufte Artikel</h2>
+			<h1>Nicht verkaufte Artikel über 10€</h1>
 			<table class="table table-striped">
 				<tr>
-					<th scope="col">UUID</th>
 					<th scope="col">Name</th>
 					<th scope="col">Verkauft</th>
 					<th scope="col">Preis</th>
 				</tr>
 				{% for article in articles_unsold -%}
 				<tr>
-					<td>{{ article.uuid }}</td>
-					<td>{{ article.name }}</td>
-					<td>{{ article.sold|to_german }}</td>
-					<td>{{ article.price|as_euro }}</td>
-				</tr>
-				{% endfor %}
-			</table> 
-		</div>
-	</div>
-	<div class="row">
-		<div class="col">
-			<h2>Verkaufte Artikel</h2>
-			<table class="table table-striped">
-				<tr>
-					<th scope="col">UUID</th>
-					<th scope="col">Name</th>
-					<th scope="col">Verkauft</th>
-					<th scope="col">Preis</th>
-				</tr>
-				{% for article in articles_sold -%}
-				<tr>
-					<td>{{ article.uuid }}</td>
 					<td>{{ article.name }}</td>
 					<td>{{ article.sold|to_german }}</td>
 					<td>{{ article.price|as_euro }}</td>
