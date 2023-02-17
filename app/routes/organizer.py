@@ -146,14 +146,20 @@ def print_all_clearings():
         users = db.session.query(User).all()
 
         user_dict = {}
+        user_with_current_articles = []
 
         for user in users:
-            articles = user.articles
+            articles = list(filter(_filter_article_current, user.articles))
 
+            # Skip for sellers with 0 current articles
+            if len(articles) == 0:
+                continue
+            
+            user_with_current_articles.append(user)
             articles_unsold_abv10 = []
             sold_sum = 0
 
-            for article in filter(_filter_article_current, articles):
+            for article in articles:
                 if article.sold is True:
                     sold_sum += article.price
                 elif article.price >= 1000:
@@ -163,7 +169,7 @@ def print_all_clearings():
 
         html = render_template(
             'clearing_all.html',
-            users=users,
+            users=user_with_current_articles,
             user_dict=user_dict
         )
 
