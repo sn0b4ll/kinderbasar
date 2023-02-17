@@ -1,5 +1,9 @@
+"""Imports old data from json into the new db."""
+# pylint: disable=no-member,logging-fstring-interpolation,import-error
 import json
 import logging
+
+from datetime import datetime
 
 from models import Article, User
 from models import db
@@ -14,7 +18,7 @@ logging.basicConfig(
 USER_JSON_PATH = "app/utils/db_migration_files/user.json"
 ARTICLE_JSON_PATH = "app/utils/db_migration_files/article.json"
 
-def create_user(id, password, salt, email, activated, organizer):
+def _create_user(id, password, salt, email, activated, organizer):
     new_user = User()
 
     new_user.id = int(id)
@@ -28,7 +32,7 @@ def create_user(id, password, salt, email, activated, organizer):
 
     db.session.add(new_user)
 
-def create_article(uuid, name, price, clothing_size, user_id):
+def _create_article(uuid, name, price, clothing_size, user_id):
     new_article = Article()
 
     new_article.uuid = uuid
@@ -37,13 +41,15 @@ def create_article(uuid, name, price, clothing_size, user_id):
     new_article.sold = False
     new_article.clothing_size = clothing_size
     new_article.current = False
+    new_article.last_current = datetime(2022, 10, 1)
+
     new_article.card_uuid = None
-    
+
     # Set correct selling user
     new_article.seller = db.session.get(User, user_id)
 
     db.session.add(new_article)
-    
+
 def remove_users_without_articles():
     '''Remove all users without articles.'''
 
@@ -59,7 +65,7 @@ def migrate_data():
     logging.info('[+] Starting data migration.')
     data = json.load(open(USER_JSON_PATH))
     for us in data:
-        create_user(
+        _create_user(
             us['id'],
             us['password'],
             us['salt'],
@@ -78,7 +84,7 @@ def migrate_data():
     for art in data:
         logging.info(f"[+] Migrating Art { cur }/{ cnt }")
         if not art['sold'] == '1':
-            create_article(
+            _create_article(
                 art['uuid'],
                 art['name'],
                 int(art['price']),

@@ -3,6 +3,8 @@
 
 import uuid
 
+from datetime import datetime
+
 from flask import Blueprint, Response
 from flask import render_template, redirect, url_for, abort
 from flask import request, session
@@ -46,6 +48,7 @@ def add_article():
         article.seller = User.query.get(session['user_id'])
         article.clothing_size = clothing_size
         article.current = True
+        article.last_current = datetime.now()
         article.price = price
         article.sold = False
 
@@ -90,6 +93,7 @@ def reactivate_article(article_uuid):
 
         if article in user.articles:
             article.current = True
+            article.last_current = datetime.now()
         else:
             return abort(Response('Article not linked to user.'))
 

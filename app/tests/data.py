@@ -3,6 +3,8 @@
 
 import uuid
 
+from datetime import datetime
+
 from models import db
 from models import Article, User
 
@@ -26,7 +28,7 @@ def _create_user(user_id, password, email, activated, organizer, checkin_done):
 
     return new_user, user_id + 1
 
-def _create_article(user, name, price, clothing_size, current):
+def _create_article(user, name, price, clothing_size, current, last_current=datetime.now()):
     '''Create a new article'''
     new_article = Article()
 
@@ -36,6 +38,7 @@ def _create_article(user, name, price, clothing_size, current):
     new_article.sold = False
     new_article.clothing_size = clothing_size
     new_article.current = current
+    new_article.last_current = last_current
     new_article.card_uuid = None
     new_article.seller = user
 
@@ -65,22 +68,24 @@ def create_test_data():
 
     # Articles
     ## Create Articles for every user
+    old_date = datetime(2022, 10, 1)
+
     _create_article(user_seller1, "Test-Art 1", 2000, 'XL', True)
     _create_article(user_seller1, "Test-Art 2", 2500, 'L', True)
     _create_article(user_seller1, "Test-Art 3", 500, '', True)
     _create_article(user_seller1, "Test-Art 4", 12000, 'ASDASDASD', True)
-    _create_article(user_seller1, "Test-Art 5", 1250, 'XL', False)
-    _create_article(user_seller1, "Test-Art 6", 1000, '', False)
+    _create_article(user_seller1, "Test-Art 5", 1250, 'XL', False, last_current=old_date)
+    _create_article(user_seller1, "Test-Art 6", 1000, '', False, last_current=old_date)
 
     _create_article(user_seller2, "Test-Art 7", 2000, 'XL', True)
     _create_article(user_seller2, "Test-Art 8", 2500, 'L', True)
     _create_article(user_seller2, "Test-Art 9", 500, '', True)
     _create_article(user_seller2, "Test-Art 10", 12000, 'ASDASDASD', True)
-    _create_article(user_seller2, "Test-Art 11", 1250, 'XL', False)
-    _create_article(user_seller2, "Test-Art 12", 1000, '', False)
+    _create_article(user_seller2, "Test-Art 11", 1250, 'XL', False, last_current=old_date)
+    _create_article(user_seller2, "Test-Art 12", 1000, '', False, last_current=old_date)
 
-    _create_article(user_seller3, "Test-Art 13", 100, 'XL', False)
-    _create_article(user_seller3, "Test-Art 14", 10000, '', False)
+    _create_article(user_seller3, "Test-Art 13", 100, 'XL', False, last_current=old_date)
+    _create_article(user_seller3, "Test-Art 14", 10000, '', False, last_current=old_date)
 
     _create_article(user_seller4, "Test-Art 14", 100, '', True)
     _create_article(user_seller4, "Test-Art 15", 1000, '', True)
