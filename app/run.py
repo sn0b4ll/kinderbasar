@@ -88,6 +88,7 @@ def overview_qr():
         html = render_template(
                 'overview_qr.html',
                 articles=current_articles,
+                user=user,
                 url_template=f"{config['APP']['URL']}/article/"
             )
 
