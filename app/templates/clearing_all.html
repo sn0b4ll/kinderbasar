@@ -1,0 +1,92 @@
+{% include 'header.html' %}
+<style>
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font: 12pt "Tahoma";
+    }
+    * {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+    .subpage {
+
+        height: 297mm;
+        page-break-after: always;        
+    }
+    .lastpage {
+        height: 297mm;
+    }
+    
+    @page {
+        size: A4;
+        margin: 0;
+    }
+</style>
+
+<div class="container">
+	{% for user in users %}
+	<div class="subpage">
+		<div class="row">
+			<div class="col">
+				<h1>Informationen</h1>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<table class="table table-striped">
+					<tr>
+						<th scope="col">ID</th>
+						<td>{{ user.id }}</td>
+					</tr>
+					<tr>
+						<th scope="col">E-Mail</th>
+						<td>{{ user.email }}</td>
+					</tr>
+				</table> 
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<h1>Nicht verkaufte Artikel über 10€</h1>
+				<table class="table table-striped">
+					<tr>
+						<th scope="col">Name</th>
+						<th scope="col">Verkauft</th>
+						<th scope="col">Preis</th>
+					</tr>
+					{% for article in user_dict[user]["articles"] -%}
+					<tr>
+						<td>{{ article.name }}</td>
+						<td>{{ article.sold|to_german }}</td>
+						<td>{{ article.price|as_euro }}</td>
+					</tr>
+					{% endfor %}
+				</table> 
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col">
+				<h1>Kostenübersicht</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<table class="table table-striped">
+					<tr>
+						<th scope="col">Summe Verkauft:</th>
+						<td>{{ user_dict[user]["sold_sum"]|as_euro }}</td>
+					</tr>
+				</table> 
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+
+{% include 'footer.html' %}

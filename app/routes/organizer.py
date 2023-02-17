@@ -1,7 +1,9 @@
 '''Serves pages linked to organizer functions.'''
 # pylint: disable=no-member,logging-fstring-interpolation,import-error
 
-from flask import Blueprint
+import pdfkit #pylint: disable=import-error
+
+from flask import Blueprint, Response
 from flask import render_template, redirect, url_for
 from flask import session
 
@@ -135,3 +137,45 @@ def get_clearing(user_id):
 
     logging.info("Someone without org right tried access the clearing for an seller.")
     return redirect(url_for('overview'))
+
+@organization_routes.route("/clearing/printall", methods=["GET"])
+def print_all_clearings():
+    '''Create a pdf holding all clearings for all users.'''
+    loggedin_user = User.query.get(session['user_id'])
+    if loggedin_user.organizer:
+        users = db.session.query(User).all()
+
+        user_dict = {}
+
+        for user in users:
+            articles = user.articles
+
+            articles_unsold_abv10 = []
+            sold_sum = 0
+
+            for article in articles:
+                if article.sold is True:
+                    sold_sum += article.price
+                elif article.price >= 1000:
+                    articles_unsold_abv10.append(article)
+
+            user_dict[user] = {"articles" : articles_unsold_abv10, "sold_sum" : sold_sum}
+
+        html = render_template(
+            'clearing_all.html',
+            users=users,
+            user_dict=user_dict
+        )
+
+        options = {
+            'page-height': '297mm',
+            'page-width': '210mm',
+        }
+
+        return Response(pdfkit.from_string(html, options=options),
+                       mimetype="application/pdf",
+                       headers={"Content-Disposition":
+                                    "attachment;filename=clearing.pdf"})
+
+    logging.info("Someone without the right tried access the clearing for an seller.")
+    return redirect(url_for('session_handling.login'))
