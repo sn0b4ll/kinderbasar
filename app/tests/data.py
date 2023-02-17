@@ -38,6 +38,7 @@ def _create_article(user, name, price, clothing_size, current, last_current=date
     new_article.sold = False
     new_article.clothing_size = clothing_size
     new_article.current = current
+    new_article.reactivated = False
     new_article.last_current = last_current
     new_article.card_uuid = None
     new_article.seller = user

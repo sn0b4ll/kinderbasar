@@ -40,6 +40,7 @@ def _create_article(uuid, name, price, clothing_size, user_id):
     new_article.price = price
     new_article.sold = False
     new_article.clothing_size = clothing_size
+    new_article.reactivated = False
     new_article.current = False
     new_article.last_current = datetime(2022, 10, 1)
 

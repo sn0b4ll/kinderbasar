@@ -22,3 +22,6 @@ ph = PasswordHasher()
 
 def _filter_article_current(article):
     return article.current
+
+def _filter_article_reactivated(article):
+    return not article.reactivated

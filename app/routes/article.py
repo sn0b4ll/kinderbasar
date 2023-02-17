@@ -48,6 +48,7 @@ def add_article():
         article.seller = User.query.get(session['user_id'])
         article.clothing_size = clothing_size
         article.current = True
+        article.reactivated = False
         article.last_current = datetime.now()
         article.price = price
         article.sold = False
@@ -93,6 +94,7 @@ def reactivate_article(article_uuid):
 
         if article in user.articles:
             article.current = True
+            article.reactivated = True
             article.last_current = datetime.now()
         else:
             return abort(Response('Article not linked to user.'))

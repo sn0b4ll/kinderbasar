@@ -6,8 +6,7 @@ import math
 import pdfkit #pylint: disable=import-error
 
 from flask import Flask, Response
-from flask import render_template
-from flask import redirect, url_for
+from flask import render_template, redirect, url_for
 from flask import session
 
 from flask_qrcode import QRcode
@@ -17,11 +16,11 @@ from utils.db_migration import migrate_data
 
 from routes.register import register_process
 from routes.session import session_handling
-from routes.article import article_handling #pylint: disable=no-name-in-module
+from routes.article import article_handling
 from routes.card import card_handling
 from routes.organizer import organization_routes
 
-from helper import logging, config, _filter_article_current
+from helper import logging, config, _filter_article_current, _filter_article_reactivated
 
 app = Flask(__name__)
 app.secret_key = config.get('APP', 'secret_key')
@@ -58,7 +57,7 @@ def overview():
     '''Create an overview of articles for the user.'''
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
-        if (user.organizer):
+        if user.organizer:
             articles = db.session.query(Article).filter(Article.current)
             org = True
         else:
@@ -81,6 +80,7 @@ def overview_qr():
         user = db.session.get(User, session['user_id'])
 
         current_articles = list(filter(_filter_article_current, user.articles))
+        current_articles = list(filter(_filter_article_reactivated, current_articles))
 
         html = render_template(
                 'overview_qr.html',
@@ -141,8 +141,8 @@ def registration_done():
         user.registration_done = True
         db.session.commit()
         return f"Registration done set for user { user.id }", 200
-    else:
-        return redirect(url_for('session_handling.login'))
+
+    return redirect(url_for('session_handling.login'))
 
 
 def as_euro(price):
