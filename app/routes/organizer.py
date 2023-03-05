@@ -84,11 +84,13 @@ def get_sellers():
 
         num_sellers = len(all_users)
         num_already_checkedin = 0
+        sum_articles_current = 0
 
         seller_list = []
         for user in all_users:
             articles = list(filter(_filter_article_current, user.articles))
             articles_overall = len(articles)
+            sum_articles_current += articles_overall
             articles_sold = 0
             for article in articles:
                 if article.sold is True:
@@ -111,6 +113,7 @@ def get_sellers():
             seller_list=seller_list,
             num_sellers=num_sellers,
             num_already_checkedin=num_already_checkedin,
+            sum_articles_current=sum_articles_current,
             org=True
         )
 
