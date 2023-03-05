@@ -73,7 +73,12 @@ def set_checkin(user_id):
 def get_sellers():
     '''List all sellers with their sold / unsold product count.'''
 
-    loggedin_user = User.query.get(session['user_id'])
+    try:
+        loggedin_user = User.query.get(session['user_id'])
+    except KeyError:
+        logging.info("Someone without org right tried access the sellers list.")
+        return redirect(url_for('session_handling.login'))
+
     if loggedin_user.organizer:
         all_users = User.query.all()
 
@@ -154,7 +159,7 @@ def print_all_clearings():
             # Skip for sellers with 0 current articles
             if len(articles) == 0:
                 continue
-            
+
             user_with_current_articles.append(user)
             articles_unsold_abv10 = []
             sold_sum = 0
@@ -182,6 +187,21 @@ def print_all_clearings():
                        mimetype="application/pdf",
                        headers={"Content-Disposition":
                                     "attachment;filename=clearing.pdf"})
+
+    logging.info("Someone without the right tried access the clearing for an seller.")
+    return redirect(url_for('session_handling.login'))
+
+@organization_routes.route("/user/<int:user_id>/unregister", methods=["GET"])
+def user_unregister(user_id):
+    '''Unregister an user.'''
+    loggedin_user = User.query.get(session['user_id'])
+    if loggedin_user.organizer:
+        user = db.session.get(User, user_id)
+        user.registration_done = False
+        db.session.commit()
+
+        logging.info(f"Organizer with id { loggedin_user.id } unregistered user { user.id }.")
+        return redirect(url_for('organization_routes.get_sellers'))
 
     logging.info("Someone without the right tried access the clearing for an seller.")
     return redirect(url_for('session_handling.login'))

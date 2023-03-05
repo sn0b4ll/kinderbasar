@@ -45,6 +45,7 @@
 					<th scope="col">Verkäufer</th>
 					<th scope="col">Anzahl Artikel</th>
 					<th scope="col">Anzahl Artikel Verkauft</th>
+					<th scope="col">Registrierung abgeschlossen</th>
 					<th scope="col">Checkin</th>
 					<th scope="col">Abrechnung drucken</th>
 				</tr>
@@ -54,7 +55,14 @@
 					<td>{{ seller[1] }}</td>
 					<td>{{ seller[2] }}</td>
 					<td>
-						{% if seller[3] %}
+						{% if seller[0].registration_done %}
+							<a href="/user/{{ seller[0].id }}/unregister" class="btn btn-info" role="button">Registriert, wieder freischalten</a>
+						{% else %}
+							{{ seller[0].registration_done|to_german }}
+						{% endif %}
+					</td>
+					<td>
+						{% if seller[4] %}
 						Eingecheckt
 						{% else %}
 						<a href="/org/checkin/{{ seller[0].id }}/" class="btn btn-info" role="button">Checkin</a>
