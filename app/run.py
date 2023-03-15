@@ -79,8 +79,10 @@ def overview_qr():
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
 
+        # Fetch articles, remove non-current and reactived and sort by the last-current field
         current_articles = list(filter(_filter_article_current, user.articles))
         current_articles = list(filter(_filter_article_reactivated, current_articles))
+        current_articles = sorted(current_articles, key=lambda x : x.last_current)
 
         html = render_template(
                 'overview_qr.html',
