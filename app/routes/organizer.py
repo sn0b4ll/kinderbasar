@@ -59,6 +59,7 @@ def set_checkin(user_id):
     if loggedin_user.organizer:
         user = db.session.get(User, user_id)
         user.checkin_done = True
+        user.registration_done = True
         db.session.commit()
 
         logging.info(f"Checking for user {user_id} was closed.")
