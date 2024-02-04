@@ -4,30 +4,31 @@
 <nav class="navbar navbar-light bg-light navbar-expand-lg">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="/">Kinderbaser Elsendorf</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
-		  </button>
+		</button>
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav">
-			  <li class="nav-item">
-				<a class="nav-link active" aria-current="page" href="/overview">Artikel Übersicht</a>
-			  </li>
-			  <li class="nav-item">
-				<a class="nav-link" href="/overview/qr">QR-Codes</a>
-			  </li>
-			  {% if org %}
-			  <li class="nav-item">
-				<a class="nav-link" href="/card/active/">Einkaufswagen</a>
-			  </li>
-			  <li class="nav-item">
-				<a class="nav-link" href="/sellers/">Verkäufer-Übersicht</a>
-			  </li>
-			  {% endif %}
-			  <li class="nav-item">
-				<a class="nav-link" href="/logout">Logout</a>
-			  </li>
+				<li class="nav-item">
+					<a class="nav-link active" aria-current="page" href="/overview">Artikel Übersicht</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/overview/qr">QR-Codes</a>
+				</li>
+				{% if org %}
+				<li class="nav-item">
+					<a class="nav-link" href="/card/active/">Einkaufswagen</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/sellers/">Verkäufer-Übersicht</a>
+				</li>
+				{% endif %}
+				<li class="nav-item">
+					<a class="nav-link" href="/logout">Logout</a>
+				</li>
 			</ul>
-		  </div>
+		</div>
 	</div>
 </nav>
 
@@ -35,6 +36,12 @@
 	<div class="row">
 		<div class="col">
 			<h1>Artikel Übersicht</h1>
+		</div>
+		<div class="col">
+			<form action="/overview/search">
+				<label for="search">Suche:</label>
+				<input id="search" name="search" type="text"></input>
+			</form>
 		</div>
 	</div>
 	<div class="row">
@@ -65,7 +72,7 @@
 					<td><a href="/article/{{ article.uuid }}" class="btn btn-info" role="button">Details</a></td>
 					<td>
 						{% if (article.seller == user) and (not user.registration_done) and (not article.sold) %}
-						
+
 						<form action="/article/{{ article.uuid }}/remove" method="post">
 							<button type="submit" class="btn btn-info">Entfernen</button>
 						</form>
@@ -73,21 +80,25 @@
 					</td>
 				</tr>
 				{% endfor %}
-			</table> 
+			</table>
 		</div>
 	</div>
-	
+
 	<div class="row d-flex justify-content-center align-items-center mt-1">
 		<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
 			{% if not user.registration_done %}
-			<input type="button" class="btn btn-primary btn-block mb-4 mt-4" value="Artikel hinzufügen" onclick="location.pathname='/article/add'"><br/>
-			<input type="submit" class="btn btn-primary btn-block mb-4" value="Abschließen & Registrierungsformular anzeigen" onclick="location.pathname='/registration_sheet/'">
+			<input type="button" class="btn btn-primary btn-block mb-4 mt-4" value="Artikel hinzufügen"
+				onclick="location.pathname='/article/add'"><br />
+			<input type="submit" class="btn btn-primary btn-block mb-4"
+				value="Abschließen & Registrierungsformular anzeigen"
+				onclick="location.pathname='/registration_sheet/'">
 			{% else %}
-			<input type="submit" class="btn btn-primary btn-block mb-4 mt-4" value="Registrierungsformular anzeigen" onclick="location.pathname='/registration_sheet/'">
+			<input type="submit" class="btn btn-primary btn-block mb-4 mt-4" value="Registrierungsformular anzeigen"
+				onclick="location.pathname='/registration_sheet/'">
 			{% endif %}
 
 		</div>
 	</div>
-	
+
 </div>
 {% include 'footer.html' %}
