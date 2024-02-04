@@ -77,18 +77,19 @@ def overview_search():
     '''Create an overview of articles for the user.'''
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
+        search_string = request.args.get('search')
+        if '*' in search_string or '_' in search_string: 
+            looking_for = search_string.replace('_', '__')\
+                                .replace('*', '%')\
+                                .replace('?', '_')
+        else:
+            looking_for = '%{0}%'.format(search_string)
+
         if user.organizer:
-            search_string = request.args.get('search')
-            if '*' in search_string or '_' in search_string: 
-                looking_for = search_string.replace('_', '__')\
-                                    .replace('*', '%')\
-                                    .replace('?', '_')
-            else:
-                looking_for = '%{0}%'.format(search_string)
-            articles = db.session.query(Article).filter(Article.current).filter(Article.name.ilike(looking_for))
+            articles = db.session.query(Article).filter(Article.current, Article.name.ilike(looking_for))
             org = True
         else:
-            articles = list(filter(_filter_article_current, user.articles))
+            articles = db.session.query(Article).filter(Article.current, Article.user_id == user.id, Article.name.ilike(looking_for))
             org = False
 
         return render_template(
