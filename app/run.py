@@ -11,6 +11,8 @@ from flask import session
 
 from flask_qrcode import QRcode
 
+from sqlalchemy import desc
+
 from models import db
 from utils.db_migration import migrate_data
 
@@ -58,10 +60,10 @@ def overview():
     if 'user_id' in session:
         user = db.session.get(User, session['user_id'])
         if user.organizer:
-            articles = db.session.query(Article).filter(Article.current)
+            articles = db.session.query(Article).filter(Article.current).order_by(desc(Article.last_current))
             org = True
         else:
-            articles = list(filter(_filter_article_current, user.articles))
+            articles = db.session.query(Article).filter(Article.current, Article.user_id == user.id).order_by(desc(Article.last_current))
             org = False
 
         return render_template(
