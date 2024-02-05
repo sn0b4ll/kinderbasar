@@ -41,14 +41,14 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-              <a class="dropdown-item active" href="/sellers/"
-                >Verkäufer-Übersicht</a
-              >
+              <a class="dropdown-item" href="/sellers/">Verkäufer-Übersicht</a>
             </li>
             <li>
               <a class="dropdown-item" href="/org/checkin">Checkin-Übersicht</a>
             </li>
-            <li><a class="dropdown-item" href="/org/stats">Statistiken</a></li>
+            <li>
+              <a class="dropdown-item active" href="/org/stats">Statistiken</a>
+            </li>
           </ul>
         </li>
         {% endif %}
@@ -63,49 +63,9 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <h1>Verkäufer-Übersicht</h1>
+      <h1>Statistiken</h1>
     </div>
   </div>
-  <div class="row">
-    <div class="col">
-      <table class="table table-striped">
-        <tr>
-          <th scope="col">Verkäufer</th>
-          <th scope="col">Anzahl Artikel</th>
-          <th scope="col">Anzahl Artikel Verkauft</th>
-          <th scope="col">Registrierung abgeschlossen</th>
-          <th scope="col">Abrechnung drucken</th>
-        </tr>
-        {% for seller in seller_list -%}
-        <tr>
-          <td>{{ seller[0].id }}</td>
-          <td>{{ seller[1] }}</td>
-          <td>{{ seller[2] }}</td>
-          <td>
-            {% if seller[0].registration_done %}
-            <a
-              href="/user/{{ seller[0].id }}/unregister"
-              class="btn btn-info"
-              role="button"
-              >Registriert, wieder freischalten</a
-            >
-            {% else %} {{ seller[0].registration_done|to_german }} {% endif %}
-          </td>
-          <td>
-            <a
-              href="/clearing/{{ seller[0].id }}/"
-              class="btn btn-info"
-              role="button"
-              >Abrechnung anzeigen</a
-            >
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-    </div>
-  </div>
-</div>
-<div class="container">
   <div class="row">
     <div class="col">
       <table class="table table-striped">
@@ -122,17 +82,6 @@
           <td>{{ num_already_checkedin }}</td>
         </tr>
       </table>
-    </div>
-  </div>
-
-  <div class="row d-flex justify-content-center align-items-center mt-1">
-    <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
-      <input
-        type="button"
-        class="btn btn-primary btn-block mb-4 mt-4"
-        value="Alle Abrechnungen drucken"
-        onclick="location.pathname='/clearing/printall'"
-      /><br />
     </div>
   </div>
 </div>
