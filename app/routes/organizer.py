@@ -64,7 +64,7 @@ def set_checkin(user_id):
 
         logging.info(f"Checking for user {user_id} was closed.")
 
-        return redirect(url_for('organization_routes.get_sellers'))
+        return redirect(url_for('organization_routes.return_checking_page'))
 
     logging.info("Someone without org right tried to do a checkin.")
     return redirect(url_for('session_handling.login'))
@@ -256,6 +256,7 @@ def user_unregister(user_id):
     if loggedin_user.organizer:
         user = db.session.get(User, user_id)
         user.registration_done = False
+        user.checkin_done = False
         db.session.commit()
 
         logging.info(f"Organizer with id { loggedin_user.id } unregistered user { user.id }.")
