@@ -2,15 +2,16 @@
 # pylint: disable=no-member,logging-fstring-interpolation,import-error
 
 import pdfkit #pylint: disable=import-error # type: ignore
+import uuid
 
 from flask import Blueprint, Response
 from flask import render_template, redirect, url_for
-from flask import session
+from flask import session, request
 
 from models import db
 from models import User, Article
 
-from helper import logging, _filter_article_current
+from helper import logging, _filter_article_current, ph
 
 organization_routes = Blueprint('organization_routes', __name__, template_folder='templates')
 
@@ -272,3 +273,31 @@ def user_unregister(user_id):
 
     logging.info("Someone without the right tried access the clearing for an seller.")
     return redirect(url_for('session_handling.login'))
+
+@organization_routes.route("/org/resetpw", methods=["POST"])
+def reset_pw():
+    '''Reset a PW for an E-Mail adress'''
+    
+    loggedin_user = User.query.get(session['user_id'])
+    if loggedin_user.email == "admin@kinderbasar-elsendorf.de":
+        req_json = request.json
+        email = req_json.get('email')
+
+        user = db.session.query(User).filter(User.email == email).first()
+
+        salt = str(uuid.uuid4())
+        pass_hash = ph.hash(req_json.get('password') + salt)
+        activation_code = str(uuid.uuid4())
+        user.password = pass_hash
+        user.salt = salt
+    
+        logging.info(f"Password for user {user.id}/{user.email} was changed.")
+
+        db.session.add(user)
+        db.session.commit()
+        
+        return Response(status=201)
+    
+    logging.warning(f"Someone tried to reset a password without being organizer.")
+    return Response(status=401)
+    
