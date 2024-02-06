@@ -40,13 +40,13 @@ def add_article():
         except ValueError:
             return "Bitte beachten Sie die Vorgaben zur Preiseingabe. Sie erreichen die vorherige Seite über den Zurück-Button Ihres Browsers."
 
-        clothing_size = request.form['clothing_size']
+        comment = request.form['comment']
 
         article = Article()
         article.uuid = str(uuid.uuid4())
         article.name = name
         article.seller = User.query.get(session['user_id'])
-        article.clothing_size = clothing_size
+        article.comment = comment
         article.current = True
         article.reactivated = False
         article.last_current = datetime.now()

@@ -62,7 +62,7 @@ function printAndRegister(){
 				{% for article in articles -%}
 				<tr>
 					<td>{{ article.name }}</td>
-					<td>{{ article.clothing_size }}</td>
+					<td>{{ article.comment }}</td>
 					<td>{{ article.price|as_euro }}</td>
 				</tr>
 				{% endfor %}

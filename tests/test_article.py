@@ -32,12 +32,12 @@ def test_article_add_article():
 
     art_name = 'TEST NAME'
     art_price = '13,37'
-    art_clothing_size = 'SIZE TEST'
+    art_comment = 'SIZE TEST'
 
     post_data = {
         'name': art_name,
         'price': art_price,
-        'clothing_size': art_clothing_size
+        'comment': art_comment
     }
 
     response = req_session.post(f"{ config['APP']['url'] }/article/add", data = post_data)
@@ -45,4 +45,4 @@ def test_article_add_article():
     assert 'Artikel Übersicht' in response.text
     assert art_name in response.text
     assert art_price in response.text
-    assert art_clothing_size in response.text
+    assert art_comment in response.text

@@ -11,7 +11,7 @@ class Article(db.Model):
     name = db.Column(db.String(100))
     price = db.Column(db.Integer)
     sold = db.Column(db.Boolean)
-    clothing_size = db.Column(db.String(50))
+    comment = db.Column(db.String(50))
     current = db.Column(db.Boolean) # Is the article in the current bazar run
     reactivated = db.Column(db.Boolean)
     last_current = db.Column(db.Date)
