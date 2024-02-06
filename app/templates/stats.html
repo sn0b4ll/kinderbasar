@@ -1,88 +1,185 @@
-{% include 'header.html' %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<!-- Navbar -->
-<nav class="navbar navbar-light bg-light navbar-expand-lg">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">Kinderbaser Elsendorf</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/overview"
-            >Artikel übersicht</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/overview/qr">QR-Codes</a>
-        </li>
-        {% if org %}
-        <li class="nav-item">
-          <a class="nav-link" href="/card/active/">Einkaufswagen</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle active"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Orga-Funktionen
-          </a>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="/sellers/">Verkäufer-Übersicht</a>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+      crossorigin="anonymous"
+    />
+
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+    <script type="text/javascript">
+      google.charts.load("current", { packages: ["corechart"] });
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ["Titel", "Anzahl"],
+          ["Verkauft", {{ sum_articles_sold }}],
+          ["Nicht Verkauft", {{ sum_articles_current - sum_articles_sold }}]
+        ]);
+
+        var options = {
+          title: "Artikel",
+        };
+
+        var chart = new google.visualization.PieChart(
+          document.getElementById("article-chart")
+        );
+
+        chart.draw(data, options);
+      }
+    </script>
+
+    <script type="text/javascript">
+      google.charts.load("current", { packages: ["corechart"] });
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+      	["Titel", "Anzahl"],
+		["Verkäufer mit Artikeln", {{ num_sellers_with_articles - num_already_registered - num_already_checkedin }}],
+      	["Registrierung abgeschlossen", {{ num_already_registered - num_already_checkedin }}],
+      	["Checked-In", {{ num_already_checkedin }}]
+        ]);
+
+        var options = {
+      	title: "Verkäufer",
+        };
+
+        var chart = new google.visualization.PieChart(
+      	document.getElementById("seller-chart")
+        );
+
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-light bg-light navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Kinderbaser Elsendorf</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/overview"
+                >Artikel übersicht</a
+              >
             </li>
-            <li>
-              <a class="dropdown-item" href="/org/checkin">Checkin-Übersicht</a>
+            <li class="nav-item">
+              <a class="nav-link" href="/overview/qr">QR-Codes</a>
             </li>
-            <li>
-              <a class="dropdown-item active" href="/org/stats">Statistiken</a>
+            {% if org %}
+            <li class="nav-item">
+              <a class="nav-link" href="/card/active/">Einkaufswagen</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle active"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Orga-Funktionen
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="/sellers/"
+                    >Verkäufer-Übersicht</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/org/checkin"
+                    >Checkin-Übersicht</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item active" href="/org/stats"
+                    >Statistiken</a
+                  >
+                </li>
+              </ul>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
             </li>
           </ul>
-        </li>
-        {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" href="/logout">Logout</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+        </div>
+      </div>
+    </nav>
 
-<div class="container">
-  <div class="row">
-    <div class="col">
-      <h1>Statistiken</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <h1>Statistiken</h1>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div id="article-chart" style="width: 600px; height: 500px"></div>
+        </div>
+        <div class="col">
+          <div id="seller-chart" style="width: 600px; height: 500px"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <table class="table table-striped">
+            <tr>
+              <th scope="col">Artikel gesamt</th>
+              <td>{{ sum_articles_current }}</td>
+            </tr>
+            <tr>
+              <th scope="col">Artikel verkauft</th>
+              <td>{{ sum_articles_sold }}</td>
+            </tr>
+			<tr>
+				<th scope="col">Verkäufer mit aktuellen Artikeln</th>
+				<td>{{ num_sellers_with_articles }}</td>
+			  </tr>
+            <tr>
+              <th scope="col">Verkäufer registriert</th>
+              <td>{{ num_already_registered }}</td>
+            </tr>
+            <tr>
+              <th scope="col">Verkäufer eingecheckt</th>
+              <td>{{ num_already_checkedin }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <table class="table table-striped">
-        <tr>
-          <th scope="col">Artikel gesamt</th>
-          <td>{{ sum_articles_current }}</td>
-        </tr>
-        <tr>
-          <th scope="col">Verkäufer gesamt</th>
-          <td>{{ num_sellers }}</td>
-        </tr>
-        <tr>
-          <th scope="col">Verkäufer eingecheckt</th>
-          <td>{{ num_already_checkedin }}</td>
-        </tr>
-      </table>
-    </div>
-  </div>
-</div>
-{% include 'footer.html' %}
+    {% include 'footer.html' %}
+  </body>
+</html>

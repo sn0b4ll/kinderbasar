@@ -159,16 +159,24 @@ def return_stats_page():
         return redirect(url_for('session_handling.login'))
 
     if loggedin_user.organizer:
-        num_already_checkedin = len(db.session.query(User).filter(User.registration_done, User.checkin_done).all())
-
-        num_sellers = len(db.session.query(User).filter(User.registration_done).all())
+        # Get the articles. Iterate over them, collecting the user_ids. Convert it into a list
+        # using "list", make it unique with "set" and afterwards check the count with len
+        articles = db.session.query(Article).filter(Article.current).all()
+        num_sellers_with_articles = len(set(list((o.user_id for o in articles))))
+        
         sum_articles_current = len(db.session.query(Article).filter(Article.current).all())
+        num_already_checkedin = len(db.session.query(User).filter(User.registration_done, User.checkin_done).all())
+        num_already_registered = len(db.session.query(User).filter(User.registration_done).all())
+        
+        sum_articles_sold = len(db.session.query(Article).filter(Article.current, Article.sold).all())
 
         return render_template(
             'stats.html',
-            num_sellers=num_sellers,
-            num_already_checkedin=num_already_checkedin,
+            num_sellers_with_articles=num_sellers_with_articles,
             sum_articles_current=sum_articles_current,
+            sum_articles_sold=sum_articles_sold,
+            num_already_checkedin=num_already_checkedin,
+            num_already_registered=num_already_registered,
             org=True
         )
 
