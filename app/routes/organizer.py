@@ -8,7 +8,7 @@ from flask import render_template, redirect, url_for
 from flask import session
 
 from models import db
-from models import User
+from models import User, Article
 
 from helper import logging, _filter_article_current
 
@@ -64,7 +64,7 @@ def set_checkin(user_id):
 
         logging.info(f"Checking for user {user_id} was closed.")
 
-        return redirect(url_for('organization_routes.get_sellers'))
+        return redirect(url_for('organization_routes.return_checking_page'))
 
     logging.info("Someone without org right tried to do a checkin.")
     return redirect(url_for('session_handling.login'))
@@ -119,6 +119,68 @@ def get_sellers():
         )
 
     logging.info("Someone without org right tried access the sellers list.")
+    return redirect(url_for('session_handling.login'))
+
+@organization_routes.route("/org/checkin/", methods=["GET"])
+def return_checking_page():
+    '''List all sellers for checkin.'''
+
+    try:
+        loggedin_user = User.query.get(session['user_id'])
+    except KeyError:
+        logging.info("Someone without org right tried access the checkin list.")
+        return redirect(url_for('session_handling.login'))
+
+    if loggedin_user.organizer:
+        registered_users = db.session.query(User).filter(User.registration_done, User.checkin_done == False).all()
+        logging.info(len(registered_users))
+        num_already_checkedin = len(db.session.query(User).filter(User.registration_done, User.checkin_done).all())
+        num_sellers = len(db.session.query(User).filter(User.registration_done).all())
+
+        return render_template(
+            'checkin_list.html',
+            users=registered_users,
+            num_sellers=num_sellers,
+            num_already_checkedin=num_already_checkedin,
+            org=True
+        )
+
+    logging.info("Someone without org right tried access the checkin list.")
+    return redirect(url_for('session_handling.login'))
+
+@organization_routes.route("/org/stats/", methods=["GET"])
+def return_stats_page():
+    '''List current stats.'''
+
+    try:
+        loggedin_user = User.query.get(session['user_id'])
+    except KeyError:
+        logging.info("Someone without org right tried access the stats page.")
+        return redirect(url_for('session_handling.login'))
+
+    if loggedin_user.organizer:
+        # Get the articles. Iterate over them, collecting the user_ids. Convert it into a list
+        # using "list", make it unique with "set" and afterwards check the count with len
+        articles = db.session.query(Article).filter(Article.current).all()
+        num_sellers_with_articles = len(set(list((o.user_id for o in articles))))
+        
+        sum_articles_current = len(db.session.query(Article).filter(Article.current).all())
+        num_already_checkedin = len(db.session.query(User).filter(User.registration_done, User.checkin_done).all())
+        num_already_registered = len(db.session.query(User).filter(User.registration_done).all())
+        
+        sum_articles_sold = len(db.session.query(Article).filter(Article.current, Article.sold).all())
+
+        return render_template(
+            'stats.html',
+            num_sellers_with_articles=num_sellers_with_articles,
+            sum_articles_current=sum_articles_current,
+            sum_articles_sold=sum_articles_sold,
+            num_already_checkedin=num_already_checkedin,
+            num_already_registered=num_already_registered,
+            org=True
+        )
+
+    logging.info("Someone without org right tried access the checkin list.")
     return redirect(url_for('session_handling.login'))
 
 @organization_routes.route("/clearing/<int:user_id>/", methods=["GET"])
@@ -202,6 +264,7 @@ def user_unregister(user_id):
     if loggedin_user.organizer:
         user = db.session.get(User, user_id)
         user.registration_done = False
+        user.checkin_done = False
         db.session.commit()
 
         logging.info(f"Organizer with id { loggedin_user.id } unregistered user { user.id }.")
