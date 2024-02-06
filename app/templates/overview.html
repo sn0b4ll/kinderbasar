@@ -62,7 +62,7 @@
 				<tr>
 					<th scope="col">Name</th>
 					<th scope="col">Verkäufer</th>
-					<th scope="col">Kleider-Größe</th>
+					<th scope="col">Kommentar</th>
 					<th scope="col">Preis</th>
 					{% if org %}
 					<th scope="col">Einkaufswagen</th>
@@ -75,7 +75,7 @@
 				<tr>
 					<td>{{ article.name }}</td>
 					<td>{{ article.seller.id }}</td>
-					<td>{{ article.clothing_size|to_german }}</td>
+					<td>{{ article.comment|to_german }}</td>
 					<td>{{ article.price|as_euro }}</td>
 					{% if org %}
 					<td>{{ article.card_uuid|to_german }}</td>
