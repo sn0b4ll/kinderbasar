@@ -70,22 +70,39 @@
         method="POST"
         action="/article/add"
       >
-        <div class="form-outline mb-4">
-          <input type="text" id="name" name="name" class="form-control" />
-          <label class="form-label" for="name"
-            >Name des Artikels (Erscheint später auf dem Ettiket)</label
-          >
+        <div class="form-outline mb-4 mt-4">
+          <label for="name" class="form-label">Artikel-Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class="form-control"
+            oninvalid="this.setCustomValidity('Bitte dem Artikel einen eindeutigen Namen geben')"
+            oninput="setCustomValidity('')"
+            placeholder="Ein eindeutiger Name"
+          />
+          <div id="nameHelp" class="form-text">
+            Erscheint später auf dem Ettiket.
+          </div>
         </div>
 
         <div class="form-outline mb-4">
-          <input type="text" id="price" name="price" class="form-control" />
-          <label class="form-label" for="price"
-            >Preis (im Format XX,X0 ohne €-Zeichen). Bitte beachten Sie, dass
-            die kleinste Cent-Stelle immer auf 0 abgerundet wird.</label
-          >
+          <label for="price" class="form-label">Preis</label>
+          <input
+            type="text"
+            id="price"
+            name="price"
+            class="form-control"
+            placeholder="10,00"
+          />
+          <div id="namePrice" class="form-text">
+            Preis (im Format XX,X0 ohne €-Zeichen). Bitte beachten Sie, dass die
+            kleinste Cent-Stelle immer auf 0 abgerundet wird.
+          </div>
         </div>
 
         <div class="form-outline mb-4">
+          <label for="article-type" class="form-label">Artikel-Art</label>
           <select
             id="article-type"
             class="form-select"
@@ -96,11 +113,14 @@
             <option value="book">Buch</option>
             <option value="other">Anderes</option>
           </select>
+          <div id="namep" class="form-text">
+            Bitte ändern Sie die Auswahl, falls der Artikel keine Kleidung ist.
+          </div>
         </div>
 
         <div
           id="warning"
-          class="alert alert-primary"
+          class="alert alert-warning"
           role="alert"
           hidden="true"
         ></div>
@@ -111,9 +131,14 @@
             id="comment"
             name="comment"
             class="form-control"
-            required
             placeholder="Kleidungs-Größe"
+            oninvalid="this.setCustomValidity('Für diese Art von Artikel benötigt')"
+            oninput="setCustomValidity('')"
+            required
           />
+          <div id="nameHelp" class="form-text">
+            Erscheint später auf dem Ettiket.
+          </div>
         </div>
         <input
           type="submit"
