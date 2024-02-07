@@ -54,7 +54,7 @@
                 {{ article.name|truncate(35) }} <br> 
                 <font style="color:red; text-decoration: underline;">Verkäufer: {{ article.seller.id }}</font> <br>
                 {% if article.comment != "" %}
-                Größe: {{ article.comment }}<br>
+                {{ article.comment }}<br>
                 {% else %}
                 <br>
                 {% endif %}
