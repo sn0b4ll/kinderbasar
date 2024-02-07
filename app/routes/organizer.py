@@ -11,7 +11,7 @@ from flask import session, request
 from models import db
 from models import User, Article
 
-from helper import logging, _filter_article_current, ph
+from helper import logging, _filter_article_current, ph, config
 
 organization_routes = Blueprint('organization_routes', __name__, template_folder='templates')
 
@@ -279,7 +279,7 @@ def reset_pw():
     '''Reset a PW for an E-Mail adress'''
     
     loggedin_user = User.query.get(session['user_id'])
-    if loggedin_user.email == "admin@kinderbasar-elsendorf.de":
+    if loggedin_user.email == config['APP']['admin_email']:
         req_json = request.json
         email = req_json.get('email')
 
