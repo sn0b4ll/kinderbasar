@@ -95,7 +95,7 @@
 			</div>
 		</div>
 		{% endif %}
-		{% if not article.current and article.seller==user and not user.checkin_done %}
+		{% if not article.current and (article.seller==user or user.id==1) and not user.checkin_done %}
 		<div class="row d-flex justify-content-center align-items-center mt-1">
 			<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
 				<form method="POST" action="/article/{{ article.uuid }}/reactivate">
