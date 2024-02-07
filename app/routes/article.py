@@ -96,6 +96,11 @@ def reactivate_article(article_uuid):
             article.current = True
             article.reactivated = True
             article.last_current = datetime.now()
+        elif user.id == 1:
+            article.current = True
+            article.reactivated = True
+            article.last_current = datetime.now()
+            article.user_id = user.id
         else:
             return abort(Response('Article not linked to user.'))
 

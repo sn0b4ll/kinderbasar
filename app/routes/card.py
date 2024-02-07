@@ -92,6 +92,9 @@ def add_article_to_card(card_uuid, article_uuid):
 
             if article is None:
                 return "Article UUID wrong!"
+            
+            if not article.current:
+                return "Article was not actived for current basar!"
 
             current_card.articles.append(article)
             db.session.commit()
