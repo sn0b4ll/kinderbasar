@@ -62,7 +62,7 @@ function printAndRegister(){
 				{% for article in articles -%}
 				<tr>
 					<td>{{ article.name }}</td>
-					<td>{{ article.clothing_size }}</td>
+					<td>{{ article.comment }}</td>
 					<td>{{ article.price|as_euro }}</td>
 				</tr>
 				{% endfor %}
@@ -135,7 +135,7 @@ function printAndRegister(){
 			{% else %}
 			<button class="btn btn-primary btn-block mt-3 mb-3" onclick="window.print();return -1;">Erneut drucken</button>
 			{% endif %}
-			<button class="btn btn-primary btn-block mt-3 mb-3" onclick="location.pathname='/overview'">Zurück zur Übersicht</button>
+			<button class="btn btn-secondary btn-block mt-3 mb-3" onclick="location.pathname='/overview'">Zurück zur Übersicht</button>
 		</div>
 	</div>
 </div>

@@ -20,8 +20,27 @@
 			  <li class="nav-item">
 				<a class="nav-link" href="/card/active/">Einkaufswagen</a>
 			  </li>
-			  <li class="nav-item">
-				<a class="nav-link" href="/sellers/">Verkäufer-Übersicht</a>
+			  <li class="nav-item dropdown">
+				<a
+				  class="nav-link dropdown-toggle"
+				  href="#"
+				  role="button"
+				  data-bs-toggle="dropdown"
+				  aria-expanded="false"
+				>
+				  Orga-Funktionen
+				</a>
+				<ul class="dropdown-menu">
+				  <li>
+					<a class="dropdown-item" href="/sellers/">Verkäufer-Übersicht</a>
+				  </li>
+				  <li>
+					<a class="dropdown-item" href="/org/checkin"
+					  >Checkin-Übersicht</a
+					>
+				  </li>
+				  <li><a class="dropdown-item" href="/org/stats">Statistiken</a></li>
+				</ul>
 			  </li>
 			  {% endif %}
 			  <li class="nav-item">
@@ -50,18 +69,24 @@
 					<td scope="col">{{ article.price|as_euro }}</th>
 				</tr>
 				<tr>
-					<td scope="col">Kleider-Größe</th>
-					<td scope="col">{{ article.clothing_size }}</th>
+					<td scope="col">Kommentar</th>
+					<td scope="col">{{ article.comment }}</th>
 				</tr>
 				<tr>
 					<td scope="col">Verkauft</th>
 					<td scope="col">{{ article.sold|to_german }}</th>
 				</tr>
+				{% if article.current==false %}
+				<tr>
+					<td scope="col">Status</th>
+					<td scope="col">Nicht aktiv</th>
+				</tr>
+				{% endif %}
 			</table>
 		</div>
 	</div>
 	{% if user %}
-		{% if not article.sold and user.organizer %}
+		{% if not article.sold and user.organizer and article.current %}
 		<div class="row d-flex justify-content-center align-items-center mt-1">
 			<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
 				<form method="POST" action="/card/active/add/{{ article.uuid }}/">
@@ -70,7 +95,7 @@
 			</div>
 		</div>
 		{% endif %}
-		{% if not article.current and article.seller==user and not user.checkin_done %}
+		{% if not article.current and (article.seller==user or user.id==1) and not user.checkin_done %}
 		<div class="row d-flex justify-content-center align-items-center mt-1">
 			<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
 				<form method="POST" action="/article/{{ article.uuid }}/reactivate">

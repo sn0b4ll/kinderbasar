@@ -19,8 +19,27 @@
 			  <li class="nav-item">
 				<a class="nav-link" href="/card/active/">Einkaufswagen</a>
 			  </li>
-			  <li class="nav-item">
-				<a class="nav-link" href="/sellers/">Verkäufer-Übersicht</a>
+			  <li class="nav-item dropdown">
+				<a
+				  class="nav-link dropdown-toggle"
+				  href="#"
+				  role="button"
+				  data-bs-toggle="dropdown"
+				  aria-expanded="false"
+				>
+				  Orga-Funktionen
+				</a>
+				<ul class="dropdown-menu">
+				  <li>
+					<a class="dropdown-item" href="/sellers/">Verkäufer-Übersicht</a>
+				  </li>
+				  <li>
+					<a class="dropdown-item" href="/org/checkin"
+					  >Checkin-Übersicht</a
+					>
+				  </li>
+				  <li><a class="dropdown-item" href="/org/stats">Statistiken</a></li>
+				</ul>
 			  </li>
 			  {% endif %}
 			  <li class="nav-item">

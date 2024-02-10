@@ -28,7 +28,7 @@ def _create_user(user_id, password, email, activated, organizer, checkin_done):
 
     return new_user, user_id + 1
 
-def _create_article(user, name, price, clothing_size, current, last_current=datetime.now()):
+def _create_article(user, name, price, comment, current, last_current=datetime.now()):
     '''Create a new article'''
     new_article = Article()
 
@@ -36,7 +36,7 @@ def _create_article(user, name, price, clothing_size, current, last_current=date
     new_article.name = name
     new_article.price = price
     new_article.sold = False
-    new_article.clothing_size = clothing_size
+    new_article.comment = comment
     new_article.current = current
     new_article.reactivated = False
     new_article.last_current = last_current
