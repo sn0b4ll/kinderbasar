@@ -16,10 +16,9 @@ class Article(db.Model):
     comment = db.Column(db.String(50))
     current = db.Column(db.Boolean)  # Is the article in the current bazar run
     reactivated = db.Column(db.Boolean)
-    last_current = db.Column(db.Date)
-    card_uuid = db.Column(db.String(36), db.ForeignKey("card.uuid"))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-
+    last_current = db.Column(db.DateTime)
+    card_uuid = db.Column(db.String(36), db.ForeignKey('card.uuid'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class User(db.Model):
     """Class for holding sellers and organizers."""
