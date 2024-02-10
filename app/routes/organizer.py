@@ -244,7 +244,7 @@ def print_all_clearings():
             articles = list(filter(_filter_article_current, user.articles))
 
             # Skip for sellers with 0 current articles
-            if len(articles) == 0:
+            if (len(articles) == 0) and user.registration_done and user.checkin_done:
                 continue
 
             user_with_current_articles.append(user)
