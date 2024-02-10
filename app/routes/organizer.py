@@ -134,7 +134,7 @@ def return_checking_page():
     if loggedin_user.organizer:
         registered_users = (
             db.session.query(User)
-            .filter(User.registration_done, User.checkin_done is False)
+            .filter(User.registration_done, User.checkin_done == False)  # noqa: E712
             .all()
         )
         logging.info(len(registered_users))
@@ -244,7 +244,7 @@ def print_all_clearings():
             articles = list(filter(_filter_article_current, user.articles))
 
             # Skip for sellers with 0 current articles
-            if len(articles) == 0:
+            if (len(articles) == 0) or not user.registration_done or not user.checkin_done:
                 continue
 
             user_with_current_articles.append(user)
