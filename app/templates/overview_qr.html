@@ -53,8 +53,8 @@
             <div class="col-4 mt-2 border border-dark border-2 pb-2">
                 {{ article.name|truncate(35) }} <br> 
                 <font style="color:red; text-decoration: underline;">Verkäufer: {{ article.seller.id }}</font> <br>
-                {% if article.clothing_size != "" %}
-                Größe: {{ article.clothing_size }}<br>
+                {% if article.comment != "" %}
+                {{ article.comment }}<br>
                 {% else %}
                 <br>
                 {% endif %}
