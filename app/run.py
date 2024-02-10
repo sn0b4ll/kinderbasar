@@ -7,7 +7,7 @@ import pdfkit  # pylint: disable=import-error # type: ignore
 
 from flask import Flask, Response
 from flask import render_template, redirect, url_for
-from flask import session
+from flask import session, request
 
 from flask_qrcode import QRcode
 
@@ -71,6 +71,34 @@ def overview():
 
         return render_template("overview.html", user=user, articles=articles, org=org)
     return redirect(url_for("session_handling.login"))
+
+@app.route("/overview/search", methods=["GET"])
+def overview_search():
+    '''Create an overview of articles for the user.'''
+    if 'user_id' in session:
+        user = db.session.get(User, session['user_id'])
+        search_string = request.args.get('search')
+        if '*' in search_string or '_' in search_string: 
+            looking_for = search_string.replace('_', '__')\
+                                .replace('*', '%')\
+                                .replace('?', '_')
+        else:
+            looking_for = '%{0}%'.format(search_string)
+
+        if user.organizer:
+            articles = db.session.query(Article).filter(Article.current, Article.name.ilike(looking_for))
+            org = True
+        else:
+            articles = db.session.query(Article).filter(Article.current, Article.user_id == user.id, Article.name.ilike(looking_for))
+            org = False
+
+        return render_template(
+                'overview.html',
+                user=user,
+                articles=articles,
+                org=org
+            )
+    return redirect(url_for('session_handling.login'))
 
 
 @app.route("/overview/qr", methods=["GET"])
