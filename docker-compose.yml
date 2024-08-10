@@ -7,7 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: kinderbasar # please change before prod deployment
       MYSQL_USER: kinderbasar
-      MYSQL_PASSWORD: passpass # please change before prod deployment
+      MYSQL_PASSWORD: kinderbasar # please change before prod deployment
       # MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     # ports:
     #  - '3306:3306'

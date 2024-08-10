@@ -189,6 +189,31 @@ def return_stats_page():
             db.session.query(Article).filter(Article.current, Article.sold).all()
         )
 
+        num_articles_basar_22_1_sold = (
+            db.session.query(Article)
+            .filter(Article.last_current <= "2022-10-01")
+            .filter(Article.sold == True)
+            .count()
+        )
+        num_articles_basar_22_1_unsold = (
+            db.session.query(Article)
+            .filter(Article.last_current <= "2022-10-01")
+            .filter(Article.sold == False)
+            .count()
+        )
+
+        num_articles_basar_23_1 = (
+            db.session.query(Article)
+            .filter(Article.last_current <= "2023-06-01")
+            .filter(Article.last_current >= "2023-01-01")
+            .count()
+        )
+        num_articles_basar_24_1 = (
+            db.session.query(Article)
+            .filter(Article.last_current >= "2024-01-01")
+            .count()
+        )
+
         return render_template(
             "stats.html",
             num_sellers_with_articles=num_sellers_with_articles,
@@ -196,6 +221,10 @@ def return_stats_page():
             sum_articles_sold=sum_articles_sold,
             num_already_checkedin=num_already_checkedin,
             num_already_registered=num_already_registered,
+            num_articles_basar_22_1_sold=num_articles_basar_22_1_sold,
+            num_articles_basar_22_1_unsold=num_articles_basar_22_1_unsold,
+            num_articles_basar_23_1=num_articles_basar_23_1,
+            num_articles_basar_24_1=num_articles_basar_24_1,
             org=True,
         )
 
@@ -244,7 +273,11 @@ def print_all_clearings():
             articles = list(filter(_filter_article_current, user.articles))
 
             # Skip for sellers with 0 current articles
-            if (len(articles) == 0) or not user.registration_done or not user.checkin_done:
+            if (
+                (len(articles) == 0)
+                or not user.registration_done
+                or not user.checkin_done
+            ):
                 continue
 
             user_with_current_articles.append(user)
