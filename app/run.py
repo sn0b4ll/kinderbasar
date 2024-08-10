@@ -21,6 +21,7 @@ from routes.session import session_handling
 from routes.article import article_handling
 from routes.card import card_handling
 from routes.organizer import organization_routes
+from routes.resetpw import reset_password
 
 from helper import logging, config, _filter_article_current, _filter_article_reactivated
 
@@ -37,6 +38,7 @@ app.register_blueprint(session_handling)
 app.register_blueprint(article_handling)
 app.register_blueprint(card_handling)
 app.register_blueprint(organization_routes)
+app.register_blueprint(reset_password)
 
 from models import Article, User  # noqa: E402
 

@@ -135,3 +135,4 @@ db/test.db
 db/mysql/
 logs/kinderbasar.log
 app/utils/db_migration_files/*
+docker-compose.yml
