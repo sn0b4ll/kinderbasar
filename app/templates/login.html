@@ -10,8 +10,7 @@
       data-bs-target="#navbarNav"
       aria-controls="navbarNav"
       aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+      aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -85,9 +84,8 @@
               type="button"
               role="tab"
               aria-controls="login-tab-pane"
-              aria-selected="true"
-            >
-              Login
+              aria-selected="true">
+              Einloggen
             </button>
           </li>
           <li class="nav-item" role="presentation">
@@ -99,9 +97,8 @@
               type="button"
               role="tab"
               aria-controls="register-tab-pane"
-              aria-selected="false"
-            >
-              Register
+              aria-selected="false">
+              Registrieren
             </button>
           </li>
         </ul>
@@ -113,9 +110,8 @@
             id="login-tab-pane"
             role="tabpanel"
             aria-labelledby="login-tab"
-            tabindex="0"
-          >
-            <form action="" method="post">
+            tabindex="0">
+            <form action method="post">
               <!-- Email input -->
               <div class="form-outline mb-4">
                 <label class="form-label" for="username">E-Mail</label>
@@ -124,20 +120,18 @@
                   id="username"
                   name="username"
                   class="form-control"
-				  required
-                />
+                  required />
               </div>
 
               <!-- Password input -->
               <div class="form-outline mb-4">
                 <label class="form-label" for="password">Password</label>
-				<input
+                <input
                   type="password"
                   id="password"
                   name="password"
                   class="form-control"
-				  required
-                />
+                  required />
               </div>
 
               <!-- Show Password -->
@@ -145,20 +139,25 @@
                 <input
                   class="form-check-input me-2"
                   type="checkbox"
-                  value=""
+                  value
                   id="showPasswordBox"
                   aria-describedby="registerCheckHelpText"
-                  onchange="showPassword()"
-                />
+                  onchange="showPassword()" />
                 <label class="form-check-label" for="registerCheck">
                   Passwort anzeigen
                 </label>
               </div>
 
-              <!-- Submit button -->
-              <button type="submit" class="btn btn-primary btn-block mb-4">
-                Einloggen
-              </button>
+              <!-- Submit & Reset button -->
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-block">
+                  Einloggen
+                </button>
+                <a href="resetpw/" type="button"
+                  class="btn btn-outline-warning mb-4">
+                  Passwort vergessen
+                </a>
+              </div>
             </form>
           </div>
 
@@ -167,31 +166,28 @@
             id="register-tab-pane"
             role="tabpanel"
             aria-labelledby="register-tab"
-            tabindex="0"
-          >
+            tabindex="0">
             <form action="/register" method="post">
               <!-- Email input -->
               <div class="form-outline mb-4">
                 <label class="form-label" for="email">Email</label>
-				<input
+                <input
                   type="email"
                   id="email"
                   name="email"
                   class="form-control"
-				  required
-                />
+                  required />
               </div>
 
               <!-- Password input -->
               <div class="form-outline mb-4">
                 <label class="form-label" for="passwordReg">Password</label>
-				<input
+                <input
                   type="password"
                   id="passwordReg"
                   name="password"
                   class="form-control"
-				  required
-                />
+                  required />
               </div>
 
               <!-- Show Password -->
@@ -199,11 +195,10 @@
                 <input
                   class="form-check-input me-2"
                   type="checkbox"
-                  value=""
+                  value
                   id="showPasswordBoxReg"
                   aria-describedby="registerCheckHelpText"
-                  onchange="showPasswordReg()"
-                />
+                  onchange="showPasswordReg()" />
                 <label class="form-check-label" for="showPasswordBoxReg">
                   Passwort anzeigen
                 </label>
@@ -214,16 +209,14 @@
                 <input
                   class="form-check-input me-2"
                   type="checkbox"
-                  value=""
+                  value
                   id="registerCheck"
                   aria-describedby="registerCheckHelpText"
-                  onchange="enableRegistration()"
-                />
+                  onchange="enableRegistration()" />
                 <label class="form-check-label" for="registerCheck">
                   Ich hab die
-                  <a href="https://kinderbasar-elsendorf.de/?page_id=59"
-                    >Datenschutzerklärung</a
-                  >
+                  <a
+                    href="https://kinderbasar-elsendorf.de/?page_id=59">Datenschutzerklärung</a>
                   gelesen und akzeptiere diese.
                 </label>
               </div>
@@ -233,8 +226,7 @@
                 type="submit"
                 class="btn btn-primary btn-block mb-3"
                 disabled
-                id="registerButton"
-              >
+                id="registerButton">
                 Registrieren
               </button>
             </form>
