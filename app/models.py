@@ -34,9 +34,6 @@ class User(db.Model):
     organizer = db.Column(db.Boolean)
     checkin_done = db.Column(db.Boolean)
 
-    # Did the user confirm that the entered all articles
-    registration_done = db.Column(db.Boolean)
-
     # Iterator for open carts per user (org)
     carts = db.relationship("Cart", backref="owner", lazy=True)
 

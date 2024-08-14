@@ -41,9 +41,8 @@
               role="button">Details</a>
           </td>
           <td>
-            {% if (article.seller == user) and (not user.registration_done) and
-            (not article.sold) %}
-
+            {% if (article.seller == user) and (not article.sold) and (not
+            user.checkin_done) %}
             <form action="/article/{{ article.uuid }}/remove" method="post">
               <button type="submit" class="btn btn-danger">Entfernen</button>
             </form>
@@ -63,23 +62,12 @@
   <div class="cart" style="width: 30rem">
     <div class="cart-header">Aktionen</div>
     <div class="cart-body">
-      {% if not user.registration_done %}
+      {% if not user.checkin_done %}
       <input
         type="button"
         class="btn btn-primary btn-block mb-2 mt-1"
         value="Artikel hinzufügen"
         onclick="location.pathname='/article/add'" />
-      <input
-        type="submit"
-        class="btn btn-warning btn-block mb-1"
-        value="Abschließen & Registrierungsformular anzeigen"
-        onclick="location.pathname='/registration_sheet/'" />
-      {% else %}
-      <input
-        type="submit"
-        class="btn btn-primary btn-block mb-1 mt-1"
-        value="Registrierungsformular anzeigen"
-        onclick="location.pathname='/registration_sheet/'" />
       {% endif %}
     </div>
 
