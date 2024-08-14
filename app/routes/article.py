@@ -10,7 +10,7 @@ from flask import render_template, redirect, url_for, abort
 from flask import request, session
 
 from models import db
-from models import Article, User
+from models import Article, User, ARTICLE_COMMENT_SIZE, ARTICLE_NAME_SIZE
 
 from helper import logging
 
@@ -26,9 +26,11 @@ def add_article():
             return "Registration already finished.", 403
 
         if request.method == "GET":
+            # Get request, return the form
             return render_template("add_article.html", title="Add an article")
 
-        name = request.form["name"]
+        # Post-Request, create an article
+        name = request.form["name"][:ARTICLE_NAME_SIZE]
         price = request.form["price"]
         try:
             price = price.replace(",", "")
@@ -38,7 +40,7 @@ def add_article():
         except ValueError:
             return "Bitte beachten Sie die Vorgaben zur Preiseingabe. Sie erreichen die vorherige Seite über den Zurück-Button Ihres Browsers."
 
-        comment = request.form["comment"]
+        comment = request.form["comment"][:ARTICLE_COMMENT_SIZE]
 
         article = Article()
         article.uuid = str(uuid.uuid4())
