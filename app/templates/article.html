@@ -99,11 +99,13 @@
       {% if user %} {% if not article.sold and user.organizer and
       article.current %}
       <form method="POST" action="/card/active/add/{{ article.uuid }}/">
-        <input
-          type="submit"
-          class="btn btn-primary btn-block mb-4 mt-4"
-          value="Hinzufügen"
-        />
+        <div class="d-grid gap-2">
+          <input
+            type="submit"
+            class="btn btn-primary btn-block mb-4 mt-4"
+            value="Hinzufügen"
+          />
+        </div>
       </form>
       {% endif %} {% if not article.current and (article.seller==user or
       user.id==1) and not user.checkin_done %}
