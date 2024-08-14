@@ -1,6 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
+{% extends 'meta/base_logged_in.html' %}
+
+{% block nav_org %}active{% endblock %}
+{% block nav_stats %}active{% endblock %}
+
+{% block content %}
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -91,73 +94,6 @@
           chart.draw(view, options);
       }
       </script>
-  </head>
-  <body class="d-flex flex-column min-vh-100">
-    <!-- Bootstrap JS -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-      crossorigin="anonymous"></script>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-light bg-light navbar-expand-lg">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Kinderbaser Elsendorf</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="/overview">Artikel
-                übersicht</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/overview/qr">QR-Codes</a>
-            </li>
-            {% if org %}
-            <li class="nav-item">
-              <a class="nav-link" href="/card/active/">Einkaufswagen</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle active"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Orga-Funktionen
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item"
-                    href="/sellers/">Verkäufer-Übersicht</a>
-                </li>
-                <li>
-                  <a class="dropdown-item"
-                    href="/org/checkin">Checkin-Übersicht</a>
-                </li>
-                <li>
-                  <a class="dropdown-item active"
-                    href="/org/stats">Statistiken</a>
-                </li>
-              </ul>
-            </li>
-            {% endif %}
-            <li class="nav-item">
-              <a class="nav-link" href="/logout">Logout</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
 
     <div class="container">
       <div class="row">
@@ -204,6 +140,4 @@
         </div>
       </div>
     </div>
-    {% include 'footer.html' %}
-  </body>
-</html>
+{% endblock %}

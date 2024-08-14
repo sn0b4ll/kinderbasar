@@ -1,0 +1,57 @@
+{% extends 'meta/base_logged_in.html' %}
+
+{% block nav_org %}active{% endblock %}
+{% block nav_checkin %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Verkäufer-Übersicht für Checkin</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table table-striped">
+        <tr>
+          <th scope="col">Verkäufer</th>
+          <th scope="col">E-Mail</th>
+          <th scope="col">Checkin</th>
+        </tr>
+        {% for user in users -%}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            {% if user.checkin_done %} Eingecheckt {% else %}
+            <a
+              href="/org/checkin/{{ user.id }}/"
+              class="btn btn-info"
+              role="button"
+              >Checkin</a
+            >
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <table class="table table-striped">
+        <tr>
+          <th scope="col">Verkäufer registriert</th>
+          <td>{{ num_sellers }}</td>
+        </tr>
+        <tr>
+          <th scope="col">Verkäufer eingecheckt</th>
+          <td>{{ num_already_checkedin }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

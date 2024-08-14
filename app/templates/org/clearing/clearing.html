@@ -1,5 +1,9 @@
-{% include 'header.html' %}
+{% extends 'meta/base_logged_in.html' %}
 
+{% block nav_org %}active{% endblock %}
+{% block nav_sellers %}active{% endblock %}
+
+{% block content %}
 <div class="container">
     <div class="row">
         <div class="col">
@@ -12,11 +16,11 @@
 			<table class="table table-striped">
 				<tr>
 					<th scope="col">ID</th>
-                    <td>{{ user.id }}</td>
+                    <td>{{ clearing_user.id }}</td>
                 </tr>
                 <tr>
 					<th scope="col">E-Mail</th>
-                    <td>{{ user.email }}</td>
+                    <td>{{ clearing_user.email }}</td>
                 </tr>
 			</table> 
 		</div>
@@ -63,5 +67,4 @@
 		</div>
 	</div>
 </div>
-
-{% include 'footer.html' %}
+{% endblock %}

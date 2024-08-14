@@ -1,0 +1,71 @@
+{% extends 'meta/base_logged_in.html' %}
+
+{% block nav_cart %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h1>Einkaufswagen Übersicht</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<table class="table table-striped">
+                <tr>
+                    <td>Anzahl Artikel:</td>
+                    <td>{{ cart.articles|length }}</td>
+                </tr>
+				<tr>
+                    <td>Summe:</td>
+                    <td>{{ price_overall|as_euro }}</td>
+                </tr>
+				<tr>
+                    <td>Verkaufs-Provision:</td>
+                    <td>{{ seller_margin|as_euro }}</td>
+                </tr>
+				<tr>
+                    <td>Gesamt-Summe ungerundet:</td>
+                    <td>{{ total_price|as_euro }}</td>
+                </tr>
+				<tr>
+                    <td>End-Summe:</td>
+                    <td>{{ total_price_rounded|as_euro }}</td>
+                </tr>
+                <tr>
+                    <td>Aktiv:</td>
+                    <td>{{ cart.active|to_german }}</td>
+                </tr>
+            </table>
+        </div>
+	</div>
+	<div class="row d-flex justify-content-center align-items-center mt-1">
+		<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-2 mb-4 shadow">
+            {% if cart.active %}
+            <form method="POST" action="/cart/{{ cart.uuid }}/close/">
+				<div class="d-grid gap-2">
+					<input type="submit" class="btn btn-danger btn-block mb-4 mt-3" value="Abschließen">
+				</div>
+			</form>
+            {% endif %}
+		</div>
+	</div>
+    <div class="row">
+		<div class="col">
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">Artikel</th>
+					<th scope="col">Preis</th>
+				</tr>
+				{% for article in cart.articles -%}
+				<tr>
+					<td>{{ article.name }}</td>
+					<td>{{ article.price|as_euro }}</td>
+					</td>
+				</tr>
+				{% endfor %}
+			</table> 
+		</div>
+    </div>
+</div>
+{% endblock %}
