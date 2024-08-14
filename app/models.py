@@ -5,15 +5,17 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+ARTICLE_NAME_SIZE = 25
+ARTICLE_COMMENT_SIZE = 25
 
 class Article(db.Model):
     """Article (everything which can be bought)."""
 
     uuid = db.Column(db.String(36), primary_key=True)
-    name = db.Column(db.String(100))
+    name = db.Column(db.String(ARTICLE_NAME_SIZE))
     price = db.Column(db.Integer)
     sold = db.Column(db.Boolean)
-    comment = db.Column(db.String(50))
+    comment = db.Column(db.String(ARTICLE_COMMENT_SIZE))
     current = db.Column(db.Boolean)  # Is the article in the current bazar run
     reactivated = db.Column(db.Boolean)
     last_current = db.Column(db.DateTime)

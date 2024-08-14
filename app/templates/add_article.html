@@ -80,9 +80,10 @@
             oninvalid="this.setCustomValidity('Bitte dem Artikel einen eindeutigen Namen geben')"
             oninput="setCustomValidity('')"
             placeholder="Ein eindeutiger Name"
+            maxlength="25"
           />
           <div id="nameHelp" class="form-text">
-            Erscheint später auf dem Etikett.
+            Erscheint später auf dem Etikett. Maximal 25 Zeichen.
           </div>
         </div>
 
@@ -134,10 +135,11 @@
             placeholder="Kleidungs-Größe"
             oninvalid="this.setCustomValidity('Für diese Art von Artikel benötigt')"
             oninput="setCustomValidity('')"
+            maxlength="25"
             required
           />
           <div id="nameHelp" class="form-text">
-            Erscheint später auf dem Etikett.
+            Erscheint später auf dem Etikett. Maximal 25 Zeichen.
           </div>
         </div>
         <input
