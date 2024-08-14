@@ -27,7 +27,9 @@ def add_article():
 
         if request.method == "GET":
             # Get request, return the form
-            return render_template("add_article.html", title="Add an article")
+            return render_template(
+                "article/add_article.html", title="Add an article", user=user
+            )
 
         # Post-Request, create an article
         name = request.form["name"][:ARTICLE_NAME_SIZE]
@@ -77,7 +79,7 @@ def article_view(art_uuid):
 
     article = Article.query.filter_by(uuid=art_uuid).first()
 
-    return render_template("article.html", article=article, user=user)
+    return render_template("article/article.html", article=article, user=user)
 
 
 @article_handling.route(

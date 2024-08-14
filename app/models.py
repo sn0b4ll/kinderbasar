@@ -19,7 +19,7 @@ class Article(db.Model):
     current = db.Column(db.Boolean)  # Is the article in the current bazar run
     reactivated = db.Column(db.Boolean)
     last_current = db.Column(db.DateTime)
-    card_uuid = db.Column(db.String(36), db.ForeignKey('card.uuid'))
+    cart_uuid = db.Column(db.String(36), db.ForeignKey('cart.uuid'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class User(db.Model):
@@ -37,17 +37,17 @@ class User(db.Model):
     # Did the user confirm that the entered all articles
     registration_done = db.Column(db.Boolean)
 
-    # Iterator for open cards per user (org)
-    cards = db.relationship("Card", backref="owner", lazy=True)
+    # Iterator for open carts per user (org)
+    carts = db.relationship("Cart", backref="owner", lazy=True)
 
     # Iterator for articles owned by the user
     articles = db.relationship("Article", backref="seller", lazy=True)
 
 
-class Card(db.Model):
-    """An card holds all items currently beeing sold."""
+class Cart(db.Model):
+    """An cart holds all items currently being sold."""
 
     uuid = db.Column(db.String(36), primary_key=True)
-    articles = db.relationship("Article", backref="card", lazy=True)
+    articles = db.relationship("Article", backref="cart", lazy=True)
     active = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))

@@ -40,7 +40,7 @@ def _create_article(user, name, price, comment, current, last_current=datetime.n
     new_article.current = current
     new_article.reactivated = False
     new_article.last_current = last_current
-    new_article.card_uuid = None
+    new_article.cart_uuid = None
     new_article.seller = user
 
     db.session.add(new_article)

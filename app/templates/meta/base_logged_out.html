@@ -1,0 +1,22 @@
+{% include 'meta/header.html' %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-light bg-light navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Kinderbaser Elsendorf</a>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+{% include 'meta/footer.html' %}

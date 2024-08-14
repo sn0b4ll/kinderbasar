@@ -1,0 +1,92 @@
+{% extends 'meta/base_logged_in.html' %}
+
+{% block nav_org %}active{% endblock %}
+{% block nav_checkin %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Informationen</h1>
+        </div>
+    </div>
+
+    <div class="row">
+		<div class="col">
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">ID</th>
+                    <td>{{ checkin_user.id }}</td>
+                </tr>
+                <tr>
+					<th scope="col">E-Mail</th>
+                    <td>{{ checkin_user.email }}</td>
+                </tr>
+			</table> 
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col">
+			<h1>Artikelübersicht</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<h2>Artikel über 10€</h2>
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Preis</th>
+				</tr>
+				{% for article in articles_over -%}
+				<tr>
+					<td>{{ article.name }}</td>
+					<td>{{ article.price|as_euro }}</td>
+				</tr>
+				{% endfor %}
+			</table> 
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<h2>Artikel unter 10€</h2>
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Preis</th>
+				</tr>
+				{% for article in articles_under -%}
+				<tr>
+					<td>{{ article.name }}</td>
+					<td>{{ article.price|as_euro }}</td>
+				</tr>
+				{% endfor %}
+			</table> 
+		</div>
+	</div>
+
+    <div class="row">
+		<div class="col">
+			<h1>Kostenübersicht</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<table class="table table-striped">
+				<tr>
+					<th scope="col">Provision:</th>
+					<td>{{ provision|as_euro }}</td>
+				</tr>
+			</table> 
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<form action="/org/checkin/done/{{ checkin_user.id }}/" method="post">
+				<button type="submit" class="btn btn-info">Einchecken!</button>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

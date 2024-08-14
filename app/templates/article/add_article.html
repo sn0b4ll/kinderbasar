@@ -1,5 +1,6 @@
-{% include 'header.html' %}
+{% extends 'meta/base_logged_in.html' %}
 
+{% block content %}
 <script>
   function validateForm() {
     let price = document.forms["add_article"]["price"].value;
@@ -151,5 +152,4 @@
     </div>
   </div>
 </div>
-
-{% include 'footer.html' %}
+{% endblock %}
