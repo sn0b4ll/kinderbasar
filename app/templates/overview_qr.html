@@ -49,29 +49,31 @@
 <div class="container mt-2">
     <div class="subpage">
         <div class="row">
-        {% for article in articles %}
+            {% for article in articles %}
             <div class="col-4 mt-2 border border-dark border-2 pb-2">
-                {{ article.name|truncate(35) }} <br> 
-                <font style="color:red; text-decoration: underline;">Verkäufer: {{ article.seller.id }}</font> <br>
+                {{ article.name|truncate(35) }} <br>
+                <font style="color:red; text-decoration: underline;">Verkäufer:
+                    {{ article.seller.id }}</font> <br>
                 {% if article.comment != "" %}
                 {{ article.comment }}<br>
                 {% else %}
                 <br>
                 {% endif %}
                 Preis: {{ article.price|as_euro }}<br>
-                <img src="{{ qrcode(url_template + article.uuid, box_size=4, border=1) }}">
+                <img
+                    src="{{ qrcode(url_template + article.uuid, box_size=4, border=1) }}">
             </div>
             {% if loop.index is divisibleby 15 %}
         </div>
     </div>
     <div class="subpage">
         <div class="row">
-        {% elif loop.index is divisibleby 3 %}
+            {% elif loop.index is divisibleby 3 %}
         </div>
         <div class="row">
-        {% endif %}
-    
-    {% endfor %}
+            {% endif %}
+
+            {% endfor %}
         </div>
     </div>
     <div class="subpage">
@@ -79,7 +81,8 @@
             <div class="col mt-2 border border-dark border-2 pb-2">
                 Verkäufer-Nummer (für Einkaufs-Körbe):<br>
                 <center>
-                    <font style="text-align: center; font-size: 14cm;"> {{ user.id }} </font>
+                    <font style="text-align: center; font-size: 14cm;"> {{
+                        user.id }} </font>
                 </center>
             </div>
         </div>
@@ -87,7 +90,8 @@
             <div class="col mt-2 border border-dark border-2 pb-2">
                 Verkäufer-Nummer (für Einkaufs-Körbe):<br>
                 <center>
-                    <font style="text-align: center; font-size: 14cm;"> {{ user.id }} </font>
+                    <font style="text-align: center; font-size: 14cm;"> {{
+                        user.id }} </font>
                 </center>
             </div>
         </div>
@@ -95,40 +99,37 @@
     <div class="lastpage">
         <div class="row mt-5">
             <div class="col">
-                <h1>Hinweise</h1>
+                <h1>Allgemeine Hinweise</h1>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <p>Bitte nehme diesen Zettel am Tag der Abgabe mit!</p>
-    
-                <h2>Was ist neu</h2>
-                <p>Die Vor-Ort-Gebühr beträgt 5% des eingetragenen Preises bei Artikeln bis 50€ (wie bisher). Neu ist, das für Artikel ab inkl. 50€
-                 pauschal nur noch 2.50€ Vor-Ort-Gebühr anfallen.</p>
-    
-                <p>
-                    Ihre unverkaufte Artikel vorheriger Basare können Sie durch das Scannen der alten Label wieder dem aktuellen Basar hinzufügen. Dazu müssen Sie sich einfach am Handy mit ihrem Account anmelden. Scannen Sie anschließend den QR-Code auf dem Artikel, den Sie hinzufügen wollen und drücken Sie abschließend auf "Reaktivieren". Nun sollte der Artikel in Ihrer "Artikel Übersicht" erscheinen. Der Gewinn aus Artikeln aus vorherigen Basaren, die ohne Scan auf dem aktuellen Basar angeboten werden, kommt zu 100% dem Verein zugute. Eine genauere Anleitung steht Ihnen <a href="https://kinderbasar-elsendorf.de/anleitung/">hier</a> zur Verfügung.
-                </p>
-    
-                <p>
-                    Es wird wieder eine Abgabekontrolle geben - jedoch nur für Artikel ab inkl. 10€. Halten Sie diese Artikel bitte bei der Abgabe bereit.
-                </p>
-    
-                <h2>Was ist wie vorher</h2>
-    
-                <p>
-                    Bringen Sie bitte die Vor-Ort-Gebühr bei der Abgabe bitte passend mit. Zur Platzersparnis wäre die Anlieferung der Ware in Klappboxen wünschenswert.
-                </p>
-                 
-                <p>
-                    Drucken Sie die Labels über den Menüpunkt "QR-Codes" aus und schneiden diese an den vorgegebenen Linien aus. Die Label dürfen einlaminiert oder mit durchsichtigem Klebeband verstärkt werden. Befestigen Sie die angefertigten Label gut sichtbar und abreiß-sicher an der Ware. Die QR-Codes dürfen dabei nicht gelocht oder geknickt werden.
-                </p>
-    
-                <p>Batteriebetriebene Geräte müssen mit vollen Batterien verkauft werden.</p>
-                 
-                <p>Beachten Sie bitte unsere FAQ Seite auf unserer Homepage.</p>
-                
-                <p>Für verloren gegangene Ware können wir keine Haftung übernehmen!</p>
+                <p>Bitte bringen Sie die QR-Codes gut von außen sichtbar an.</p>
+                <p>Bitte stechen Sie keine Löcher durch die QR-Codes.</p>
+                <p>Das Laminieren von QR-Codes ist möglich - bitte verwenden Sie
+                    jedoch nach Möglichkeit wenig reflektierende Folie</p>
+                <p>Nach Möglichkeit bitten wir Sie Ihre Artikel in Klappboxen
+                    oder sonstigen, stabilen aber platzsparenden Boxen
+                    anzuliefern</p>
+
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
+                <h1>Hinweise zu Artikeln</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p>Nicht-Vollständige Artikel müssen entsprechend mit einem
+                    Kommentar versehen werden.</p>
+                <p>Bitte achten Sie auf Kinder-Freundlichkeit der Artikel (das
+                    gilt auch für Bücher o.Ä.)</p>
+                <p>Batteriebetriebene Geräte müssen mit vollen Batterien
+                    verkauft werden.</p>
+                <p>Artikel, die nicht diesen Kriterien entsprechen, werden ohne
+                    Rückerstattung der Vor-Ort-Gebühr aus dem Verkauf
+                    entfernt.</p>
             </div>
         </div>
     </div>

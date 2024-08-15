@@ -21,9 +21,9 @@ article_handling = Blueprint("article_handling", __name__, template_folder="temp
 def add_article():
     """Display the page for adding an article or create one."""
     if "user_id" in session:
-        user = User.query.get(session["user_id"])
-        if user.registration_done:
-            return "Registration already finished.", 403
+        user:User = User.query.get(session["user_id"])
+        if user.checkin_done:
+            return "Checkin already done.", 403
 
         if request.method == "GET":
             # Get request, return the form
@@ -120,10 +120,10 @@ def remove_article(art_uuid):
         if art_uuid is None:
             return abort(Response("Article UUID missing."))
 
-        user = User.query.get(session["user_id"])
+        user:User = User.query.get(session["user_id"])
         article = Article.query.get(art_uuid)
 
-        if (article not in user.articles) or user.registration_done or article.sold:
+        if (article not in user.articles) or user.checkin_done or article.sold:
             logging.error(
                 f"User {user.id } tried to delete article {art_uuid} but is not allowed to."
             )

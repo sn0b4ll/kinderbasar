@@ -18,6 +18,7 @@ from utils.db_migration import migrate_data
 
 from routes.register import register_process
 from routes.session import session_handling
+from routes.dashboard import dashboard_handling
 from routes.article import article_handling
 from routes.cart import cart_handling
 from routes.organizer import organization_routes
@@ -35,6 +36,7 @@ db.init_app(app)
 
 app.register_blueprint(register_process)
 app.register_blueprint(session_handling)
+app.register_blueprint(dashboard_handling)
 app.register_blueprint(article_handling)
 app.register_blueprint(cart_handling)
 app.register_blueprint(organization_routes)

@@ -18,7 +18,7 @@
           <th scope="col">E-Mail</th>
           <th scope="col">Checkin</th>
         </tr>
-        {% for user in users -%}
+        {% for user in remaining_users -%}
         <tr>
           <td>{{ user.id }}</td>
           <td>{{ user.email }}</td>
@@ -43,7 +43,7 @@
     <div class="col">
       <table class="table table-striped">
         <tr>
-          <th scope="col">Verkäufer registriert</th>
+          <th scope="col">Verkäufer gesamt</th>
           <td>{{ num_sellers }}</td>
         </tr>
         <tr>

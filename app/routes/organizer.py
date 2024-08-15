@@ -58,12 +58,11 @@ def get_checkin(user_id):
 
 @organization_routes.route("/org/checkin/done/<int:user_id>/", methods=["POST"])
 def set_checkin(user_id):
-    """Create the checking information."""
+    """Mark an seller as checked in."""
     loggedin_user = User.query.get(session["user_id"])
     if loggedin_user.organizer:
         user = db.session.get(User, user_id)
         user.checkin_done = True
-        user.registration_done = True
         db.session.commit()
 
         logging.info(f"Checking for user {user_id} was closed.")
@@ -132,22 +131,22 @@ def return_checking_page():
         return redirect(url_for("session_handling.login"))
 
     if current_user.organizer:
-        registered_users = (
+        remaining_users = (
             db.session.query(User)
-            .filter(User.registration_done, User.checkin_done == False)  # noqa: E712
+            .filter(User.checkin_done == False)  # noqa: E712
             .all()
         )
-        logging.info(len(registered_users))
+        logging.info(len(remaining_users))
         num_already_checkedin = len(
             db.session.query(User)
-            .filter(User.registration_done, User.checkin_done)
+            .filter(User.checkin_done)
             .all()
         )
-        num_sellers = len(db.session.query(User).filter(User.registration_done).all())
+        num_sellers = len(db.session.query(User).all())
 
         return render_template(
             "org/checkin/checkin_list.html",
-            users=registered_users,
+            remaining_users=remaining_users,
             num_sellers=num_sellers,
             num_already_checkedin=num_already_checkedin,
             user=current_user,
@@ -178,11 +177,8 @@ def return_stats_page():
         )
         num_already_checkedin = len(
             db.session.query(User)
-            .filter(User.registration_done, User.checkin_done)
+            .filter(User.checkin_done)
             .all()
-        )
-        num_already_registered = len(
-            db.session.query(User).filter(User.registration_done).all()
         )
 
         sum_articles_sold = len(
@@ -220,7 +216,6 @@ def return_stats_page():
             sum_articles_current=sum_articles_current,
             sum_articles_sold=sum_articles_sold,
             num_already_checkedin=num_already_checkedin,
-            num_already_registered=num_already_registered,
             num_articles_basar_22_1_sold=num_articles_basar_22_1_sold,
             num_articles_basar_22_1_unsold=num_articles_basar_22_1_unsold,
             num_articles_basar_23_1=num_articles_basar_23_1,
@@ -283,7 +278,6 @@ def print_all_clearings():
             # Skip for sellers with 0 current articles
             if (
                 (len(articles) == 0)
-                or not user.registration_done
                 or not user.checkin_done
             ):
                 continue
@@ -321,22 +315,21 @@ def print_all_clearings():
     return redirect(url_for("session_handling.login"))
 
 
-@organization_routes.route("/user/<int:user_id>/unregister", methods=["GET"])
-def user_unregister(user_id):
-    """Unregister an user."""
-    loggedin_user = User.query.get(session["user_id"])
-    if loggedin_user.organizer:
+@organization_routes.route("/user/<int:user_id>/undo_checkin", methods=["GET"])
+def user_undo_checkin(user_id):
+    """Undoes a checking for an seller."""
+    current_user = User.query.get(session["user_id"])
+    if current_user.organizer:
         user = db.session.get(User, user_id)
-        user.registration_done = False
         user.checkin_done = False
         db.session.commit()
 
         logging.info(
-            f"Organizer with id { loggedin_user.id } unregistered user { user.id }."
+            f"Organizer with id { current_user.id } undid checkin of user { user.id }."
         )
         return redirect(url_for("organization_routes.get_sellers"))
 
-    logging.info("Someone without the right tried access the clearing for an seller.")
+    logging.info("Someone without the right tried to do an checkin undo for an seller.")
     return redirect(url_for("session_handling.login"))
 
 

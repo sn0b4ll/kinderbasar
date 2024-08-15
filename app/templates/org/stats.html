@@ -48,8 +48,8 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
       	["Titel", "Anzahl"],
-		["Verkäufer mit Artikeln", {{ num_sellers_with_articles - num_already_registered - num_already_checkedin }}],
-      	["Registrierung abgeschlossen", {{ num_already_registered - num_already_checkedin }}],
+		    ["Verkäufer mit Artikeln", {{ num_sellers_with_articles - num_already_checkedin }}],
+      	["Registrierung abgeschlossen", {{ num_already_checkedin }}],
       	["Checked-In", {{ num_already_checkedin }}]
         ]);
 
@@ -127,10 +127,6 @@
             <tr>
               <th scope="col">Verkäufer mit aktuellen Artikeln</th>
               <td>{{ num_sellers_with_articles }}</td>
-            </tr>
-            <tr>
-              <th scope="col">Verkäufer registriert</th>
-              <td>{{ num_already_registered }}</td>
             </tr>
             <tr>
               <th scope="col">Verkäufer eingecheckt</th>

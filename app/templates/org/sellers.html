@@ -17,7 +17,7 @@
           <th scope="col">Verkäufer</th>
           <th scope="col">Anzahl Artikel</th>
           <th scope="col">Anzahl Artikel Verkauft</th>
-          <th scope="col">Registrierung abgeschlossen</th>
+          <th scope="col">Checkin abgeschlossen</th>
           <th scope="col">Abrechnung drucken</th>
         </tr>
         {% for seller in seller_list -%}
@@ -26,14 +26,7 @@
           <td>{{ seller[1] }}</td>
           <td>{{ seller[2] }}</td>
           <td>
-            {% if seller[0].registration_done %}
-            <a
-              href="/user/{{ seller[0].id }}/unregister"
-              class="btn btn-info"
-              role="button"
-              >Registriert, wieder freischalten</a
-            >
-            {% else %} {{ seller[0].registration_done|to_german }} {% endif %}
+            {{ seller[0].checkin_done|to_german }}
           </td>
           <td>
             <a
