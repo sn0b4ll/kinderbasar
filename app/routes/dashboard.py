@@ -40,11 +40,9 @@ def get_dashboard():
                 sum_sold = sum_sold + article.price
 
             if article.price < 5000:
-                print("LT")
                 articles_lt_fifty.append(article)
                 sum_lt_fifty = sum_lt_fifty + article.price
             else:
-                print("GT")
                 articles_gte_fifty.append(article)
 
         provision_lt_fifty = sum_lt_fifty * 0.05
