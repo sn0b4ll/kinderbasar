@@ -41,7 +41,7 @@ def register():
             )
 
             return render_template(
-                "registration_success.html",
+                "register/registration_success.html",
             )
     else:
         # New user

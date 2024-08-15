@@ -18,9 +18,11 @@
         <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-            <a class="nav-link {% block nav_overview %}{% endblock %}" aria-current="page" href="/overview"
-                >Artikel Übersicht</a
-            >
+                <a class="nav-link {% block nav_dashboard %}{% endblock %}" aria-current="page" href="/dashboard"
+                    >Übersicht</a>
+                </li>
+            <li class="nav-item">
+                <a class="nav-link {% block nav_articles %}{% endblock %}" aria-current="page" href="/overview">Artikel</a>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="/overview/qr">QR-Codes</a>
