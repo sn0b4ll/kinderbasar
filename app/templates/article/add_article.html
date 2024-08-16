@@ -31,7 +31,7 @@
 
     switch (articleType) {
       case "cloth":
-        document.getElementById("comment").placeholder = "Kleidungs-Größe";
+        document.getElementById("comment").placeholder = "Konfektionsgröße (nicht Monate)";
         document.getElementById("comment").required = true;
         document.getElementById("warning").hidden = true;
         break;
@@ -133,7 +133,7 @@
             id="comment"
             name="comment"
             class="form-control"
-            placeholder="Kleidungs-Größe"
+            placeholder="Konfektionsgröße (nicht Monate)"
             oninvalid="this.setCustomValidity('Für diese Art von Artikel benötigt')"
             oninput="setCustomValidity('')"
             maxlength="25"
