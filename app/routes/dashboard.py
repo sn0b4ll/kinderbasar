@@ -1,18 +1,13 @@
 """Serves pages linked to the dashboard."""
 # pylint: disable=no-member,logging-fstring-interpolation,import-error
 
-import uuid
 
-from datetime import datetime
-
-from flask import Blueprint, Response
-from flask import render_template, redirect, url_for, abort
-from flask import request, session
+from flask import Blueprint
+from flask import render_template, redirect, url_for
+from flask import session
 
 from models import db
-from models import Article, User, ARTICLE_COMMENT_SIZE, ARTICLE_NAME_SIZE
-
-from helper import logging
+from models import User
 
 dashboard_handling = Blueprint(
     "dashboard_handling", __name__, template_folder="templates"
