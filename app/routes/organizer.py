@@ -18,61 +18,6 @@ organization_routes = Blueprint(
 )
 
 
-@organization_routes.route("/org/checkin/<int:user_id>/", methods=["GET"])
-def get_checkin(user_id):
-    """Create the checking information."""
-
-    current_user = User.query.get(session["user_id"])
-    if current_user.organizer:
-        checkin_user = db.session.get(User, user_id)
-        articles_over = []
-        articles_under = []
-
-        provision = 0
-
-        for article in filter(_filter_article_current, checkin_user.articles):
-            # Calculate provision
-            if article.price < 5000:
-                provision += article.price * 0.05
-            else:
-                provision += 250
-
-            # Depending on price, sort into under or over
-            if article.price < 1000:
-                articles_under.append(article)
-            else:
-                articles_over.append(article)
-
-        return render_template(
-            "org/checkin/checkin.html",
-            checkin_user=checkin_user,
-            articles_under=articles_under,
-            articles_over=articles_over,
-            provision=provision,
-            user=current_user,
-        )
-
-    logging.info("Someone tried to navigate the login page without being an org.")
-    return redirect(url_for("session_handling.login"))
-
-
-@organization_routes.route("/org/checkin/done/<int:user_id>/", methods=["POST"])
-def set_checkin(user_id):
-    """Mark an seller as checked in."""
-    loggedin_user = User.query.get(session["user_id"])
-    if loggedin_user.organizer:
-        user = db.session.get(User, user_id)
-        user.checkin_done = True
-        db.session.commit()
-
-        logging.info(f"Checking for user {user_id} was closed.")
-
-        return redirect(url_for("organization_routes.return_checking_page"))
-
-    logging.info("Someone without org right tried to do a checkin.")
-    return redirect(url_for("session_handling.login"))
-
-
 @organization_routes.route("/sellers/", methods=["GET"])
 def get_sellers():
     """List all sellers with their sold / unsold product count."""
