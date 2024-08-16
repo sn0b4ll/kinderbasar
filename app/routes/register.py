@@ -97,7 +97,7 @@ Ihr Kinderbasar Elsendorf Team
         logging.error(exception)
         return "Something went wrong, please wait some minutes and retry."
 
-    return render_template("registration_success.html")
+    return render_template("register/registration_success.html")
 
 
 @register_process.route("/activate/<int:user_id>/<string:activation_uuid>")
