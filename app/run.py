@@ -4,27 +4,20 @@
 import math
 
 import pdfkit  # pylint: disable=import-error # type: ignore
-
-from flask import Flask, Response
-from flask import render_template, redirect, url_for
-from flask import session, request
-
+from flask import Flask, Response, redirect, render_template, request, session, url_for
 from flask_qrcode import QRcode
-
-from sqlalchemy import desc
-
+from helper import _filter_article_current, _filter_article_reactivated, config, logging
 from models import db
-from utils.db_migration import migrate_data
-
-from routes.register import register_process
-from routes.session import session_handling
-from routes.dashboard import dashboard_handling
 from routes.article import article_handling
 from routes.cart import cart_handling
+from routes.checkin import checkin_routes
+from routes.dashboard import dashboard_handling
 from routes.organizer import organization_routes
+from routes.register import register_process
 from routes.resetpw import reset_password
-
-from helper import logging, config, _filter_article_current, _filter_article_reactivated
+from routes.session import session_handling
+from sqlalchemy import desc
+from utils.db_migration import migrate_data
 
 app = Flask(__name__)
 app.secret_key = config.get("APP", "secret_key")
@@ -41,6 +34,7 @@ app.register_blueprint(article_handling)
 app.register_blueprint(cart_handling)
 app.register_blueprint(organization_routes)
 app.register_blueprint(reset_password)
+app.register_blueprint(checkin_routes)
 
 from models import Article, User  # noqa: E402
 

@@ -5,24 +5,24 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col">
-            <h1>Informationen</h1>
-        </div>
-    </div>
+	<div class="row">
+		<div class="col">
+			<h1>Informationen</h1>
+		</div>
+	</div>
 
-    <div class="row">
+	<div class="row">
 		<div class="col">
 			<table class="table table-striped">
 				<tr>
 					<th scope="col">ID</th>
-                    <td>{{ checkin_user.id }}</td>
-                </tr>
-                <tr>
+					<td>{{ checkin_user.id }}</td>
+				</tr>
+				<tr>
 					<th scope="col">E-Mail</th>
-                    <td>{{ checkin_user.email }}</td>
-                </tr>
-			</table> 
+					<td>{{ checkin_user.email }}</td>
+				</tr>
+			</table>
 		</div>
 	</div>
 
@@ -45,7 +45,7 @@
 					<td>{{ article.price|as_euro }}</td>
 				</tr>
 				{% endfor %}
-			</table> 
+			</table>
 		</div>
 	</div>
 	<div class="row">
@@ -62,11 +62,11 @@
 					<td>{{ article.price|as_euro }}</td>
 				</tr>
 				{% endfor %}
-			</table> 
+			</table>
 		</div>
 	</div>
 
-    <div class="row">
+	<div class="row">
 		<div class="col">
 			<h1>Kostenübersicht</h1>
 		</div>
@@ -78,12 +78,14 @@
 					<th scope="col">Provision:</th>
 					<td>{{ provision|as_euro }}</td>
 				</tr>
-			</table> 
+			</table>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col">
 			<form action="/org/checkin/done/{{ checkin_user.id }}/" method="post">
+				<textarea class="form-control mb-2" id="comment" name="comment"
+					maxlength="200" placeholder="Kommentar"></textarea>
 				<button type="submit" class="btn btn-info">Einchecken!</button>
 			</form>
 		</div>

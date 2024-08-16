@@ -7,6 +7,7 @@ db = SQLAlchemy()
 
 ARTICLE_NAME_SIZE = 25
 ARTICLE_COMMENT_SIZE = 25
+CHECKIN_COMMENT_SIZE = 200
 
 class Article(db.Model):
     """Article (everything which can be bought)."""
@@ -33,6 +34,7 @@ class User(db.Model):
     activated = db.Column(db.Boolean)
     organizer = db.Column(db.Boolean)
     checkin_done = db.Column(db.Boolean)
+    checkin_comment = db.Column(db.String(CHECKIN_COMMENT_SIZE))
 
     # Iterator for open carts per user (org)
     carts = db.relationship("Cart", backref="owner", lazy=True)

@@ -5,24 +5,32 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col">
-            <h1>Informationen</h1>
-        </div>
-    </div>
+	<div class="row">
+		<div class="col">
+			<h1>Informationen</h1>
+		</div>
+	</div>
 
-    <div class="row">
+	<div class="row">
 		<div class="col">
 			<table class="table table-striped">
 				<tr>
 					<th scope="col">ID</th>
-                    <td>{{ clearing_user.id }}</td>
-                </tr>
-                <tr>
+					<td>{{ clearing_user.id }}</td>
+				</tr>
+				<tr>
 					<th scope="col">E-Mail</th>
-                    <td>{{ clearing_user.email }}</td>
-                </tr>
-			</table> 
+					<td>{{ clearing_user.email }}</td>
+				</tr>
+				<tr>
+					<th scope="col">Check-In-Kommentar</th>
+					<td>
+						<p class="text-wrap">
+							{{ clearing_user.checkin_comment }}
+						</p>
+					</td>
+				</tr>
+			</table>
 		</div>
 	</div>
 
@@ -42,11 +50,11 @@
 					<td>{{ article.price|as_euro }}</td>
 				</tr>
 				{% endfor %}
-			</table> 
+			</table>
 		</div>
 	</div>
 
-    <div class="row">
+	<div class="row">
 		<div class="col">
 			<h1>Kostenübersicht</h1>
 		</div>
@@ -58,12 +66,13 @@
 					<th scope="col">Summe Verkauft:</th>
 					<td>{{ sold_sum|as_euro }}</td>
 				</tr>
-			</table> 
+			</table>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col">
-			<button class="btn btn-primary btn-block mt-3 mb-3" onclick="window.print();return false;">Drucken</button>
+			<button class="btn btn-primary btn-block mt-3 mb-3"
+				onclick="window.print();return false;">Drucken</button>
 		</div>
 	</div>
 </div>
