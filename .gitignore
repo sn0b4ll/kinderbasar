@@ -133,6 +133,7 @@ dmypy.json
 conf/env.conf
 db/test.db
 db/mysql/
+db/backup/
 logs/kinderbasar.log
 app/utils/db_migration_files/*
 docker-compose.yml
