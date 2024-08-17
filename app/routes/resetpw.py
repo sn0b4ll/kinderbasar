@@ -51,6 +51,10 @@ def _send_pw_reset_mail(user: User):
 
     logging.info(f"Passwort reset process started for { user.id }.")
 
+    # Regenerate activation code (used here for pw reset)
+    user.activation_code = str(uuid.uuid4())
+    db.session.commit()
+
     # Send mail with reset code
     msg = EmailMessage()
     msg.set_content(
