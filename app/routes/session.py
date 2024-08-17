@@ -21,6 +21,8 @@ session_handling = Blueprint("session_handling", __name__, template_folder="temp
 def login():
     """Serves the login page and handles the login-request."""
     if request.method == "POST":
+        logging.debug("Login-Route called.")
+
         sleep(random())  # Let's slow bots down..
         email = request.form["username"]
         password = request.form["password"]
@@ -28,6 +30,7 @@ def login():
         # Check if user exists
         user = User.query.filter_by(email=email).first()
         if user is None:
+            logging.info(f"Someone is trying to login with a false E-Mail Address: {email}")
             # and if not, return to the login page
             return render_template("login.html", title="Login")
 
@@ -38,7 +41,7 @@ def login():
             ph.verify(pass_hash, password + salt)
         except VerifyMismatchError:
             # Verify failed
-            logging.warning(f"Failed login attemp for user {user.email}.")
+            logging.warning(f"Failed login attempt for user {user.email}.")
             return render_template("login.html", title="Login")
         except Exception as exception:  # pylint: disable=broad-except
             # Something else went wrong, but better be sure not to skip this check

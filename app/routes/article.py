@@ -10,7 +10,7 @@ from flask import render_template, redirect, url_for, abort
 from flask import request, session
 
 from models import db
-from models import Article, User
+from models import Article, User, ARTICLE_COMMENT_SIZE, ARTICLE_NAME_SIZE
 
 from helper import logging
 
@@ -21,14 +21,18 @@ article_handling = Blueprint("article_handling", __name__, template_folder="temp
 def add_article():
     """Display the page for adding an article or create one."""
     if "user_id" in session:
-        user = User.query.get(session["user_id"])
-        if user.registration_done:
-            return "Registration already finished.", 403
+        user:User = User.query.get(session["user_id"])
+        if user.checkin_done:
+            return "Checkin already done.", 403
 
         if request.method == "GET":
-            return render_template("add_article.html", title="Add an article")
+            # Get request, return the form
+            return render_template(
+                "article/add_article.html", title="Add an article", user=user
+            )
 
-        name = request.form["name"]
+        # Post-Request, create an article
+        name = request.form["name"][:ARTICLE_NAME_SIZE]
         price = request.form["price"]
         try:
             price = price.replace(",", "")
@@ -38,7 +42,7 @@ def add_article():
         except ValueError:
             return "Bitte beachten Sie die Vorgaben zur Preiseingabe. Sie erreichen die vorherige Seite über den Zurück-Button Ihres Browsers."
 
-        comment = request.form["comment"]
+        comment = request.form["comment"][:ARTICLE_COMMENT_SIZE]
 
         article = Article()
         article.uuid = str(uuid.uuid4())
@@ -75,7 +79,7 @@ def article_view(art_uuid):
 
     article = Article.query.filter_by(uuid=art_uuid).first()
 
-    return render_template("article.html", article=article, user=user)
+    return render_template("article/article.html", article=article, user=user)
 
 
 @article_handling.route(
@@ -116,10 +120,10 @@ def remove_article(art_uuid):
         if art_uuid is None:
             return abort(Response("Article UUID missing."))
 
-        user = User.query.get(session["user_id"])
+        user:User = User.query.get(session["user_id"])
         article = Article.query.get(art_uuid)
 
-        if (article not in user.articles) or user.registration_done or article.sold:
+        if (article not in user.articles) or user.checkin_done or article.sold:
             logging.error(
                 f"User {user.id } tried to delete article {art_uuid} but is not allowed to."
             )
