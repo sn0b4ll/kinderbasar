@@ -8,6 +8,50 @@ from models import User, db, CHECKIN_COMMENT_SIZE
 checkin_routes = Blueprint("checkin_routes", __name__, template_folder="templates")
 
 
+@checkin_routes.route("/org/checkin/", methods=["GET"])
+def return_checking_page():
+    """List all sellers with current articles for checkin."""
+
+    try:
+        current_user = User.query.get(session["user_id"])
+    except KeyError:
+        logging.info("Someone without org right tried access the checkin list.")
+        return redirect(url_for("session_handling.login"))
+
+    if current_user.organizer:
+        all_users = db.session.query(User).all()
+
+        current_sellers = []
+        remaining_sellers = []
+        checkedin_sellers = []
+
+        for user in all_users:
+            if user.checkin_done:
+                # If the user is already checked in, we don't have to
+                # check anything else
+                checkedin_sellers.append(user)
+                current_sellers.append(user)
+                continue
+            
+            for article in user.articles:
+                if article.current:
+                    remaining_sellers.append(user)
+                    current_sellers.append(user)
+                    break
+    
+
+        return render_template(
+            "org/checkin/checkin_list.html",
+            remaining_users=remaining_sellers,
+            num_sellers=len(current_sellers),
+            num_already_checkedin=len(checkedin_sellers),
+            user=current_user,
+        )
+
+    logging.info("Someone without org right tried access the checkin list.")
+    return redirect(url_for("session_handling.login"))
+
+
 @checkin_routes.route("/org/checkin/<int:user_id>/", methods=["GET"])
 def get_checkin(user_id):
     """Create the checking information."""
@@ -58,7 +102,7 @@ def set_checkin(user_id):
 
         logging.info(f"Checking for user {user_id} was closed.")
 
-        return redirect(url_for("organization_routes.return_checking_page"))
+        return redirect(url_for("checkin_routes.return_checking_page"))
 
     logging.info("Someone without org right tried to do a checkin.")
     return redirect(url_for("session_handling.login"))

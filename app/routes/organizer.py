@@ -65,42 +65,6 @@ def get_sellers():
     return redirect(url_for("session_handling.login"))
 
 
-@organization_routes.route("/org/checkin/", methods=["GET"])
-def return_checking_page():
-    """List all sellers for checkin."""
-
-    try:
-        current_user = User.query.get(session["user_id"])
-    except KeyError:
-        logging.info("Someone without org right tried access the checkin list.")
-        return redirect(url_for("session_handling.login"))
-
-    if current_user.organizer:
-        remaining_users = (
-            db.session.query(User)
-            .filter(User.checkin_done == False)  # noqa: E712
-            .all()
-        )
-        logging.info(len(remaining_users))
-        num_already_checkedin = len(
-            db.session.query(User)
-            .filter(User.checkin_done)
-            .all()
-        )
-        num_sellers = len(db.session.query(User).all())
-
-        return render_template(
-            "org/checkin/checkin_list.html",
-            remaining_users=remaining_users,
-            num_sellers=num_sellers,
-            num_already_checkedin=num_already_checkedin,
-            user=current_user,
-        )
-
-    logging.info("Someone without org right tried access the checkin list.")
-    return redirect(url_for("session_handling.login"))
-
-
 @organization_routes.route("/org/stats/", methods=["GET"])
 def return_stats_page():
     """List current stats."""
