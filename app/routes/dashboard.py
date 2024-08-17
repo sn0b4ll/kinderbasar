@@ -28,17 +28,18 @@ def get_dashboard():
         sum_all = 0
 
         for article in user.articles:
-            sum_all = sum_all + article.price
+            if article.current:
+                sum_all = sum_all + article.price
 
-            if article.sold:
-                articles_sold.append(article)
-                sum_sold = sum_sold + article.price
+                if article.sold:
+                    articles_sold.append(article)
+                    sum_sold = sum_sold + article.price
 
-            if article.price < 5000:
-                articles_lt_fifty.append(article)
-                sum_lt_fifty = sum_lt_fifty + article.price
-            else:
-                articles_gte_fifty.append(article)
+                if article.price < 5000:
+                    articles_lt_fifty.append(article)
+                    sum_lt_fifty = sum_lt_fifty + article.price
+                else:
+                    articles_gte_fifty.append(article)
 
         provision_lt_fifty = sum_lt_fifty * 0.05
         provision_gte_fifty = len(articles_gte_fifty) * 250
