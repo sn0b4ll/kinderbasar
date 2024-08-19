@@ -53,6 +53,7 @@ def get_dashboard():
             num_lt_fifty=len(articles_lt_fifty),
             num_gte_fifty=len(articles_gte_fifty),
             num_sold_articles=len(articles_sold),
+            num_all=len(articles_lt_fifty)+len(articles_gte_fifty)+len(articles_sold),
             sum_lt_fifty=sum_lt_fifty,
             sum_provision=sum_provision,
             sum_sold=sum_sold,
