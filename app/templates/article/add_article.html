@@ -1,5 +1,6 @@
-{% include 'header.html' %}
+{% extends 'meta/base_logged_in.html' %}
 
+{% block content %}
 <script>
   function validateForm() {
     let price = document.forms["add_article"]["price"].value;
@@ -30,7 +31,7 @@
 
     switch (articleType) {
       case "cloth":
-        document.getElementById("comment").placeholder = "Kleidungs-Größe";
+        document.getElementById("comment").placeholder = "Konfektionsgröße (nicht Monate)";
         document.getElementById("comment").required = true;
         document.getElementById("warning").hidden = true;
         break;
@@ -80,9 +81,10 @@
             oninvalid="this.setCustomValidity('Bitte dem Artikel einen eindeutigen Namen geben')"
             oninput="setCustomValidity('')"
             placeholder="Ein eindeutiger Name"
+            maxlength="25"
           />
           <div id="nameHelp" class="form-text">
-            Erscheint später auf dem Etikett.
+            Erscheint später auf dem Etikett. Maximal 25 Zeichen.
           </div>
         </div>
 
@@ -131,13 +133,14 @@
             id="comment"
             name="comment"
             class="form-control"
-            placeholder="Kleidungs-Größe"
+            placeholder="Konfektionsgröße (nicht Monate)"
             oninvalid="this.setCustomValidity('Für diese Art von Artikel benötigt')"
             oninput="setCustomValidity('')"
+            maxlength="25"
             required
           />
           <div id="nameHelp" class="form-text">
-            Erscheint später auf dem Etikett.
+            Erscheint später auf dem Etikett. Maximal 25 Zeichen.
           </div>
         </div>
         <input
@@ -149,5 +152,4 @@
     </div>
   </div>
 </div>
-
-{% include 'footer.html' %}
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'meta/base_logged_in.html' %}
+
+{% block nav_org %}active{% endblock %}
+{% block nav_sellers %}active{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Verkäufer-Übersicht</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table table-striped">
+        <tr>
+          <th scope="col">Verkäufer</th>
+          <th scope="col">Anzahl Artikel</th>
+          <th scope="col">Anzahl Artikel Verkauft</th>
+          <th scope="col">Checkin abgeschlossen</th>
+          <th scope="col">Abrechnung drucken</th>
+        </tr>
+        {% for seller in seller_list -%}
+        <tr>
+          <td>{{ seller[0].id }}</td>
+          <td>{{ seller[1] }}</td>
+          <td>{{ seller[2] }}</td>
+          <td>
+            {{ seller[0].checkin_done|to_german }}
+          </td>
+          <td>
+            <a
+              href="/clearing/{{ seller[0].id }}/"
+              class="btn btn-info"
+              role="button"
+              >Abrechnung anzeigen</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <table class="table table-striped">
+        <tr>
+          <th scope="col">Artikel gesamt</th>
+          <td>{{ sum_articles_current }}</td>
+        </tr>
+        <tr>
+          <th scope="col">Verkäufer gesamt</th>
+          <td>{{ num_sellers }}</td>
+        </tr>
+        <tr>
+          <th scope="col">Verkäufer eingecheckt</th>
+          <td>{{ num_already_checkedin }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="row d-flex justify-content-center align-items-center mt-1">
+    <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1 mt-5 shadow">
+      <input
+        type="button"
+        class="btn btn-primary btn-block mb-4 mt-4"
+        value="Alle Abrechnungen drucken"
+        onclick="location.pathname='/clearing/printall'"
+      /><br />
+    </div>
+  </div>
+</div>
+{% endblock %}

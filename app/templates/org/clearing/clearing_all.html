@@ -1,4 +1,4 @@
-{% include 'header.html' %}
+{% include 'meta/header.html' %}
 <style>
     body {
         width: 100%;
@@ -46,6 +46,10 @@
 						<th scope="col">E-Mail</th>
 						<td>{{ user.email }}</td>
 					</tr>
+					<tr>
+						<th scope="col">Check-In-Kommentar</th>
+						<td>{{ user.checkin_comment }}</td>
+					</tr>
 				</table> 
 			</div>
 		</div>
@@ -89,4 +93,4 @@
 	{% endfor %}
 </div>
 
-{% include 'footer.html' %}
+{% include 'meta/footer.html' %}

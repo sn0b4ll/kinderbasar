@@ -1,0 +1,77 @@
+{% if user %}
+  {% extends 'meta/base_logged_in.html' %}
+{% else %}
+  {% extends 'meta/base_logged_out.html' %}
+{% endif %}
+
+{% block content %}
+<div class="container">
+  <div class="row mt-5">
+    <div class="col">
+      <table class="table table-striped">
+        <tr>
+          <td scope="col">Name</td>
+          <td scope="col">{{ article.name }}</td>
+        </tr>
+        <tr>
+          <td scope="col">Verkäufer</td>
+          <td scope="col">{{ article.seller.id }}</td>
+        </tr>
+        <tr>
+          <td scope="col">Preis</td>
+          <td scope="col">{{ article.price|as_euro }}</td>
+        </tr>
+        <tr>
+          <td scope="col">Kommentar</td>
+          <td scope="col">{{ article.comment }}</td>
+        </tr>
+        <tr>
+          <td scope="col">Verkauft</td>
+          <td scope="col">{{ article.sold|to_german }}</td>
+        </tr>
+        {% if article.current==false %}
+        <tr>
+          <td scope="col">Status</td>
+          <td scope="col">Nicht aktiv</td>
+        </tr>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+</div>
+<div class="fixed-bottom d-flex justify-content-center mb-5 opacity-100">
+  <div class="cart" style="width: 30rem">
+    <div class="cart-header">Aktionen</div>
+    <div class="cart-body">
+      {% if user %} {% if not article.sold and user.organizer and
+      article.current %}
+      <form method="POST" action="/cart/active/add/{{ article.uuid }}/">
+        <div class="d-grid gap-2">
+          <input
+            type="submit"
+            class="btn btn-primary btn-block mb-4 mt-4"
+            value="Hinzufügen"
+          />
+        </div>
+      </form>
+      {% endif %} {% if not article.current and (article.seller==user or
+      user.id==1) and not user.checkin_done %}
+      <form method="POST" action="/article/{{ article.uuid }}/reactivate">
+        <input
+          type="submit"
+          class="btn btn-primary btn-block mb-4 mt-4"
+          value="Reaktivieren"
+        />
+      </form>
+      {% endif %} {% else %}
+      <div class="alert alert-warning" role="alert">
+        Sind sind in diesem Browser nicht angemeldet. Klicken Sie auf
+        "Anmelden", um zur Anmelde-Maske zu gelangen. Scannen Sie nach der
+        Anmeldung den Artikel erneut.
+      </div>
+      <a href="/login" class="btn btn-primary" role="button"> Anmelden </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
