@@ -2,6 +2,7 @@
 # pylint: disable=no-member,import-error
 
 import uuid
+import random
 
 from datetime import datetime
 
@@ -85,8 +86,8 @@ def create_test_data():
     _create_article(user_seller2, "Test-Art 11", 1250, 'XL', False, last_current=old_date)
     _create_article(user_seller2, "Test-Art 12", 1000, '', False, last_current=old_date)
 
-    _create_article(user_seller3, "Test-Art 13", 100, 'XL', False, last_current=old_date)
-    _create_article(user_seller3, "Test-Art 14", 10000, '', False, last_current=old_date)
+    for i in range(1, 100):
+        _create_article(user_seller3, f"Test-Art Seller 3: {i}", random.randint(10,100)*10, 'XL', True)
 
     _create_article(user_seller4, "Test-Art 14", 100, '', True)
     _create_article(user_seller4, "Test-Art 15", 1000, '', True)
