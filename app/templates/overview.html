@@ -14,7 +14,9 @@
       <table class="table table-striped">
         <tr>
           <th scope="col">Name</th>
+          {% if org %}
           <th scope="col">Verkäufer</th>
+          {% endif %}
           <th scope="col">Kommentar</th>
           <th scope="col">Preis</th>
           {% if org %}
@@ -27,7 +29,9 @@
         {% for article in articles -%}
         <tr>
           <td>{{ article.name }}</td>
+          {% if org %}
           <td>{{ article.seller.id }}</td>
+          {% endif %}
           <td>{{ article.comment|to_german }}</td>
           <td>{{ article.price|as_euro }}</td>
           {% if org %}
