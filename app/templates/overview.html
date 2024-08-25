@@ -14,7 +14,9 @@
       <table class="table table-striped">
         <tr>
           <th scope="col">Name</th>
+          {% if org %}
           <th scope="col">Verkäufer</th>
+          {% endif %}
           <th scope="col">Kommentar</th>
           <th scope="col">Preis</th>
           {% if org %}
@@ -27,7 +29,9 @@
         {% for article in articles -%}
         <tr>
           <td>{{ article.name }}</td>
+          {% if org %}
           <td>{{ article.seller.id }}</td>
+          {% endif %}
           <td>{{ article.comment|to_german }}</td>
           <td>{{ article.price|as_euro }}</td>
           {% if org %}
@@ -58,14 +62,13 @@
 
 </div>
 
-<div class="fixed-bottom d-flex justify-content-center mb-5 opacity-100">
-  <div class="cart" style="width: 30rem">
-    <div class="cart-header">Aktionen</div>
-    <div class="cart-body">
+<div class="fixed-bottom d-flex flex-row-reverse mb-5">
+  <div class="card me-5 ms-5">
+    <div class="card-body">
       {% if not user.checkin_done %}
       <input
         type="button"
-        class="btn btn-primary btn-block mb-2 mt-1"
+        class="btn btn-primary btn-lg btn-block mb-2 mt-1"
         value="Artikel hinzufügen"
         onclick="location.pathname='/article/add'" />
       {% endif %}
