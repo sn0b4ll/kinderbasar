@@ -32,36 +32,63 @@ def add_article():
             )
 
         # Post-Request, create an article
-        name = request.form["name"][:ARTICLE_NAME_SIZE]
-        price = request.form["price"]
         try:
-            price = price.replace(",", "")
-            price = price.replace("€", "")
-            price = price.replace(".", "")
-            price = int(price)
+            _add_an_article(user=user, request=request)
         except ValueError:
             return "Bitte beachten Sie die Vorgaben zur Preiseingabe. Sie erreichen die vorherige Seite über den Zurück-Button Ihres Browsers."
-
-        comment = request.form["comment"][:ARTICLE_COMMENT_SIZE]
-
-        article = Article()
-        article.uuid = str(uuid.uuid4())
-        article.name = name
-        article.seller = User.query.get(session["user_id"])
-        article.comment = comment
-        article.current = True
-        article.reactivated = False
-        article.last_current = datetime.now()
-        article.price = price
-        article.sold = False
-
-        db.session.add(article)
-        db.session.commit()
-
-        logging.info(f"Article {article.uuid}/{article.name} was created.")
+        
         return redirect(url_for("overview"))
 
     return redirect(url_for("session_handling.login"))
+
+@article_handling.route("/article/add/another", methods=["POST"])
+def add_another_article():
+    """Create an article and directly load the add article page afterwards."""
+    if "user_id" in session:
+        user:User = User.query.get(session["user_id"])
+        if user.checkin_done:
+            return "Checkin already done.", 403
+
+        # Post-Request, create an article
+        try:
+            _add_an_article(user=user, request=request)
+        except ValueError:
+            return "Bitte beachten Sie die Vorgaben zur Preiseingabe. Sie erreichen die vorherige Seite über den Zurück-Button Ihres Browsers."
+        
+        return render_template(
+                "article/add_article.html", title="Add an article", user=user
+            )
+
+    return redirect(url_for("session_handling.login"))
+
+def _add_an_article(user: User, request) -> None:
+    """Creates an article for an user"""
+
+    name = request.form["name"][:ARTICLE_NAME_SIZE]
+    price = request.form["price"]
+    
+    price = price.replace(",", "")
+    price = price.replace("€", "")
+    price = price.replace(".", "")
+    price = int(price)        
+
+    comment = request.form["comment"][:ARTICLE_COMMENT_SIZE]
+
+    article = Article()
+    article.uuid = str(uuid.uuid4())
+    article.name = name
+    article.seller = User.query.get(session["user_id"])
+    article.comment = comment
+    article.current = True
+    article.reactivated = False
+    article.last_current = datetime.now()
+    article.price = price
+    article.sold = False
+
+    db.session.add(article)
+    db.session.commit()
+
+    logging.info(f"Article {article.uuid}/{article.name} was created.")
 
 
 @article_handling.route("/article/<string:art_uuid>", methods=["GET"])

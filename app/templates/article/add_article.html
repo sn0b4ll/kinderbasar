@@ -69,7 +69,6 @@
         name="add_article"
         onsubmit="return validateForm()"
         method="POST"
-        action="/article/add"
       >
         <div class="form-outline mb-4 mt-4">
           <label for="name" class="form-label">Artikel-Name</label>
@@ -82,6 +81,7 @@
             oninput="setCustomValidity('')"
             placeholder="Ein eindeutiger Name"
             maxlength="25"
+            autofocus
           />
           <div id="nameHelp" class="form-text">
             Erscheint später auf dem Etikett. Maximal 25 Zeichen.
@@ -147,6 +147,13 @@
           type="submit"
           class="btn btn-primary btn-block mb-4"
           value="Abschicken"
+          formaction="/article/add"
+        />
+        <input
+          type="submit"
+          class="btn btn-primary btn-block mb-4"
+          value="Abschicken & weiteren Artikel hinzufügen"
+          formaction="/article/add/another"
         />
       </form>
     </div>
