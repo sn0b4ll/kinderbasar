@@ -99,6 +99,32 @@
     <div class="lastpage">
         <div class="row mt-5">
             <div class="col">
+                <h1>Artikel über 10€</h1>
+                Diese Artikel werden bei der Abgabe kontrolliert - halten Sie sie daher bitte für eine schnelle Abwicklung griffbereit. Falls Sie einen der Artikel nicht abgeben, entfernen Sie diesen bitte auf der Übersicht.
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                <table class="table table-striped">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Kleider-Größe</th>
+                        <th scope="col">Preis</th>
+                    </tr>
+                    {% for article in articles -%}
+                    {% if article.price > 999 %}
+                    <tr>
+                        <td>{{ article.name }}</td>
+                        <td>{{ article.comment }}</td>
+                        <td>{{ article.price|as_euro }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </table> 
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
                 <h1>Allgemeine Hinweise</h1>
             </div>
         </div>
