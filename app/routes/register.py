@@ -110,7 +110,7 @@ def activate(user_id, activation_uuid):
             user.activated = True
             db.session.commit()
             logging.info(f"User {user.id}/{user.email} was activated.")
-            return render_template("register/activation_success.html")
+            return render_template("register/activation_success.html"), {"Refresh": "5; url=/"}
 
     logging.info(f"Someone entered an wrong activation code for user { user.id }.")
     return "User-ID oder Aktivierungs-Code falsch"

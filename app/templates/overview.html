@@ -6,7 +6,7 @@
 <div class="container mt-2">
   <div class="row">
     <div class="col">
-      <h1>Artikel Übersicht</h1>
+      <h1>Artikel über 10€</h1>
     </div>
   </div>
   <div class="row mt-2">
@@ -27,6 +27,7 @@
           <th scope="col">Entfernen</th>
         </tr>
         {% for article in articles -%}
+        {% if article.price > 999 %}
         <tr>
           <td>{{ article.name }}</td>
           {% if org %}
@@ -53,6 +54,64 @@
             {% endif %}
           </td>
         </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+<div class="container mt-2">
+  <div class="row">
+    <div class="col">
+      <h1>Artikel unter 10€</h1>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col">
+      <table class="table table-striped">
+        <tr>
+          <th scope="col">Name</th>
+          {% if org %}
+          <th scope="col">Verkäufer</th>
+          {% endif %}
+          <th scope="col">Kommentar</th>
+          <th scope="col">Preis</th>
+          {% if org %}
+          <th scope="col">Einkaufswagen</th>
+          {% endif %}
+          <th scope="col">Verkauft</th>
+          <th scope="col">Link</th>
+          <th scope="col">Entfernen</th>
+        </tr>
+        {% for article in articles -%}
+        {% if article.price < 1000 %}
+        <tr>
+          <td>{{ article.name }}</td>
+          {% if org %}
+          <td>{{ article.seller.id }}</td>
+          {% endif %}
+          <td>{{ article.comment|to_german }}</td>
+          <td>{{ article.price|as_euro }}</td>
+          {% if org %}
+          <td>{{ article.cart_uuid|to_german }}</td>
+          {% endif %}
+          <td>{{ article.sold|to_german }}</td>
+          <td>
+            <a
+              href="/article/{{ article.uuid }}"
+              class="btn btn-secondary"
+              role="button">Details</a>
+          </td>
+          <td>
+            {% if (article.seller == user) and (not article.sold) and (not
+            user.checkin_done) %}
+            <form action="/article/{{ article.uuid }}/remove" method="post">
+              <button type="submit" class="btn btn-danger">Entfernen</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %}
         {% endfor %}
       </table>
     </div>

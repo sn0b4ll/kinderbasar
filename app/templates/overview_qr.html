@@ -99,15 +99,42 @@
     <div class="lastpage">
         <div class="row mt-5">
             <div class="col">
+                <h1>Artikel über 10€</h1>
+                Diese Artikel werden bei der Abgabe kontrolliert - halten Sie sie daher bitte für eine schnelle Abwicklung griffbereit. Falls Sie einen der Artikel nicht abgeben, entfernen Sie diesen bitte auf der Übersicht.
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                <table class="table table-striped">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Kleider-Größe</th>
+                        <th scope="col">Preis</th>
+                    </tr>
+                    {% for article in articles -%}
+                    {% if article.price > 999 %}
+                    <tr>
+                        <td>{{ article.name }}</td>
+                        <td>{{ article.comment }}</td>
+                        <td>{{ article.price|as_euro }}</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </table> 
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
                 <h1>Allgemeine Hinweise</h1>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <p>Bitte bringen Sie die QR-Codes gut von außen sichtbar an.</p>
-                <p>Bitte stechen Sie keine Löcher durch die QR-Codes.</p>
-                <p>Das Laminieren von QR-Codes ist möglich - bitte verwenden Sie
+                <p>Bitte bringen Sie die Ettiketen gut von außen sichtbar an.</p>
+                <p>Bitte stechen Sie keine Löcher durch die Ettiketen.</p>
+                <p>Das Laminieren von Ettiketen ist möglich - bitte verwenden Sie
                     jedoch nach Möglichkeit wenig reflektierende Folie</p>
+                <p>Bitte verwenden Sie keine Sicherheitsnadeln zum Anbringen der Ettiketen</p>
                 <p>Nach Möglichkeit bitten wir Sie Ihre Artikel in Klappboxen
                     oder sonstigen, stabilen aber platzsparenden Boxen
                     anzuliefern</p>
