@@ -1,9 +1,9 @@
 """Serves pages linked to checkin functions."""
 # pylint: disable=no-member,logging-fstring-interpolation,import-error
 
-from flask import Blueprint, redirect, render_template, session, url_for, request
+from flask import Blueprint, redirect, render_template, session, url_for, request, abort, Response
 from helper import _filter_article_current, logging
-from models import User, db, CHECKIN_COMMENT_SIZE
+from models import User, db, CHECKIN_COMMENT_SIZE, Article
 
 checkin_routes = Blueprint("checkin_routes", __name__, template_folder="templates")
 
@@ -106,3 +106,26 @@ def set_checkin(user_id):
 
     logging.info("Someone without org right tried to do a checkin.")
     return redirect(url_for("session_handling.login"))
+
+
+@checkin_routes.route("/org/checkin/<int:user_id>/<string:art_uuid>/remove", methods=["GET", "POST"])
+def remove_article(user_id, art_uuid):
+    """Permanently remove an article from the checkin screen."""
+    current_user: User = User.query.get(session["user_id"])
+    if current_user and current_user.organizer:
+        if art_uuid is None:
+            return abort(Response("Article UUID missing."))
+
+        article = Article.query.get(art_uuid)
+        
+        db.session.delete(article)
+        db.session.commit()
+
+        logging.info(f"Article with UUID {art_uuid} was removed.")
+
+        return redirect(url_for("checkin_routes.get_checkin", user_id=user_id))
+    
+    logging.error(
+        f"User {current_user.id } tried to delete article {art_uuid} but is not allowed to."
+    )
+    return redirect(url_for("login"))

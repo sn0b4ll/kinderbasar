@@ -4,6 +4,7 @@
 {% block nav_checkin %}active{% endblock %}
 
 {% block content %}
+<form action="/org/checkin/done/{{ checkin_user.id }}/" method="post">
 <div class="container">
 	<div class="row">
 		<div class="col">
@@ -38,11 +39,32 @@
 				<tr>
 					<th scope="col">Name</th>
 					<th scope="col">Preis</th>
+					<th scope="col">Kommentar</th>
+					<th scope="col">Entfernen</th>
+					<th scope="col">Bestätigen</th>
+
 				</tr>
 				{% for article in articles_over -%}
 				<tr>
 					<td>{{ article.name }}</td>
+					<td>{{ article.comment|to_german }}</td>
 					<td>{{ article.price|as_euro }}</td>
+					<td>
+						<button
+							type="submit"
+							class="btn btn-danger"
+							formnovalidate
+							formaction="/org/checkin/{{ checkin_user.id }}/{{ article.uuid }}/remove"
+							formmethod="post"
+							onclick="return confirm('Wirklich entfernen?');">
+							Entfernen
+						</button>
+					</td>
+					<td>
+						<div class="form-check">
+							<input class="form-check-input" style="width: 25px; height: 25px;" type="checkbox" value="" id="invalidCheck" required>
+						</div>
+					</td>
 				</tr>
 				{% endfor %}
 			</table>
@@ -55,11 +77,13 @@
 				<tr>
 					<th scope="col">Name</th>
 					<th scope="col">Preis</th>
+					<th scope="col">Kommentar</th>
 				</tr>
 				{% for article in articles_under -%}
 				<tr>
 					<td>{{ article.name }}</td>
 					<td>{{ article.price|as_euro }}</td>
+					<td>{{ article.comment|to_german }}</td>
 				</tr>
 				{% endfor %}
 			</table>
@@ -82,13 +106,12 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col">
-			<form action="/org/checkin/done/{{ checkin_user.id }}/" method="post">
-				<textarea class="form-control mb-2" id="comment" name="comment"
-					maxlength="200" placeholder="Kommentar"></textarea>
-				<button type="submit" class="btn btn-info">Einchecken!</button>
-			</form>
+		<div class="col">	
+			<textarea class="form-control mb-2" id="comment" name="comment"
+				maxlength="200" placeholder="Kommentar"></textarea>
+			<button type="submit" class="btn btn-info">Einchecken!</button>
 		</div>
 	</div>
 </div>
+</form>
 {% endblock %}
