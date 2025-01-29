@@ -58,7 +58,7 @@ def _send_pw_reset_mail(user: User):
     # Send mail with reset code
     msg = EmailMessage()
     msg.set_content(
-        f"""Sie haben das Zurücksetzten Ihres Passworts angefragt?
+        f"""Sie haben das Zurücksetzen Ihres Passworts angefragt?
     
 Dies können Sie hier machen: {config['APP']['URL']}/resetpw/{user.id}/{user.activation_code}
 
@@ -71,7 +71,7 @@ Ihr Kinderbasar Elsendorf Team
 
     msg["From"] = "info@kinderbasar-elsendorf.de"
     msg["To"] = user.email
-    msg["Subject"] = "Passwort zurücksetzten"
+    msg["Subject"] = "Passwort zurücksetzen"
     msg["message-id"] = utils.make_msgid(domain="kinderbasar-elsendorf.de")
 
     try:
