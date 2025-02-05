@@ -72,6 +72,11 @@ def _add_an_article(user: User, request) -> None:
     price = price.replace(".", "")
     price = int(price)        
 
+    # Catch the case when a user would input a negative price    
+    if price < 0:
+        raise ValueError()
+
+
     comment = request.form["comment"][:ARTICLE_COMMENT_SIZE]
 
     article = Article()
