@@ -21,9 +21,9 @@ from utils.db_migration import migrate_data
 
 app = Flask(__name__)
 app.secret_key = config.get("APP", "secret_key")
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = f"mysql://{config['DB']['user']}:{config['DB']['password']}@db/{config['DB']['database']}"
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    f"mysql://{config['DB']['user']}:{config['DB']['password']}@db/{config['DB']['database']}"
+)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 db.init_app(app)
 
@@ -153,39 +153,6 @@ def overview_qr():
     return redirect(url_for("session_handling.login"))
 
 
-@app.route("/registration_sheet/", methods=["GET"])
-def get_registration_sheet():
-    """Create the registration sheet for the article onsite delivery."""
-    if "user_id" in session:
-        user = db.session.get(User, session["user_id"])
-
-        articles = list(filter(_filter_article_current, user.articles))
-
-        # Calculate the sums
-        article_sum = 0
-        for article in articles:
-            article_sum += article.price
-
-        provision = 0
-
-        for article in articles:
-            # Calculate provision
-            if article.price < 5000:
-                provision += article.price * 0.05
-            else:
-                provision += 250
-
-        return render_template(
-            "registration_sheet.html",
-            user=user,
-            articles=articles,
-            article_sum=article_sum,
-            registration_fee=provision,
-        )
-
-    return redirect(url_for("overview"))
-
-
 @app.route("/user/registration_done", methods=["POST"])
 def registration_done():
     """If the registration for onsite article drop is done, reflect that to the db."""
@@ -193,7 +160,7 @@ def registration_done():
         user = User.query.get(session["user_id"])
         user.registration_done = True
         db.session.commit()
-        return f"Registration done set for user { user.id }", 200
+        return f"Registration done set for user {user.id}", 200
 
     return redirect(url_for("session_handling.login"))
 
