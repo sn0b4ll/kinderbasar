@@ -70,9 +70,14 @@
         function drawChart() {
           var data = google.visualization.arrayToDataTable([
             ["Basar", "Artikel", { role: "style" } ],
-            ["Basar 22 Herbst", 200, "#b87333"],
-            ["Basar 23 Früh", 5183, "silver"],
-            ["Basar 24 Früh", {{ num_articles_basar_24_1 }}, "gold"],
+            ["23 FJ verkauft", {{ num_articles_basar_23_1_sold }}, "silver"],
+            ["23 FJ unverkauft", {{ num_articles_basar_23_1_unsold }}, "silver"],
+            ["24 FJ verkauft", {{ num_articles_basar_24_1_sold }}, "gold"],
+            ["24 FJ unverkauft", {{ num_articles_basar_24_1_unsold }}, "gold"],
+            ["24 Herbst verkauft", {{ num_articles_basar_24_2_sold }}, "blue"],
+            ["24 Herbst unverkauft", {{ num_articles_basar_24_2_unsold }}, "blue"],
+            ["25 FJ verkauft", {{ num_articles_basar_25_1_sold }}, "yellow"],
+            ["25 FJ unverkauft", {{ num_articles_basar_25_1_unsold }}, "yellow"],
           ]);
     
           var view = new google.visualization.DataView(data);

@@ -94,28 +94,42 @@ def return_stats_page():
             db.session.query(Article).filter(Article.current, Article.sold).all()
         )
 
-        num_articles_basar_22_1_sold = (
+        num_articles_basar_23_1_sold = 1724
+        
+        num_articles_basar_23_1_unsold = 5183-num_articles_basar_23_1_sold
+        
+        num_articles_basar_24_1_sold = 1821
+        
+        
+        num_articles_basar_24_1_unsold = 6422-num_articles_basar_24_1_sold
+        
+        num_articles_basar_24_2_sold = (
             db.session.query(Article)
-            .filter(Article.last_current <= "2022-10-01")
+            .filter(Article.last_current <= "2025-01-01")
+            .filter(Article.last_current >= "2024-06-01")
             .filter(Article.sold == True)
             .count()
         )
-        num_articles_basar_22_1_unsold = (
+        
+        num_articles_basar_24_2_unsold = (
             db.session.query(Article)
-            .filter(Article.last_current <= "2022-10-01")
+            .filter(Article.last_current <= "2025-01-01")
+            .filter(Article.last_current >= "2024-06-01")
             .filter(Article.sold == False)
             .count()
         )
-
-        num_articles_basar_23_1 = (
+        
+        num_articles_basar_25_1_sold = (
             db.session.query(Article)
-            .filter(Article.last_current <= "2023-06-01")
-            .filter(Article.last_current >= "2023-01-01")
+            .filter(Article.last_current >= "2025-01-01")
+            .filter(Article.sold == True)
             .count()
         )
-        num_articles_basar_24_1 = (
+        
+        num_articles_basar_25_1_unsold = (
             db.session.query(Article)
-            .filter(Article.last_current >= "2024-01-01")
+            .filter(Article.last_current >= "2025-01-01")
+            .filter(Article.sold == False)
             .count()
         )
 
@@ -125,10 +139,14 @@ def return_stats_page():
             sum_articles_current=sum_articles_current,
             sum_articles_sold=sum_articles_sold,
             num_already_checkedin=num_already_checkedin,
-            num_articles_basar_22_1_sold=num_articles_basar_22_1_sold,
-            num_articles_basar_22_1_unsold=num_articles_basar_22_1_unsold,
-            num_articles_basar_23_1=num_articles_basar_23_1,
-            num_articles_basar_24_1=num_articles_basar_24_1,
+            num_articles_basar_23_1_sold=num_articles_basar_23_1_sold,
+            num_articles_basar_23_1_unsold=num_articles_basar_23_1_unsold,
+            num_articles_basar_24_1_sold=num_articles_basar_24_1_sold,
+            num_articles_basar_24_1_unsold=num_articles_basar_24_1_unsold,
+            num_articles_basar_24_2_sold=num_articles_basar_24_2_sold,
+            num_articles_basar_24_2_unsold=num_articles_basar_24_2_unsold,
+            num_articles_basar_25_1_sold=num_articles_basar_25_1_sold,
+            num_articles_basar_25_1_unsold=num_articles_basar_25_1_unsold,
             user=current_user
         )
 

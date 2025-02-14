@@ -1,8 +1,8 @@
 # Beschreibung
 Diese Applikation hilft bei der Organisation von Vor-Ort Basaren. Funktionen:
 - Einstellen von Artikeln durch Verkäufer
-- Generierung von QR-Codes für Artikel durch Verkäufer
-- Kassen-System über QR-Codes für ein schnelles kassieren
+- Generierung von Etiketten für Artikel durch Verkäufer
+- Kassen-System über Etiketten für ein schnelles kassieren
 - Generierung von Listen für die Wahren-Annahme
 - Übersichts-Funktionen für Organisatoren
 
