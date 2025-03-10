@@ -1,5 +1,7 @@
 """Helper class so we dont have to do this in every module."""
 import logging
+import requests
+import json
 
 from configparser import ConfigParser
 from argon2 import PasswordHasher
@@ -26,3 +28,13 @@ def _filter_article_current(article):
 
 def _filter_article_reactivated(article):
     return not article.reactivated
+
+def is_human(captcha_response):
+    """ Validating recaptcha response from google server
+        Returns True captcha test passed for submitted form else returns False.
+    """
+    secret = config['APP']['recaptcha_secret_key']
+    payload = {'response':captcha_response, 'secret':secret}
+    response = requests.post("https://www.google.com/recaptcha/api/siteverify", payload)
+    response_text = json.loads(response.text)
+    return response_text['success']
