@@ -17,7 +17,7 @@ from flask import Blueprint, render_template, request
 from models import db
 from models import User
 
-from helper import logging, config, ph
+from helper import logging, is_human, config, ph
 
 register_process = Blueprint("register", __name__, template_folder="templates")
 
@@ -27,6 +27,18 @@ def register():
     """Start a registration process."""
 
     sleep(random())
+    
+    # Run the captcha check
+    captcha_response = request.form['g-recaptcha-response']
+    logging.debug(f"Registration run, got capcha: {captcha_response}.")
+    if not is_human(captcha_response=captcha_response):
+        logging.info(f"User failed captcha")
+        sleep(5)
+        return render_template("login.html", title="Login")
+    
+    logging.debug(f"User completed captcha")
+    
+    # Captcha look good, continue with registration
     email = request.form["email"]
 
     user = db.session.query(User).filter(User.email == email).first()

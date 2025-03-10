@@ -10,7 +10,7 @@ from flask import request, session
 
 from models import User
 
-from helper import logging, ph
+from helper import config, logging, ph
 
 from argon2.exceptions import VerifyMismatchError
 
@@ -58,7 +58,8 @@ def login():
         return redirect(url_for("overview"))
 
     # Serve the default login page
-    return render_template("login.html")
+    sitekey = config["APP"]["recaptcha_site_key"]
+    return render_template("login.html", sitekey=sitekey)
 
 
 @session_handling.route("/logout")
