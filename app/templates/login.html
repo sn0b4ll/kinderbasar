@@ -1,6 +1,7 @@
 {% extends 'meta/base_logged_out.html' %}
 
 {% block content %}
+<script src="https://www.google.com/recaptcha/api.js"></script>
 <script>
   function enableRegistration() {
     // Get the checkbox
@@ -8,8 +9,10 @@
     // Get the output text
     var button = document.getElementById("registerButton");
 
+    captcha_resp = grecaptcha.getResponse()
+
     // If the checkbox is checked, display the output text
-    if (checkBox.checked == true) {
+    if (checkBox.checked == true && captcha_resp.length > 0) {
       button.disabled = false;
     } else {
       button.disabled = true;
@@ -181,6 +184,8 @@
                   Passwort anzeigen
                 </label>
               </div>
+
+              <div class="g-recaptcha mb-4" data-sitekey="{{ sitekey }}"></div>
 
               <!-- Checkbox -->
               <div class="form-check d-flex justify-content-center mb-4">
