@@ -78,6 +78,8 @@
             ["24 Herbst unverkauft", {{ num_articles_basar_24_2_unsold }}, "blue"],
             ["25 FJ verkauft", {{ num_articles_basar_25_1_sold }}, "yellow"],
             ["25 FJ unverkauft", {{ num_articles_basar_25_1_unsold }}, "yellow"],
+            ["25 Herbst verkauft", {{ num_articles_basar_25_2_sold }}, "orange"],
+            ["25 Herbst unverkauft", {{ num_articles_basar_25_2_unsold }}, "orange"],
           ]);
     
           var view = new google.visualization.DataView(data);
@@ -90,7 +92,7 @@
     
           var options = {
             title: "Anzahl Artikel pro Basar",
-            width: 600,
+            width: 900,
             height: 400,
             bar: {groupWidth: "80%"},
             legend: { position: "none" },
