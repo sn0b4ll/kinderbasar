@@ -1,7 +1,7 @@
 """Serves pages linked to organizer functions."""
 # pylint: disable=no-member,logging-fstring-interpolation,import-error
 
-import pdfkit  # pylint: disable=import-error # type: ignore
+from weasyprint import HTML
 import uuid
 
 from flask import Blueprint, Response
@@ -217,13 +217,8 @@ def print_all_clearings():
             user_dict=user_dict,
         )
 
-        options = {
-            "page-height": "297mm",
-            "page-width": "210mm",
-        }
-
         return Response(
-            pdfkit.from_string(html, options=options),
+            HTML(string=html).write_pdf(),
             mimetype="application/pdf",
             headers={"Content-Disposition": "attachment;filename=clearing.pdf"},
         )
