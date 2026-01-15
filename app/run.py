@@ -3,7 +3,7 @@
 
 import math
 
-import pdfkit  # pylint: disable=import-error # type: ignore
+from weasyprint import HTML
 from flask import Flask, Response, redirect, render_template, request, session, url_for
 from flask_qrcode import QRcode
 from helper import _filter_article_current, _filter_article_reactivated, config, logging
@@ -139,13 +139,8 @@ def overview_qr():
             url_template=f"{config['APP']['URL']}/article/",
         )
 
-        options = {
-            "page-height": "297mm",
-            "page-width": "210mm",
-        }
-
         return Response(
-            pdfkit.from_string(html, options=options),
+            HTML(string=html).write_pdf(),
             mimetype="application/pdf",
             headers={"Content-Disposition": "attachment;filename=kinderbasar.pdf"},
         )
