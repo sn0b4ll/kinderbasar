@@ -1,169 +1,180 @@
 <!doctype html>
 <html lang="en">
-    <head>
-         <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Etiketten</title>
+
+    <style>
+        /* General Reset & Typography */
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font: 12pt "Tahoma", sans-serif;
+            line-height: 1.5;
+        }
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Essential Bootstrap Layout Mimicry */
+        .container {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+        .col {
+            flex: 1 0 0%;
+            padding: 0 15px;
+        }
+        .col-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+            padding: 0 15px;
+        }
+
+        /* Utilities */
+        .mt-2 { margin-top: 0.5rem !important; }
+        .mt-5 { margin-top: 3rem !important; }
+        .pb-2 { padding-bottom: 0.5rem !important; }
+        .border { border: 1px solid #dee2e6 !important; }
+        .border-dark { border-color: #212529 !important; }
+        .border-2 { border-width: 2px !important; }
         
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+        /* Table Styling */
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            vertical-align: top;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+            text-align: left;
+        }
+        .table-striped tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
 
-        
-    </head>
-    <body class="min-vh-100">
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
-       
-
-<style>
-  body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font: 12pt "Tahoma";
-  }
-  * {
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-  }
-  
-  .page-break {
-      page-break-after: always;
-  }
-
-  @page {
-    size: A4;
-    margin: 0.5cm;
-  }
-  @media print {
-    .page {
-      margin: 0;
-      border: initial;
-      border-radius: initial;
-      width: initial;
-      min-height: initial;
-      box-shadow: initial;
-      background: initial;
-      page-break-after: always;
-    }
-  }
-</style>
+        /* Print Logic */
+        .page-break {
+            page-break-after: always;
+        }
+        @page {
+            size: A4;
+            margin: 0.5cm;
+        }
+        @media print {
+            .page {
+                margin: 0;
+                border: initial;
+                border-radius: initial;
+                width: initial;
+                min-height: initial;
+                box-shadow: initial;
+                background: initial;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
 
 <div class="container mt-2 page-break">
-  <div class="row">
-    {% for article in articles %}
-    <div class="col-4 mt-2 border border-dark border-2 pb-2">
-      {{ article.name|truncate(35) }} <br />
-      <font style="color: red; text-decoration: underline"
-        >Verkäufer: {{ article.seller.id }}</font
-      >
-      <br />
-      {% if article.comment != "" %} {{ article.comment }}<br />
-      {% else %}
-      <br />
-      {% endif %} Preis: {{ article.price|as_euro }}<br />
-      <img
-        src="{{ qrcode(url_template + article.uuid, box_size=4, border=1) }}"
-      />
+    <div class="row">
+        {% for article in articles %}
+        <div class="col-4 mt-2 border border-dark border-2 pb-2">
+            {{ article.name|truncate(35) }} <br />
+            <span style="color: red; text-decoration: underline">Verkäufer: {{ article.seller.id }}</span>
+            <br />
+            {% if article.comment != "" %} {{ article.comment }}<br />
+            {% else %}
+            <br />
+            {% endif %} Preis: {{ article.price|as_euro }}<br />
+            <img src="{{ qrcode(url_template + article.uuid, box_size=4, border=1) }}" />
+        </div>
+        
+        {# Maintain your manual row breaking logic #}
+        {% if loop.index is divisibleby 15 %}
     </div>
-    {% if loop.index is divisibleby 15 %}
-  </div>
-
-  <div class="row">{% elif loop.index is divisibleby 3 %}</div>
-  <div class="row">{% endif %} {% endfor %}</div>
+    <div class="row">
+        {% elif loop.index is divisibleby 3 %}
+    </div>
+    <div class="row">
+        {% endif %} 
+        {% endfor %}
+    </div>
 </div>
 
 <div class="container mt-2 page-break">
-  <div class="row">
-    <div class="col mt-2 border border-dark border-2 pb-2">
-      Verkäufer-Nummer (für Einkaufs-Körbe):<br />
-      <center>
-        <font style="text-align: center; font-size: 7cm"> {{ user.id }} </font>
-      </center>
+    <div class="row">
+        <div class="col mt-2 border border-dark border-2 pb-2">
+            Verkäufer-Nummer (für Einkaufs-Körbe):<br />
+            <div style="text-align: center; font-size: 7cm; line-height: 1;"> {{ user.id }} </div>
+        </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col mt-2 border border-dark border-2 pb-2">
-      Verkäufer-Nummer (für Einkaufs-Körbe):<br />
-      <center>
-        <font style="text-align: center; font-size: 7cm"> {{ user.id }} </font>
-      </center>
+    <div class="row">
+        <div class="col mt-2 border border-dark border-2 pb-2">
+            Verkäufer-Nummer (für Einkaufs-Körbe):<br />
+            <div style="text-align: center; font-size: 7cm; line-height: 1;"> {{ user.id }} </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div class="container mt-2">
-  <div class="row mt-5">
-    <div class="col">
-      <h1>Artikel über 10€</h1>
-      Diese Artikel werden bei der Abgabe kontrolliert - halten Sie sie daher
-      bitte für eine schnelle Abwicklung griffbereit. Falls Sie einen der
-      Artikel nicht abgeben, entfernen Sie diesen bitte auf der Übersicht.
+    <div class="row mt-5">
+        <div class="col">
+            <h1>Artikel über 10€</h1>
+            <p>Diese Artikel werden bei der Abgabe kontrolliert...</p>
+        </div>
     </div>
-  </div>
-  <div class="row mt-2">
-    <div class="col">
-      <table class="table table-striped">
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Kleider-Größe</th>
-          <th scope="col">Preis</th>
-        </tr>
-        {% for article in articles -%} {% if article.price > 999 %}
-        <tr>
-          <td>{{ article.name }}</td>
-          <td>{{ article.comment }}</td>
-          <td>{{ article.price|as_euro }}</td>
-        </tr>
-        {% endif %} {% endfor %}
-      </table>
+    <div class="row mt-2">
+        <div class="col">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Kleider-Größe</th>
+                        <th scope="col">Preis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles -%} 
+                    {% if article.price > 999 %}
+                    <tr>
+                        <td>{{ article.name }}</td>
+                        <td>{{ article.comment }}</td>
+                        <td>{{ article.price|as_euro }}</td>
+                    </tr>
+                    {% endif %} 
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
-  <div class="row mt-5">
-    <div class="col">
-      <h1>Allgemeine Hinweise</h1>
+    
+    <div class="row mt-5">
+        <div class="col">
+            <h1>Allgemeine Hinweise</h1>
+            <p>Bitte bringen Sie die Etiketten gut von außen sichtbar an.</p>
+            <p>Bitte stechen Sie keine Löcher durch die Etiketten.</p>
+            <p>Das Laminieren von Etiketten ist möglich.</p>
+            <p>Bitte verwenden Sie keine Sicherheitsnadeln.</p>
+            <p>Anlieferung in Klappboxen erbeten.</p>
+        </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <p>Bitte bringen Sie die Etiketten gut von außen sichtbar an.</p>
-      <p>Bitte stechen Sie keine Löcher durch die Etiketten.</p>
-      <p>
-        Das Laminieren von Etiketten ist möglich - bitte verwenden Sie jedoch
-        nach Möglichkeit wenig reflektierende Folie.
-      </p>
-      <p>
-        Bitte verwenden Sie keine Sicherheitsnadeln zum Anbringen der Etiketten.
-      </p>
-      <p>
-        Nach Möglichkeit bitten wir Sie Ihre Artikel in Klappboxen oder
-        sonstigen, stabilen aber platzsparenden Boxen anzuliefern.
-      </p>
-    </div>
-  </div>
-  <div class="row mt-5">
-    <div class="col">
-      <h1>Hinweise zu Artikeln</h1>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <p>
-        Nicht-Vollständige Artikel müssen entsprechend mit einem Kommentar
-        versehen werden.
-      </p>
-      <p>
-        Bitte achten Sie auf Kinder-Freundlichkeit der Artikel (das gilt auch
-        für Bücher o.Ä.).
-      </p>
-      <p>
-        Batteriebetriebene Geräte müssen mit vollen Batterien verkauft werden.
-      </p>
-      <p>
-        Artikel, die nicht diesen Kriterien entsprechen, werden ohne
-        Rückerstattung der Vor-Ort-Gebühr aus dem Verkauf entfernt.
-      </p>
-    </div>
-  </div>
 </div>
+
+</body>
+</html>
