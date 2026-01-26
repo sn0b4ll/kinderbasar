@@ -25,7 +25,13 @@
                 <a class="nav-link {% block nav_articles %}{% endblock %}" aria-current="page" href="/overview">Artikel</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link" href="/overview/qr">Etiketten drucken</a>
+                <a class="nav-link" 
+                href="/overview/qr" 
+                data-bs-toggle="tooltip" 
+                data-bs-placement="bottom" 
+                data-bs-title="Das Generieren des PDF kann einige Sekunden in Anspruch nehmen.">
+                Etiketten drucken
+                </a>
             </li>
             {% if user.organizer %}
             <li class="nav-item">
@@ -65,5 +71,11 @@
 </nav>
 
 {% block content %}{% endblock %}
+
+<script>
+    // Initialize all tooltips on the page
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 
 {% include 'meta/footer.html' %}
