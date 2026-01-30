@@ -1,180 +1,195 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Etiketten</title>
 
     <style>
-        /* General Reset & Typography */
-        body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font: 12pt "Tahoma", sans-serif;
-            line-height: 1.5;
-        }
-        * {
-            box-sizing: border-box;
-        }
+      /* General Reset & Typography */
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font:
+          12pt "Tahoma",
+          sans-serif;
+        line-height: 1.2;
+      }
+      * {
+        box-sizing: border-box;
+      }
 
-        /* Essential Bootstrap Layout Mimicry */
-        .container {
-            width: 100%;
-            padding-right: 15px;
-            padding-left: 15px;
-            margin-right: auto;
-            margin-left: auto;
-        }
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-right: -15px;
-            margin-left: -15px;
-        }
-        .col {
-            flex: 1 0 0%;
-            padding: 0 15px;
-        }
-        .col-4 {
-            flex: 0 0 33.333333%;
-            max-width: 33.333333%;
-            padding: 0 15px;
-        }
+      /* Essential Bootstrap Layout Mimicry */
+      .container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+      }
+      .col {
+        flex: 1 0 0%;
+        padding: 0 15px;
+      }
+      .col-4 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+        padding: 0 15px;
+      }
 
-        /* Utilities */
-        .mt-2 { margin-top: 0.5rem !important; }
-        .mt-5 { margin-top: 3rem !important; }
-        .pb-2 { padding-bottom: 0.5rem !important; }
-        .border { border: 1px solid #dee2e6 !important; }
-        .border-dark { border-color: #212529 !important; }
-        .border-2 { border-width: 2px !important; }
-        
-        /* Table Styling */
-        .table {
-            width: 100%;
-            margin-bottom: 1rem;
-            vertical-align: top;
-            border-collapse: collapse;
-        }
-        .table th, .table td {
-            padding: 0.5rem;
-            border-bottom: 1px solid #dee2e6;
-            text-align: left;
-        }
-        .table-striped tr:nth-of-type(odd) {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
+      /* Utilities */
+      .mt-2 {
+        margin-top: 0.25rem !important;
+        padding-top: 0.25rem;
+      }
+      .mt-5 {
+        margin-top: 3rem !important;
+      }
+      .pb-2 {
+        padding-bottom: 0.5rem !important;
+      }
+      .border {
+        border: 1px solid #dee2e6 !important;
+      }
+      .border-dark {
+        border-color: #212529 !important;
+      }
+      .border-2 {
+        border-width: 2px !important;
+      }
 
-        /* Print Logic */
-        .page-break {
-            page-break-after: always;
+      /* Table Styling */
+      .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        vertical-align: top;
+        border-collapse: collapse;
+      }
+      .table th,
+      .table td {
+        padding: 0.5rem;
+        border-bottom: 1px solid #dee2e6;
+        text-align: left;
+      }
+      .table-striped tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      /* Print Logic */
+      .page-break {
+        page-break-after: always;
+      }
+      @page {
+        size: A4;
+        margin: 0.5cm;
+      }
+      @media print {
+        .page {
+          margin: 0;
+          border: initial;
+          border-radius: initial;
+          width: initial;
+          min-height: initial;
+          box-shadow: initial;
+          background: initial;
+          page-break-after: always;
         }
-        @page {
-            size: A4;
-            margin: 0.5cm;
-        }
-        @media print {
-            .page {
-                margin: 0;
-                border: initial;
-                border-radius: initial;
-                width: initial;
-                min-height: initial;
-                box-shadow: initial;
-                background: initial;
-                page-break-after: always;
-            }
-        }
+      }
     </style>
-</head>
-<body>
-
-<div class="container mt-2 page-break">
-    <div class="row">
+  </head>
+  <body>
+    <div class="container mt-2 page-break">
+      <div class="row">
         {% for article in articles %}
         <div class="col-4 mt-2 border border-dark border-2 pb-2">
-            {{ article.name|truncate(35) }} <br />
-            <span style="color: red; text-decoration: underline">Verkäufer: {{ article.seller.id }}</span>
-            <br />
-            {% if article.comment != "" %} {{ article.comment }}<br />
-            {% else %}
-            <br />
-            {% endif %} Preis: {{ article.price|as_euro }}<br />
-            <img src="{{ qrcode(url_template + article.uuid, box_size=4, border=1) }}" />
+          {{ article.name|truncate(35) }} <br />
+          <span style="color: red; text-decoration: underline; font-weight: bold"
+            >Verkäufer: {{ article.seller.id }}</span
+          >
+          <br />
+          {% if article.comment != "" %} {{ article.comment }}<br />
+          {% else %}
+          <br />
+          {% endif %} Preis: {{ article.price|as_euro }}<br />
+          <img
+            src="{{ qrcode(url_template + article.uuid, box_size=3, border=1) }}"
+          />
         </div>
-        
-        {# Maintain your manual row breaking logic #}
-        {% if loop.index is divisibleby 15 %}
-    </div>
-    <div class="row">
-        {% elif loop.index is divisibleby 3 %}
-    </div>
-    <div class="row">
-        {% endif %} 
-        {% endfor %}
-    </div>
-</div>
 
-<div class="container mt-2 page-break">
-    <div class="row">
+        {# Maintain your manual row breaking logic #} {% if loop.index is
+        divisibleby 15 %}
+      </div>
+      <div class="row">{% elif loop.index is divisibleby 3 %}</div>
+      <div class="row">{% endif %} {% endfor %}</div>
+    </div>
+
+    <div class="container mt-2 page-break">
+      <div class="row">
         <div class="col mt-2 border border-dark border-2 pb-2">
-            Verkäufer-Nummer (für Einkaufs-Körbe):<br />
-            <div style="text-align: center; font-size: 7cm; line-height: 1;"> {{ user.id }} </div>
+          Verkäufer-Nummer (für Einkaufs-Körbe):<br />
+          <div style="text-align: center; font-size: 7cm; line-height: 1">
+            {{ user.id }}
+          </div>
         </div>
-    </div>
-    <div class="row">
+      </div>
+      <div class="row">
         <div class="col mt-2 border border-dark border-2 pb-2">
-            Verkäufer-Nummer (für Einkaufs-Körbe):<br />
-            <div style="text-align: center; font-size: 7cm; line-height: 1;"> {{ user.id }} </div>
+          Verkäufer-Nummer (für Einkaufs-Körbe):<br />
+          <div style="text-align: center; font-size: 7cm; line-height: 1">
+            {{ user.id }}
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<div class="container mt-2">
-    <div class="row mt-5">
+    <div class="container mt-2">
+      <div class="row mt-5">
         <div class="col">
-            <h1>Artikel über 10€</h1>
-            <p>Diese Artikel werden bei der Abgabe kontrolliert...</p>
+          <h1>Artikel über 10€</h1>
+          <p>Diese Artikel werden bei der Abgabe kontrolliert...</p>
         </div>
-    </div>
-    <div class="row mt-2">
+      </div>
+      <div class="row mt-2">
         <div class="col">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Kleider-Größe</th>
-                        <th scope="col">Preis</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for article in articles -%} 
-                    {% if article.price > 999 %}
-                    <tr>
-                        <td>{{ article.name }}</td>
-                        <td>{{ article.comment }}</td>
-                        <td>{{ article.price|as_euro }}</td>
-                    </tr>
-                    {% endif %} 
-                    {% endfor %}
-                </tbody>
-            </table>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Kleider-Größe</th>
+                <th scope="col">Preis</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for article in articles -%} {% if article.price > 999 %}
+              <tr>
+                <td>{{ article.name }}</td>
+                <td>{{ article.comment }}</td>
+                <td>{{ article.price|as_euro }}</td>
+              </tr>
+              {% endif %} {% endfor %}
+            </tbody>
+          </table>
         </div>
-    </div>
-    
-    <div class="row mt-5">
-        <div class="col">
-            <h1>Allgemeine Hinweise</h1>
-            <p>Bitte bringen Sie die Etiketten gut von außen sichtbar an.</p>
-            <p>Bitte stechen Sie keine Löcher durch die Etiketten.</p>
-            <p>Das Laminieren von Etiketten ist möglich.</p>
-            <p>Bitte verwenden Sie keine Sicherheitsnadeln.</p>
-            <p>Anlieferung in Klappboxen erbeten.</p>
-        </div>
-    </div>
-</div>
+      </div>
 
-</body>
+      <div class="row mt-5">
+        <div class="col">
+          <h1>Allgemeine Hinweise</h1>
+          <p>Bitte bringen Sie die Etiketten gut von außen sichtbar an.</p>
+          <p>Bitte stechen Sie keine Löcher durch die Etiketten.</p>
+          <p>Das Laminieren von Etiketten ist möglich.</p>
+          <p>Bitte verwenden Sie keine Sicherheitsnadeln.</p>
+          <p>Anlieferung in Klappboxen erbeten.</p>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
